@@ -847,7 +847,7 @@ endif()
 
 FetchContent_Declare(
     libatrac9
-    GIT_TAG "master"
+    GIT_TAG "efca2e3af35562a09a9bb6deed90e45b4b824dc4"
     GIT_REPOSITORY "https://github.com/Thealexbarney/LibAtrac9.git"
     PATCH_COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/vendor/patches/LibAtrac9/CMakeLists.txt <SOURCE_DIR>/CMakeLists.txt
     SYSTEM
@@ -1481,5 +1481,4 @@ else()
     install(DIRECTORY resources DESTINATION ${CMAKE_SOURCE_DIR}/android/app/src/main/assets PATTERN "*/gamedata/*" EXCLUDE)
     install(FILES gamedefinitions.lua DESTINATION ${CMAKE_SOURCE_DIR}/android/app/src/main/assets)
 endif()
-
 

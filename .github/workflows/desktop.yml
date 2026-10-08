@@ -1,0 +1,71 @@
+name: Desktop Linux
+
+on:
+  push:
+    branches: [master, main, phase-01-desktop-baseline]
+  pull_request:
+    branches: [master, main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: bash
+
+concurrency:
+  group: desktop-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-smoke:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    env:
+      VCPKG_COMMIT: 62159a45e18f3a9ac0548628dcaf74fcb60c6ff9
+      VCPKG_ROOT: ${{ github.workspace }}/.tools/vcpkg
+      VCPKG_MAX_CONCURRENCY: 4
+      CMAKE_BUILD_PARALLEL_LEVEL: 2
+      VCPKG_BINARY_SOURCES: clear;files,${{ github.workspace }}/.cache/vcpkg,readwrite
+    steps:
+      - uses: actions/checkout@v6
+      - name: Install Linux prerequisites
+        run: sudo bash .github/scripts/install-desktop-deps.sh
+      - name: Install pinned CMake
+        run: |
+          python3 -m venv .tools/cmake
+          .tools/cmake/bin/pip install cmake==3.31.10
+          echo "$GITHUB_WORKSPACE/.tools/cmake/bin" >> "$GITHUB_PATH"
+      - name: Bootstrap pinned vcpkg
+        run: |
+          git clone https://github.com/microsoft/vcpkg.git "$VCPKG_ROOT"
+          git -C "$VCPKG_ROOT" checkout "$VCPKG_COMMIT"
+          "$VCPKG_ROOT/bootstrap-vcpkg.sh" -disableMetrics
+          mkdir -p .cache/vcpkg ci-build/logs
+      - uses: actions/cache@v4
+        with:
+          path: .cache/vcpkg
+          key: desktop-ubuntu24-${{ env.VCPKG_COMMIT }}-${{ hashFiles('vcpkg*.json', 'portfiles/**', 'triplets/**') }}
+      - name: Record toolchain
+        run: |
+          { cat /etc/os-release; gcc --version; g++ --version; cmake --version; ninja --version; "$VCPKG_ROOT/vcpkg" version; } | tee ci-build/logs/toolchain.log
+      - name: Configure
+        run: cmake --preset ci-release -DVCPKG_TARGET_TRIPLET=x64-linux-ci -DVCPKG_HOST_TRIPLET=x64-linux-ci 2>&1 | tee ci-build/logs/configure.log
+      - name: Compile and install
+        run: cmake --build --preset ci-release 2>&1 | tee ci-build/logs/build.log
+      - name: Discover upstream tests
+        # Upstream currently registers no CTest tests; this is NOT a test pass.
+        run: ctest --test-dir ci-build/ci-release --output-on-failure 2>&1 | tee ci-build/logs/ctest.log
+      - name: Run asset-free launcher smoke checks
+        run: xvfb-run -a python3 .github/scripts/desktop-smoke.py release/ci-release/impacto 2>&1 | tee ci-build/logs/smoke.log
+      - name: Upload diagnostics
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: desktop-linux-logs
+          path: |
+            ci-build/logs/
+            ci-build/ci-release/vcpkg-manifest-install.log
+            .tools/vcpkg/buildtrees/**/*.log
+          retention-days: 14
