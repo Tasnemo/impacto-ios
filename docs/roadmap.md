@@ -1,63 +1,89 @@
 # Roadmap
 
-Mirrors the thread plan in `workme.md`; this file records status and adjustments made
-after each thread. Modes: Ultra / High / Medium / Low (see `workme.md`).
+Status record of the development plan in `workme.md` (section 7, Phases A–D),
+which is authoritative. Updated by every thread; last update: Thread 07
+(2026-10-08).
 
-| # | Thread | Mode | Branch | Status | Gate |
-|---|---|---|---|---|---|
-| 01 | Upstream architecture & feasibility | Ultra | `phase-00-upstream-analysis` | **Done** (docs only) | Architecture + blockers understood |
-| 02 | Reproducible desktop build | High | `phase-01-desktop-baseline` | **Done**, integrated into `master` | Ubuntu build + asset-free launcher and CI verified; no game tested |
-| 03 | SG desktop compatibility | Ultra | `phase-02-steins-compatibility` | **Done** (investigation, tests, plan); real-file checks still owner-gated | Runtime evidence of launch/VM failures, opcode gap list, backlog C1–L4, Thread 04 plan |
-| 04 | SG desktop implementation | Medium | `phase-03-sghd-implementation` | **Tasks 1–4 done, Task 6 charset done; blocked at Task 5** (owner Steam evidence) | Title → prologue → first phone trigger → save/load on desktop |
-| 05 | iOS architecture & build feasibility | Ultra | `phase-03-ios-feasibility` | Pending | vcpkg `arm64-ios` deps + GL/Metal decision |
-| 06 | Minimal iOS build & sideloading | High | `phase-03-ios-feasibility` | Pending | App launches on iPhone from a Windows-driven workflow |
-| 07 | iOS rendering backend | High | `phase-04-ios-rendering` | Pending | Scenes render correctly on device |
-| 08 | iOS audio, input, lifecycle | High | `phase-05-ios-platform` | Pending | Touch, audio, background/resume |
-| 09 | SG iOS integration | High | `phase-06-ios-sg` | Pending | Full route playable on device |
-| 10 | Optimisation, offline test, release | Medium | `phase-07-release` | Pending | Acceptance criteria in `workme.md` |
+## Goal and strategy
 
-## Adjustments after Thread 01
+The only end goal is to play the original English Steam STEINS;GATE
+natively and offline on an iPhone through an iOS port of impacto.
 
-- Thread 02 must replace the CoZ NuGet binary cache in CI (`docs/blockers.md` B6) and
-  should expect no upstream test suite (B7); add a smoke-run target.
-- Thread 03 cannot be done from an orb without real game files. The developer must prepare
-  a **non-asset evidence pack** on Windows: `dir /s` listing of the Steam install, hexdump of
-  the first 64 bytes of every `.mpk` and every movie file, and sc3tools disassembly of a few
-  scripts. Scripts/disassembly are derivative of commercial assets — keep them out of git;
-  share through the orb session only.
-- Bink 2 (B1) likely forces an asset-preparation tool on Windows earlier than planned
-  (originally Thread 09/10). Consider scoping a `tools/sg-pack` CLI in Thread 04.
-- Thread 05 should check whether OpenGL ES is still linkable/runnable on iOS 26 before
-  evaluating MoltenVK/Metal.
+1. Establish a representative STEINS;GATE gameplay baseline with the
+   existing desktop engine.
+2. Port that shared C++ engine to native iOS ARM64.
+3. Integrate rendering, controls, audio, storage and gameplay on iPhone.
+4. Complete remaining game compatibility and verify all routes on iPhone.
 
-## Adjustments after Thread 02
+**Desktop compatibility is supporting infrastructure, not a product
+milestone.** Linux/Windows builds exist to validate the shared engine
+(synthetic probes in CI, owner-side runs against the real Steam data). No
+polished Windows release is planned, and complete desktop gameplay or all
+endings are **not** a precondition for iOS work: small iOS build-feasibility
+experiments may run at any time, and the native iOS build (Thread 08) starts
+as soon as the open desktop blockers are documented.
 
-- Use Ubuntu 24.04/GCC 13 or the documented Ubuntu container in Debian-based orbs.
-  Native Debian 12/GCC 12 cannot compile the pinned OpenAL Soft version.
-- The asset-free launcher is verified; viewer/game profiles were not tested and
-  require original data. Do not interpret the green desktop CI as game compatibility.
-- Thread 02 was shipped to `origin/master` at the user's request. Branch Thread 03
-  from the latest `origin/master`; read the updated handoff first.
+## Agent modes
 
-## Adjustments after Thread 03
+| Mode | Use for |
+|---|---|
+| Low | Deterministic mechanical work: docs/roadmap sync, regenerating fixtures or generated Lua, CI tweaks with a known fix |
+| Medium | Default for implementation and integration, including all planned iOS threads |
+| High | Only after a demonstrated blocker: reverse engineering that Medium could not settle (e.g. phone UI semantics) or a real architectural decision (e.g. GLES on iOS proves unusable) |
+| Ultra | Exceptional cases that High cannot resolve |
 
-- Real Steam files were not needed to prove the engine fails: synthetic MPK/SCX
-  fixtures reproduce the gamedef abort, profile rot, `Call` desync and `InstDummy`
-  freeze against the real binary (`tests/compat/test_runtime_probe.py`).
-- Thread 04 adds a new `sghd` game id instead of editing `sgps3`; see the plan.
-- The owner's evidence pack (listing, mpk/movie headers, script opcode counts,
-  `system.mpk` ids) is still required for Tasks 5+; procedure in
-  `tests/compat/README.md`.
-- The engine segfaults without an audio device; CI/probes use `ALSOFT_DRIVERS=null`.
+No future thread is assigned High or Ultra by default (`workme.md` 4.2–4.4).
+Changing mode needs a committed handoff and a new thread.
 
-## Adjustments after Thread 04
+## Threads
 
-- `workme.md` now splits work into smaller Medium threads (04A–07C). Thread
-  04 executed plan Tasks 1–4 (≈ 04A–04D) plus the charset part of Task 6 in
-  one Medium thread on `phase-03-sghd-implementation`.
-- Everything asset-free is done: profile, opcode table, harness, save
-  engine side, charset. The next step is owner-gated: run
-  `tools/sghd_evidence.py` on the Steam install (one command, metadata only).
-- Real-file work (Task 5/6) stays Medium; phone semantics (Task 7a) may need
-  High if the script dump is ambiguous. iOS phases still require explicit
-  authorization.
+Thread numbers are milestones; one Medium thread may cover several of the
+`workme.md` sub-milestones (04A–12C) when the scope stays clear. The working
+branch is chosen at the start of each thread and recorded in
+[handoff.md](handoff.md); none is assumed here.
+
+| # | Milestone (`workme.md` ids) | Mode | Status | Gate |
+|---|---|---|---|---|
+| 01 | Upstream architecture and feasibility | Ultra (historical) | **Done** | architecture and blockers understood |
+| 02 | Reproducible desktop build | High (historical) | **Done** | Ubuntu build, asset-free launcher, CI |
+| 03 | SG compatibility investigation | Ultra (historical) | **Done** | runtime evidence, opcode gaps, plan |
+| 04 | Phase A: profile, opcodes, harness, save foundation (04A–04D) | Medium | **Done** (synthetic) | `sghd` VM runs synthetic SGHD scripts; save round trip |
+| 05 | Phase B: Steam evidence, profile ids, movie skip, Ogg audio (05A partial) | Medium | **Done** (synthetic + install listing) | profile matches the real install layout |
+| 06 | Phase B: census, font/LAY/1080p, plain dialogue box, phone catalogue + item bits, save format 2 (05B, 06A, 06B partial) | Medium | **Done** (synthetic + census) | real scripts decode; presentation constants from the install |
+| 07 | Phase B: representative Steam gameplay validation (07A–07C) | Medium | **Done** (round-3 evidence applied); **first real boot still owner-side** | real boot → title → dialogue → BG/sprites → voice/BGM on Windows, no desync or hang |
+| 08 | Phase C: native iOS ARM64 build and app shell (08A–08C) | Medium | **Next** | iOS ARM64 build of impacto in GitHub Actions macOS; minimal SDL3 app artifact; signing documented |
+| 09 | Phase C: iOS rendering (09A–09B) | Medium | Pending | existing GLES3 renderer (or decided fallback) draws a synthetic scene on device |
+| 10 | Phase C: iOS platform integration (10A–10C) | Medium | Pending | audio, touch/phone controls, Files import, saves, suspend/resume |
+| 11 | Phase D: STEINS;GATE on iPhone (11A–11C) | Medium | Pending | real Steam data imported and playing on device |
+| 12 | Phase D: full routes, offline reliability, release docs (12A–12C) | Low/Medium | Pending | `workme.md` 24 definition of done |
+| side | Phone UI (06C): sub-types 0x05-0x1E, PHONE sheets | High when started | Open | player-driven mails/calls work; [phone-protocol.md](phone-protocol.md) |
+
+Owner-side Windows runs (first boot, phone polarity, sprite naming) continue
+in parallel with Threads 08–10; their results are applied by short Medium
+(or Low, if purely mechanical) follow-ups.
+
+## Blocker triage for the iOS transition
+
+Details: [ios-transition.md](ios-transition.md).
+
+- **Before porting** (desktop, needs owner runs): one real Windows boot
+  reaching the first dialogue line without crash, desync or hang. Everything
+  else can proceed in parallel.
+- **Deferred to iOS integration or later:** sprite rectangles still
+  unverified (selection, system message box, date, save icon), phone UI,
+  Bink 2 movies, backlog/title/system menus, Steam save import.
+
+## History
+
+- Thread 01: CoZ NuGet cache unusable (B6), no upstream tests (B7); evidence
+  must come from the owner's Windows install.
+- Thread 02: Ubuntu 24.04/GCC 13 (or the Ubuntu container on Debian orbs).
+- Thread 03: synthetic MPK/SCX fixtures reproduce the PS3-profile failures;
+  new `sghd` game id instead of editing `sgps3`.
+- Thread 04: `workme.md` re-planned into Medium sub-milestones; asset-free
+  work done on `phase-03-sghd-implementation`.
+- Thread 05: Steam install listing; movies are Bink 2 (skipped safely).
+- Thread 06: census of all 190 scripts; 1080p design; phone item bits.
+- Thread 07: roadmap synchronised with `workme.md` (desktop = test
+  infrastructure, Medium default, iOS build next); Game.exe font widths,
+  `10 3A` six expressions, Steam sprite checks.

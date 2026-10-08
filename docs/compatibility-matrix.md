@@ -13,7 +13,8 @@ Evidence classes: *runtime* = executed the Thread 02 binary in this project
 tool sources or community docs, not checked against real files here. Real
 Steam assets were **not available**; rows that need them say so.
 
-Last updated: Thread 06 (2026-10-08) — Thread 06 used the owner's private
+Last updated: Thread 07 (2026-10-08) — Thread 07 applied the owner's census v2,
+sprite-region and Game.exe width reports (still no real execution). Thread 06 used the owner's private
 `tools/sghd_census.py` report (all 190 scripts decoded, image/LAY/audio
 headers; constants in the same fixture) and new synthetic probes; still no
 real game data was executed. Thread 05 used the owner's
@@ -34,7 +35,7 @@ of this file. Full narrative:
 | Steam archive loading | **Partially Working** | external (owner report, Thread 05): 11 Steam `.mpk` are v2.0, uncompressed, lowercase names = `vfs.lua`; runtime: synthetic MPK v2.0 with those names mount and serve PNG/DDS/SCX/Ogg | `src/io/mpkarchive.cpp`, `profiles/sghd/vfs.lua` | real `*.mpk` at runtime | none on synthetic data | a run against the real archives | Low |
 | Script parsing | **Partially Working** | runtime: SCX header/label/return tables resolved on synthetic script; unit: immediates identical to sc3ntist | `src/vm/vm.cpp:551-600`, `src/vm/expression.cpp` | real `script.mpk` to confirm start-script id and opcode usage | none | nothing in the container layer | — |
 | Script execution | **Partially Working** | runtime (Thread 04): all 37 previously broken opcodes run through the real VM to `End` on the reference trace (`SghdTask2RuntimeProbe`); external (Thread 06 census): 282 676 instructions of the real scripts decode with the SGHD table except `10 3A` (fixed) and 4 unresolved overruns ([sghd-decode-integrity.md](sghd-decode-integrity.md)) | `src/vm/opcodetables_sghd.h`, `src/vm/inst_sghd.cpp` | real `script.mpk` run | none on synthetic data | semantics of stubbed opcodes (`00 35/41/43/4B/4C/50/53/58/59`, `01 06-0A`, `10 1A/27/3F`, phone UI sub-types) | Medium |
-| English dialogue | **Partially Working** | runtime (Thread 06, synthetic): generic `PlainDialogueBox` configured without warnings (`SghdRuntimeProbe`); external (census): `FONT.PNG` 3072×2208 = 64×46 cells of 48 px, 2895 glyphs match the sc3tools charset; profile at 1920×1080 with ink-derived widths | `src/hud/dialoguebox.cpp`, `profiles/sghd/{charset,font,dialogue}.lua`, `tools/gen_sghd_font_widths.py` | `system.mpk` | ADVBox/nametag rectangles are PS3 ×1.5 guesses; widths approximate | real rectangles (`tools/sghd_inspect.py sprites`), exe width table (`widths`) | Medium |
+| English dialogue | **Partially Working** | runtime (synthetic): `PlainDialogueBox` configured (`SghdRuntimeProbe`); external (owner reports): `FONT.PNG` 64×46/48 px with the Game.exe width table (Thread 07), text styles are 720p and scaled to the 1080p design, ADVBox/nametag/wait-icon rectangles match Steam sheet regions | `src/hud/dialoguebox.cpp`, `profiles/sghd/{charset,font,dialogue}.lua`, `tools/gen_sghd_font_widths.py` | `system.mpk` | not yet seen on real data | first real boot | Low |
 | Background rendering | **Not Tested** | generic `InstBGload`/mask code exists (source) | `src/vm/inst_graphics2d.cpp`, `src/background2d.cpp` | `bg.mpk`, `mask.mpk` | — | Steam ids/`.lay` endianness unverified | Low (if formats match) |
 | Character sprites | **Not Tested** | external (census): LAY is little-endian with pixel texture coordinates and one trailing byte per vertex; profile set accordingly (`LayFileBigEndian = false`, multipliers 1); `10 05` CHAload consumes the SGHD u16 (runtime, Thread 04) | `src/character2d.cpp`, `profiles/sghd/game.lua` | `chara.mpk` | — | real sprite run | Low |
 | Voice playback | **Partially Working** | runtime (Thread 05, synthetic Ogg Vorbis in `voice.mpk`): `00 37` plays through the Vorbis stream (`SghdOggAudioProbe`); no audio device → silent, no crash (was segfault); external: Steam `voice.mpk` holds 14512 `.OGG` entries ; Thread 06: census confirms all 14512 entries are Ogg Vorbis; lip-sync table `WAVTABLE.DAT` is little-endian, now read as such and bounds-checked (`SghdVoiceTableProbe`) | `src/audio/vorbisaudiostream.cpp`, `src/voicetable.cpp`, `src/vm/inst_sound.cpp` | `voice.mpk` | — | codec of real entries (census), voice/text sync semantics (M3) | Low |
@@ -55,8 +56,8 @@ of this file. Full narrative:
 | Linux build (Ubuntu 24.04 / GCC 13) | Verified Working | Thread 02 + rebuilt in Thread 03 (`docs/desktop-test-results.md`) |
 | Asset-free launcher | Verified Working | Thread 02 smoke, re-run in Thread 03 |
 | Upstream CTest suite | Not Implemented | `ctest`: "No tests were found" |
-| Compatibility unit tests (no assets) | Verified Working | `python3 -m unittest discover -s tests/compat` → 81 pass + 28 skipped probes (Thread 06) |
-| Runtime probes (need built binary) | Verified Working | 28 probes: sgps3 probes still assert the frozen PS3 profile's bugs; sghd/harness/save/movie/audio/phone probes assert the fixes (Thread 06, 109/109 with `IMPACTO_BIN`) |
+| Compatibility unit tests (no assets) | Verified Working | `python3 -m unittest discover -s tests/compat` → 89 pass + 28 skipped probes (Thread 07) |
+| Runtime probes (need built binary) | Verified Working | 28 probes: sgps3 probes still assert the frozen PS3 profile's bugs; sghd/harness/save/movie/audio/phone probes assert the fixes (Thread 07, 117/117 with `IMPACTO_BIN`) |
 | Asset-free VM harness | Verified Working | `-g sghd-harness` exits by itself with `ScrWork[4000]` as status (Thread 04) |
 | Upstream tracker (CoZ impacto issue #1) | external | lists PS3 SG only: 2D graphics, sound, video; no Steam support claimed |
 

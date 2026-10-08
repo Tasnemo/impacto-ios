@@ -1,109 +1,95 @@
 # Project Handoff
 
 ## Current Milestone
-Thread 06 — STEINS;GATE (Steam) desktop compatibility from the owner's
-census, Medium mode, branch `phase-03-sghd-implementation`. Everything the
-census supports is **done and verified on synthetic data**; the thread
-**stopped at a genuine blocker: sprite rectangles, the exact font width
-table, the phone UI and the first real boot need owner-side runs (Windows
-round 3 below) or High-mode reverse engineering.** No iOS work.
+Thread 07 — Steam gameplay baseline and roadmap synchronisation, Medium,
+branch `phase-03-sghd-implementation`. The owner's round-3 reports
+(census v2, sprite regions, Game.exe width table) are fully applied and
+tested. **No first-boot log was provided, so no real game data has been
+executed yet.** Next major milestone: **Thread 08 — native iOS ARM64 build
+(Medium)**; the first Windows boot runs in parallel on the owner's machine.
 
 ## Repository State
-- `Tasnemo/impacto-ios`; `master` = Thread 05 head (`3546e4ea`). Threads
-  04–06 on `phase-03-sghd-implementation`.
-- Thread 06 commits: `e8192a1d` (census v2 + `sghd_inspect.py`),
-  `8af7a807` (profile 1080p/font/sheets/LAY, `10 3A`, phone bits, save
-  format 2), `24f2154d` (plain dialogue box), `86566526` (voice table),
-  plus docs commits.
+- `Tasnemo/impacto-ios`; `master` = Thread 05 head (`3546e4ea`); Threads
+  04–07 on `phase-03-sghd-implementation`.
+- Thread 07 commits: evidence application (`10 3A`, font widths, text
+  styles, sprite checks, `sghd_inspect regions`), then roadmap/iOS docs.
 - No commercial assets, script dumps, private reports or secrets are
-  committed. Evidence constants only:
-  `tests/compat/fixtures/sghd_steam_evidence.json`.
+  committed. Evidence constants only: `tests/compat/fixtures/sghd_steam_evidence.json`.
 
-## Completed Work (Thread 06)
-Report: [threads/06-sghd-census.md](threads/06-sghd-census.md).
-- Decode integrity of all 190 scripts: [sghd-decode-integrity.md](sghd-decode-integrity.md).
-- `10 3A` → one expression (`InstUnk103ASGHD`); `10 37` type `0x1E` parsed.
-- Profile: 1920×1080 design; Steam sheet sizes; font 64×46/48 px with
-  ink-derived widths (`tools/gen_sghd_font_widths.py --census|--install`);
-  LAY little-endian, tex multipliers 1; UI/sprite coordinates PS3 ×1.5.
-- Dialogue: generic `PlainDialogueBox`, no per-game configure needed.
-- Phone: catalogue [phone-protocol.md](phone-protocol.md); item bits
-  (`10 37` 0x00-0x03) implemented (`src/games/sghd/phone.h`).
-- Saves: format 2 (phone block per slot, global system data
-  FlagWork bytes 100-149/460-499 + ScrWork 600-999, `00 2A` types 0/2).
-- Voice/lip-sync table (`00 31`, `WAVTABLE.DAT`) read little-endian
-  (`VoiceTableLittleEndian`); oversized tables refused, lookups bounds-checked.
-- Tools: census v2; `tools/sghd_inspect.py` (`sheets`, `sprites`, `crops`,
-  `widths`).
+## Completed Work (Thread 07)
+Report: [threads/07-gameplay-baseline.md](threads/07-gameplay-baseline.md).
+- Roadmap synchronised with `workme.md`: [roadmap.md](roadmap.md) (desktop =
+  test infrastructure, Medium default, Thread 08 = iOS build).
+- `10 3A` = six expressions (census v2's only reachable decode error); with
+  it every reachable instruction stream of the 190 scripts decodes.
+- `font.lua` generated from the Game.exe width table (0x12d7f0, 384 glyphs,
+  32-unit em, correlation 0.946): `tools/gen_sghd_font_widths.py --exe-widths`.
+- Text-style data is 720p → impacto's 1.5× design scaling is right (pinned).
+- Sprites checked against Steam opaque regions: ADVBox, left nametag, wait
+  icon consistent; inherited CHAOS;HEAD title sprites, backlog sprites and
+  `systemmenu.lua` removed; mismatches (selection, system message box)
+  recorded in the fixture (`sprite_checks`).
+- `tools/sghd_inspect.py`: pixel-level split of merged regions; `regions`
+  mode crops every region for naming.
+- iOS preparation: [ios-transition.md](ios-transition.md).
 
 ## Verification
-- Orb, `impacto-desktop:ubuntu24`, binary rebuilt from this branch
-  (`-Werror`): `python3 -m unittest discover -s tests/compat` **109/109**
-  with `IMPACTO_BIN` (81 + 28 probes); without a binary 81 pass, 28 skipped.
-  Launcher smoke PASS. clang-format clean on changed C++.
+- Orb, `impacto-desktop:ubuntu24`, rebuilt binary: `python3 -m unittest
+  discover -s tests/compat` **117/117** with `IMPACTO_BIN` (89 + 28
+  probes); without a binary 89 pass, 28 skipped. clang-format clean.
 - GitHub Actions: see CI section.
 
-## Known Failures / Limitations
-- **No real game data has been executed.** Everything runtime is synthetic.
-- Sprite rectangles are PS3 ×1.5 guesses (DATA01 3072×1788 and BACKLOG
-  2048×1080 are not 1.5× PS3 layouts). Font widths approximate.
-- Whether the Steam scripts' text-style data (`01 0E`) is 720p (assumed,
-  scaled by impacto) is unchecked — census v2 dumps it.
-- Phone polarity inferred from script idioms; phone UI and sub-types
-  0x05-0x1E not implemented → player-driven phone triggers impossible.
-- Movies never play (Bink 2). Save format is fork-native, not SAVEDATA.DAT.
-- 4 decode overruns unresolved (`_MAIL` 4/27, `ANIME` 11, `SG07_01` 0).
+## Status split
+- **Synthetic-verified:** VM/opcodes, branching, phone item bits, saves
+  (format 2), Ogg audio path, movie skip, voice table, profile load.
+- **Verified against real Steam data (reports, not execution):** script
+  decoding, image sizes/DDS headers, LAY, audio codecs, font widths, 720p
+  text styles, ADVBox/nametag/wait-icon rectangles.
+- **Implemented, not validated:** real boot, title, dialogue rendering,
+  BG/character rendering, voice/BGM, phone polarity, system data.
+- **Missing:** phone UI (0x05-0x1E), movies (Bink 2), menus, selection and
+  system-message sprites, Steam save import.
 
-## Blocker — owner action: Windows round 3
-From a checkout of `phase-03-sghd-implementation` (Python 3.9+, no extra
-packages; `$G = "C:\Program Files (x86)\Steam\steamapps\common\STEINS;GATE"`):
-
-```powershell
-python tools\sghd_census.py $G > sghd-census-v2.txt          # ~5 min, numbers/names only
-python tools\sghd_inspect.py sprites $G > sghd-sprites.txt   # opaque-region boxes of the 4 profile sheets
-python tools\sghd_inspect.py widths $G > sghd-widths.txt     # exe glyph width table candidates
-python tools\sghd_inspect.py crops $G crops                  # LOCAL ONLY: open crops\index.html, do not share
-```
-Share the three `.txt` files privately (all numbers/names). From
-`crops\index.html`, note which profile sprites look wrong (names only).
-
-Optional first boot: download artifact `impacto-windows-x64-<sha>` of the
-latest green `Desktop Windows` run, copy the 8 mounted archives (`script`,
-`system`, `bgm`, `se`, `voice`, `bg`, `chara`, `mask` `.mpk`) to
-`gamedata\sghd\`, run `.\impacto.exe -g sghd -ll Debug -lf sghd.log`, play
-to the first dialogue line and the first phone mail, share `sghd.log` (and
-optionally describe what is visible). Steps: [sghd-steam-evidence.md](sghd-steam-evidence.md).
-
-What each output unblocks: census v2 → remaining layout evidence and the
-720p/1080p text-style question; `sprites` → real ADVBox/nametag/menu
-rectangles; `widths` → exact font widths (replace the generated table);
-`sghd.log` → phone polarity (`Phone:` debug lines vs what the game shows),
-real-data crashes.
+## Blocker — owner action: Windows round 4 (short)
+1. First boot (the only desktop gate before device work). Download artifact
+   `impacto-windows-x64-<sha>` of the latest green `Desktop Windows` run,
+   unzip, then in that folder:
+   ```powershell
+   $G = "C:\Program Files (x86)\Steam\steamapps\common\STEINS;GATE"
+   mkdir gamedata\sghd
+   foreach ($a in "script","system","bgm","se","voice","bg","chara","mask") { Copy-Item "$G\USRDIR\$a.mpk" gamedata\sghd\ }
+   .\impacto.exe -g sghd -ll Info -lf sghd.log
+   ```
+   Click/press Enter through whatever appears for ~2 minutes, close the
+   window, share `sghd.log` privately and say in one line what was visible
+   (black screen / title / text box / characters / sound).
+2. Optional, sprites: `python tools\sghd_inspect.py regions $G regions`
+   (from a checkout of this branch), open `regions\index.html` locally, and
+   reply with lines such as `selection background: DATA01 x y w h` for the
+   choice box, system message box, date display, save icon (names + numbers
+   only; never share the PNGs).
 
 ## Architectural Decisions
-ADR-007…010 unchanged. Thread 06: the Steam profile uses a 1920×1080 design
-like cclcc/mo8 (scripts stay 720p, impacto scales them); phone item state is
-fork-native and lives in `SGHD::Phone::ItemBits`, saved per slot; global
-system data follows the CHLCC ranges; census-proven layout changes are
-pinned separately from the Thread 03 gap list (`CENSUS_WIRING`).
+ADR-007…010 unchanged. Thread 07: desktop is test infrastructure; inherited
+UI from other titles is removed rather than scaled; the font uses the
+executable's own table (32-unit em scaled to the 48 px cell).
 
 ## Next Thread
-Thread 07 — apply Windows round 3 (sprite rectangles, width table, census v2
-fixes, boot-log issues). **Mode: Medium.** Phone UI (sub-types 0x05-0x1E,
-`PHONE*.DDS` layout, MACROSYS2 phone loops) is a separate thread at **High**.
+Thread 08 — native iOS ARM64 build and minimal app shell. **Mode: Medium.**
+Scope and dependency list: [ios-transition.md](ios-transition.md). Apply
+`sghd.log` findings in a short Medium follow-up when the owner provides it.
+Phone UI stays a separate High task.
 
 ### Continuation prompt
-> Read `workme.md`, `docs/handoff.md`, `docs/project-state.md`,
-> `docs/phone-protocol.md`, `docs/sghd-decode-integrity.md` and
-> `tests/compat/README.md`. Branch `phase-03-sghd-implementation`. Inputs:
-> the owner's private `sghd-census-v2.txt`, `sghd-sprites.txt`,
-> `sghd-widths.txt` (and `sghd.log` if available). Fix any layout the census
-> v2 "Decode errors in reachable code" section proves wrong; replace sprite
-> rectangles in `profiles/sghd/**` with boxes from `sghd-sprites.txt` (record
-> them in `fixtures/sghd_steam_evidence.json` with pinning tests); if
-> `widths` found a table with correlation > 0.9, generate `font.lua` from it;
-> check the text-style dump (glyph height 32 = 720p). Never commit the private
-> files. Keep `tests/compat` green; commit, push, update handoff. No iOS.
+> Read `workme.md` (sections 4, 15), `docs/handoff.md`, `docs/roadmap.md`
+> and `docs/ios-transition.md`. Start from `phase-03-sghd-implementation`
+> (create a new branch for iOS work and record it in the handoff). Goal:
+> GitHub Actions `macos-15` builds impacto for arm64 iOS with vcpkg
+> (`triplets/arm64-ios.cmake`, static), SDL3 app shell, bundle with
+> profiles/shaders/resources; disable ffmpeg/libass/imgui/dx9 if they block;
+> upload an unsigned app artifact; document signing/sideloading. Keep the
+> Linux/Windows workflows green and `tests/compat` passing. No Metal rewrite,
+> no game data in CI. Commit, push, update handoff.
 
 ## Orb state is disposable
 This orb had Docker image `impacto-desktop:ubuntu24`, vcpkg at
@@ -113,11 +99,4 @@ build `ci-build/ubuntu24`, install `release/ubuntu24`, helpers
 `docs/desktop-build.md` (cold build ≈ 30 min incl. Docker daemon start).
 
 ## CI
-Final code commit `86566526` (voice table; includes all Thread 06 code):
-- Desktop Linux [run 37815758671](https://github.com/Tasnemo/impacto-ios/actions/runs/37815758671):
-  **success** — 109 unit tests (81 + 28 skipped), build, launcher smoke 2/2,
-  28 runtime probes OK.
-- Desktop Windows [run 37815758791](https://github.com/Tasnemo/impacto-ios/actions/runs/37815758791):
-  **success** — artifact `impacto-windows-x64-86566526c69fd1090c78bee914101d586f89f3b8`
-  (≈99 MB, 30-day retention). Built only; not run on Windows here.
-Earlier Thread 06 push/dispatch runs were cancelled in favour of this one.
+See the end of this file for the final Thread 07 run results.

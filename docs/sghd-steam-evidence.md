@@ -85,6 +85,7 @@ foreach ($a in "script","system","bgm","se","voice","bg","chara","mask") {
 .\impacto.exe -g sghd -ll Debug -lf sghd.log
 ```
 
-Expect a broken HUD (PS3 rectangles). Share `sghd.log` privately (it may
+Expect menus to be missing (no SG title/backlog/system menu yet) and some
+HUD sprites to be wrong; the dialogue box rectangles match the Steam sheet. Share `sghd.log` privately (it may
 contain dialogue at Debug level; `-ll Info` avoids most of it) plus a
 screenshot if anything renders.
