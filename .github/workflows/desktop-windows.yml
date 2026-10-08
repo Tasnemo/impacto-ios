@@ -1,0 +1,81 @@
+name: Desktop Windows
+
+# Windows x64 build of this fork for owner-side validation with a legitimate
+# Steam installation (STEINS;GATE Task 5 first boot). Asset-free: no game data
+# is used or uploaded. Unlike upstream's impacto.yml it needs no NuGet feed;
+# vcpkg binaries are cached with actions/cache.
+
+on:
+  push:
+    branches: [phase-03-sghd-implementation]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: bash
+
+concurrency:
+  group: desktop-windows-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: windows-2025
+    timeout-minutes: 300
+    env:
+      VCPKG_COMMIT: 62159a45e18f3a9ac0548628dcaf74fcb60c6ff9
+      VCPKG_DEFAULT_TRIPLET: x64-windows-release
+      VCPKG_BINARY_SOURCES: clear;files,${{ github.workspace }}\.cache\vcpkg,readwrite
+      VCPKG_FORCE_DOWNLOADED_BINARIES: 1
+    steps:
+      - uses: actions/checkout@v6
+      - name: Asset-free compatibility unit tests
+        run: python -m unittest discover -s tests/compat -v
+      - run: mkdir -p .cache/vcpkg
+      # restore/save split so binaries built before a failure are kept
+      - uses: actions/cache/restore@v4
+        with:
+          path: .cache/vcpkg
+          key: desktop-windows-${{ env.VCPKG_COMMIT }}-${{ github.run_id }}
+          restore-keys: desktop-windows-${{ env.VCPKG_COMMIT }}-
+      - uses: lukka/get-cmake@latest
+      - name: Setup vcpkg
+        uses: lukka/run-vcpkg@v11
+        with:
+          vcpkgDirectory: '${{ runner.workspace }}/build/vcpkg'
+          vcpkgGitCommitId: '${{ env.VCPKG_COMMIT }}'
+          vcpkgJsonGlob: '**/vcpkg.json'
+      - name: Configure, build, install
+        uses: lukka/run-cmake@v10
+        with:
+          cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
+          configurePreset: ci-release
+          configurePresetAdditionalArgs: >-
+            ['-DVCPKG_TARGET_TRIPLET=x64-windows-release', '-DVCPKG_HOST_TRIPLET=x64-windows-release']
+          buildPreset: ci-release
+      - uses: actions/cache/save@v4
+        if: always()
+        with:
+          path: .cache/vcpkg
+          key: desktop-windows-${{ env.VCPKG_COMMIT }}-${{ github.run_id }}
+      - name: Package
+        run: |
+          cp THIRDPARTY.md README.md LICENSE release/ci-release/
+          ls release/ci-release
+      - uses: actions/upload-artifact@v7
+        with:
+          name: impacto-windows-x64-${{ github.sha }}
+          path: release/ci-release/
+          retention-days: 30
+      - name: Upload vcpkg logs on failure
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: desktop-windows-logs
+          path: |
+            ci-build/ci-release/vcpkg-manifest-install.log
+            ${{ runner.workspace }}/build/vcpkg/buildtrees/**/*.log
+          retention-days: 14
