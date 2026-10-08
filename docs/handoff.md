@@ -11,8 +11,9 @@ executed yet.** Next major milestone: **Thread 08 — native iOS ARM64 build
 ## Repository State
 - `Tasnemo/impacto-ios`; `master` = Thread 05 head (`3546e4ea`); Threads
   04–07 on `phase-03-sghd-implementation`.
-- Thread 07 commits: evidence application (`10 3A`, font widths, text
-  styles, sprite checks, `sghd_inspect regions`), then roadmap/iOS docs.
+- Thread 07 commits: `1e6b9db0` (evidence: `10 3A`, font widths, text
+  styles, sprite checks, `sghd_inspect regions`), `f2d4f729` (roadmap/iOS
+  docs), `86acccac` (UTF-8 test fix), plus this docs commit.
 - No commercial assets, script dumps, private reports or secrets are
   committed. Evidence constants only: `tests/compat/fixtures/sghd_steam_evidence.json`.
 
@@ -99,4 +100,12 @@ build `ci-build/ubuntu24`, install `release/ubuntu24`, helpers
 `docs/desktop-build.md` (cold build ≈ 30 min incl. Docker daemon start).
 
 ## CI
-See the end of this file for the final Thread 07 run results.
+Final code commit `86acccac`:
+- Desktop Linux [run 37822540927](https://github.com/Tasnemo/impacto-ios/actions/runs/37822540927):
+  **success** — 117 unit tests (89 + 28 skipped), build, launcher smoke 2/2,
+  28 runtime probes OK.
+- Desktop Windows [run 37822541335](https://github.com/Tasnemo/impacto-ios/actions/runs/37822541335):
+  **success** — unit tests, build, artifact `impacto-windows-x64-86acccac6255eb77fb722ae189cae945f57b6480` (30-day retention).
+  Built only; not run on Windows here.
+- The previous push (`f2d4f729`) failed on Windows only: a new test read Lua
+  with the cp1252 default encoding; fixed by reading UTF-8.
