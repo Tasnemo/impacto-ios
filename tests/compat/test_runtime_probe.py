@@ -299,7 +299,40 @@ class SghdRuntimeProbe(unittest.TestCase):
         self.assertEqual(ops[:3], ["00:12", "00:0b", "00:0e"], trace[:4])
         self.assertEqual(trace[3][0], trace[1][0] + 6,
                          "Return resumes at Call+6 (UseReturnIds = true)")
-        self.assertEqual(ops[3], "00:5f", trace[:4])
+        # Task 2: the SGHD Nop advances, then End stops the thread (the
+        # sgps3 table's InstDummy spun on 00:5f forever).
+        self.assertEqual(ops[3:], ["00:5f", "00:00"], trace)
+
+
+@unittest.skipUnless(os.environ.get("IMPACTO_BIN"),
+                     "set IMPACTO_BIN=/path/to/impacto to run runtime probes")
+class SghdTask2RuntimeProbe(unittest.TestCase):
+    """All 37 previously broken opcodes through the real VM (sghd profile).
+
+    impacto's executed addresses must equal the reference SGHD trace
+    instruction by instruction: any byte-consumption error shifts every
+    later address."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.blob = fx.sghd_task2_fixture()
+        cls.probe = run_probe(game="sghd", script=cls.blob, seconds=6.0)
+
+    def test_vm_trace_matches_reference_trace(self):
+        expected = fx.sghd_reference_trace(self.blob)
+        self.assertEqual(self.probe.vm_trace(), expected)
+
+    def test_no_crash_recovery_or_unknown_opcode(self):
+        for needle in ("Thread CRASH", "not part of the SGHD instruction set",
+                       "unknown SGHD", "Expected member", "call stack"):
+            self.assertNotIn(needle, self.probe.log, needle)
+
+    def test_stub_instructions_are_reported(self):
+        # unverified semantics are logged, not silently ignored
+        for needle in ("STUB instruction Phone(type: 0x14)",
+                       "STUB instruction Checkpoint(type: 0)",
+                       "STUB instruction SystemMes(mode: 0xc)"):
+            self.assertIn(needle, self.probe.log, needle)
 
 
 def main() -> int:

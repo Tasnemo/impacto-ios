@@ -354,3 +354,271 @@ def sghd_group_checkpoint(kind: int, checkpoint_id: int) -> bytes:
     """01 09 type 00: u16 checkpoint id (sc3ntist GroupCheckpoint)."""
     assert kind == 0
     return bytes([0x01, 0x09, kind]) + struct.pack("<H", checkpoint_id)
+
+
+# --------------------------------------------------------------------------
+# Generic SGHD encoding and the reference decoder for every opcode that
+# differs from impacto's sgps3 table (Thread 04 Task 2).  Layouts follow
+# the sc3ntist SGHD disassembler; tokens: B = u8, H = u16 (label, string
+# or return id), E = expression.
+# --------------------------------------------------------------------------
+
+def u8(value: int) -> bytes:
+    return bytes([value & 0xFF])
+
+
+def u16(value: int) -> bytes:
+    return struct.pack("<H", value)
+
+
+def ins(group: int, opcode: int, *parts: bytes) -> bytes:
+    """Encode an instruction from already-encoded argument parts."""
+    return bytes([group, opcode]) + b"".join(parts)
+
+
+def _layout_00_23(t):   # PlaySoundEffect: channel, type, [effect, loop]
+    return "E E" if t[1] != 2 else ""
+
+
+def _sub(table, default=None):
+    def pick(t):
+        if t[0] in table:
+            return table[t[0]]
+        if default is None:
+            raise AssertionError(f"unknown subtype {t[0]:#x}")
+        return default
+    return pick
+
+
+# slot -> (name, fixed leading bytes, rest layout (str or callable(prefix)))
+SGHD_LAYOUTS = {
+    (0x00, 0x00): ("EndOfScript", 0, ""),
+    (0x00, 0x07): ("Jump", 0, "H"),
+    (0x00, 0x0A): ("JumpIf", 0, "B E H"),
+    (0x00, 0x0B): ("Call", 0, "H H"),
+    (0x00, 0x0D): ("CallFar", 0, "E H H"),
+    (0x00, 0x0E): ("Return", 0, ""),
+    (0x00, 0x12): ("SetFlag", 0, "E"),
+    (0x00, 0x13): ("ResetFlag", 0, "E"),
+    (0x00, 0x23): ("PlaySoundEffect", 2, _layout_00_23),
+    (0x00, 0x35): ("Unk0035", 0, "B"),
+    (0x00, 0x37): ("PlayVoice", 0, "B E E"),
+    (0x00, 0x38): ("StopVoice", 0, "B E"),
+    (0x00, 0x41): ("Nop3", 0, "B"),
+    (0x00, 0x43): ("SystemMessage", 1, _sub({
+        0x0A: "", 0x0B: "", 0x0C: "E", 0x0D: "H", 0x0E: "H", 0x0F: "",
+        0x10: "", 0x11: "", 0x00: "", 0x01: "", 0x02: "E", 0x03: "H",
+        0x04: "H", 0x05: "", 0x06: "", 0x07: ""})),
+    (0x00, 0x4B): ("WaitForSomething004B", 0, ""),
+    (0x00, 0x4C): ("Unk004C", 1, lambda t: "E" if t[0] == 0 else ""),
+    (0x00, 0x50): ("UselessJump", 1, lambda t: {0: "H H", 2: "H H",
+                                                3: "H H H"}.get(t[0], "")),
+    (0x00, 0x52): ("Nop", 0, ""),
+    (0x00, 0x53): ("Useless0053", 0, "B E H"),
+    (0x00, 0x54): ("CallIfFlag", 0, "B E H H"),
+    (0x00, 0x56): ("CallFarIfFlag", 0, "B E E H H"),
+    (0x00, 0x57): ("ReturnIfFlag", 0, "B E"),
+    (0x00, 0x58): ("Unk0058", 1, lambda t: ("E E E E" if t[0] in (2, 3)
+                                            else "E") + " H"),
+    (0x00, 0x59): ("Unk0059", 0, "B E E H"),
+    (0x00, 0x5F): ("Nop", 0, ""),
+    (0x01, 0x05): ("GroupCalc", 1, _sub({0: "E E", 1: "E E", 2: "E E E",
+                                         3: "E E E E", 4: "E E E E",
+                                         5: "E E E E", 6: "E E E E"})),
+    (0x01, 0x06): ("Unk0106", 1, _sub({0: "E E", 1: "E E E"})),
+    (0x01, 0x07): ("Unk0107", 0, "E E E"),
+    (0x01, 0x08): ("Unk0108", 0, "B"),
+    (0x01, 0x09): ("GroupCheckpoint", 1, _sub({0: "H", 1: "H E", 2: "E"},
+                                               default="")),
+    (0x01, 0x0A): ("Unk010A", 0, "B"),
+    (0x01, 0x12): ("Unk0112", 1, lambda t: "H E" if t[0] in (0, 2) else "H"),
+    (0x01, 0x25): ("Group0125", 1, _sub({0: "H", 1: "E E H", 2: "H",
+                                         3: "H E E E"})),
+    (0x10, 0x05): ("LoadCharacter", 1, lambda t: "E E H" if t[0] == 0
+                   else "E E"),
+    (0x10, 0x12): ("Nop", 0, ""),
+    (0x10, 0x1A): ("Unk101A", 0, "B"),
+    (0x10, 0x22): ("Group1022", 1, lambda t: "H" if t[0] == 0x0A else ""),
+    (0x10, 0x23): ("Unk1023", 1, lambda t: "B" if t[0] in (0, 0x0A) else ""),
+    (0x10, 0x24): ("Unk1024", 1, lambda t: "E E" if t[0] == 0 else ""),
+    (0x10, 0x27): ("Unk1027", 1, lambda t: "E E" if t[0] == 1 else "E"),
+    (0x10, 0x33): ("GroupTips", 1, lambda t: "H H" if t[0] == 0 else ""),
+    (0x10, 0x37): ("Group1037", 1, _sub({
+        0x00: "B E", 0x01: "B E", 0x02: "B E H", 0x03: "B E H",
+        0x04: "H H H H H H", 0x0F: "E", 0x10: "E", 0x12: "E E",
+        0x14: "E E E E", 0x15: "E E E E", 0x1A: "E"}, default="")),
+    (0x10, 0x38): ("Group1038", 1, lambda t: "H" if t[0] == 0 else ""),
+    (0x10, 0x3F): ("Unk103F", 0, "B"),
+    (0x10, 0x40): ("Win32_SetResolution", 0, ""),
+    (0x10, 0x41): ("Win32_DestroyWindow", 0, ""),
+}
+
+
+def decode_sghd(blob: bytes, pos: int):
+    """Return (name, args, next_pos) for the SGHD instruction at pos.
+
+    Expressions in fixtures are single immediates, so their values are
+    returned as arguments."""
+    if blob[pos] == 0xFE:
+        value, p = eval_single_immediate(blob, pos + 1)
+        return "Assign", (value,), p
+    key = (blob[pos], blob[pos + 1])
+    if key not in SGHD_LAYOUTS:
+        raise AssertionError(f"fixture uses unhandled opcode {key[0]:02X} {key[1]:02X}")
+    name, fixed, rest = SGHD_LAYOUTS[key]
+    p = pos + 2
+    prefix = tuple(blob[p:p + fixed])
+    p += fixed
+    layout = rest(prefix) if callable(rest) else rest
+    args = list(prefix)
+    for tok in layout.split():
+        if tok == "B":
+            args.append(blob[p])
+            p += 1
+        elif tok == "H":
+            args.append(struct.unpack_from("<H", blob, p)[0])
+            p += 2
+        else:
+            value, p = eval_single_immediate(blob, p)
+            args.append(value)
+    return name, tuple(args), p
+
+
+def sghd_reference_trace(blob: bytes, start_label: int = 0,
+                         max_steps: int = 10000) -> list[tuple[int, str]]:
+    """Execute control flow of a fixture script the way the SGHD engine is
+    documented to: flags, Call/CallFar/CallIfFlag/CallFarIfFlag with return
+    ids, Return/ReturnIfFlag, Jump.  Everything else falls through.
+
+    Returns (address, 'gg:oo') for every non-Assign instruction, the same
+    shape impacto logs at Trace level, ending with EndOfScript."""
+    flags: set[int] = set()
+    stack: list[int] = []
+    pos = scx_label_address(blob, start_label)
+    trace = []
+    for _ in range(max_steps):
+        name, args, nxt = decode_sghd(blob, pos)
+        if name != "Assign":
+            trace.append((pos, f"{blob[pos]:02x}:{blob[pos + 1]:02x}"))
+        if name == "EndOfScript":
+            return trace
+        if name == "SetFlag":
+            flags.add(args[0])
+        elif name == "ResetFlag":
+            flags.discard(args[0])
+        elif name == "Jump":
+            nxt = scx_label_address(blob, args[0])
+        elif name in ("Call", "CallFar", "CallIfFlag", "CallFarIfFlag"):
+            if name == "Call":
+                label, ret = args
+            elif name == "CallFar":
+                _, label, ret = args
+            elif name == "CallIfFlag":
+                cond, flag, label, ret = args
+                if (flag in flags) != bool(cond):
+                    pos = nxt
+                    continue
+            else:
+                cond, flag, _, label, ret = args
+                if (flag in flags) != bool(cond):
+                    pos = nxt
+                    continue
+            stack.append(scx_return_address(blob, ret))
+            nxt = scx_label_address(blob, label)
+        elif name == "Return":
+            nxt = stack.pop()
+        elif name == "ReturnIfFlag":
+            cond, flag = args
+            if (flag in flags) == bool(cond):
+                nxt = stack.pop()
+        pos = nxt
+    raise AssertionError("reference trace did not reach EndOfScript")
+
+
+def sghd_task2_fixture() -> bytes:
+    """One script that encodes all 37 opcodes Thread 03 found broken in
+    impacto (16 Dummy slots + 21 layout mismatches), with every taken branch
+    returning to the main label, ending in EndOfScript.
+
+    Uses only arguments that are safe without game data: audio ids that do
+    not exist (the engine logs and continues), character id 0 (already
+    "loaded"), sub-types that do not open UI."""
+    E = expr
+    b = ScxBuilder()
+    s_empty = b.add_string(b"\xFF")        # empty SC3 string
+    F = 1770                                # flag used for conditional calls
+    main = bytearray()
+    returns = []                            # byte offsets of return points
+
+    def call_like(code: bytes):
+        main.extend(code)
+        returns.append(len(main))
+
+    main += sghd_set_flag(F)
+    # control flow (00 54 / 00 56 / 00 57); return ids 0..2
+    call_like(sghd_call_if_flag(1, F, 1, 0))            # taken -> label 1
+    call_like(ins(0x00, 0x54, u8(0), E(F), u16(1), u16(1)))   # not taken
+    call_like(ins(0x00, 0x56, u8(1), E(F), E(0), u16(2), u16(2)))  # taken
+    main += ins(0x00, 0x5F)                              # Nop
+    main += ins(0x00, 0x52)                              # Nop (SGHD)
+    main += ins(0x10, 0x12)                              # Nop (SGHD)
+    # sound
+    main += ins(0x00, 0x23, u8(0), u8(0), E(77), E(0))   # SEplay, missing id
+    main += ins(0x00, 0x23, u8(0), u8(2))                # SEplay resume
+    main += ins(0x00, 0x37, u8(0), E(77), E(0))          # PlayVoice
+    main += ins(0x00, 0x38, u8(0), E(0))                 # StopVoice
+    # system
+    main += ins(0x00, 0x35, u8(1))
+    main += ins(0x00, 0x41, u8(1))
+    main += ins(0x00, 0x43, u8(0x0C), E(5))              # SystemMes expr
+    main += ins(0x00, 0x43, u8(0x0D), u16(s_empty))      # SystemMes string
+    main += ins(0x00, 0x43, u8(0x0A))
+    main += ins(0x00, 0x4B)
+    main += ins(0x00, 0x4C, u8(0), E(3))
+    main += ins(0x00, 0x4C, u8(1))
+    main += ins(0x00, 0x50, u8(3), u16(0), u16(0), u16(0))
+    main += ins(0x00, 0x50, u8(1))
+    main += ins(0x00, 0x53, u8(1), E(2), u16(0))
+    main += ins(0x00, 0x58, u8(2), E(1), E(2), E(3), E(4), u16(0))
+    main += ins(0x00, 0x58, u8(0), E(1), u16(0))
+    main += ins(0x00, 0x59, u8(1), E(2), E(3), u16(0))
+    # graph group
+    main += ins(0x01, 0x05, u8(0), E(100), E(0x4000))    # CalcSin -> ScrWork
+    main += ins(0x01, 0x06, u8(0), E(1), E(2))
+    main += ins(0x01, 0x06, u8(1), E(101), E(1), E(2))
+    main += ins(0x01, 0x07, E(1), E(2), E(3))
+    main += ins(0x01, 0x08, u8(1))
+    main += ins(0x01, 0x09, u8(0), u16(42))              # checkpoint
+    main += ins(0x01, 0x09, u8(1), u16(43), E(1))
+    main += ins(0x01, 0x0A, u8(1))
+    main += ins(0x01, 0x12, u8(0), u16(s_empty), E(0))   # Sel init
+    main += ins(0x01, 0x25, u8(3), u16(s_empty), E(77), E(0), E(0))
+    # user1 group
+    main += ins(0x10, 0x05, u8(0), E(1), E(0), u16(0))   # CHAload buf 1 (bitmask), id 0
+    main += ins(0x10, 0x1A, u8(1))
+    main += ins(0x10, 0x22, u8(0x0A), u16(42))           # AutoSave checkpoint
+    main += ins(0x10, 0x23, u8(0x0A), u8(1))
+    main += ins(0x10, 0x24, u8(0x0A))
+    main += ins(0x10, 0x27, u8(1), E(3), E(F))
+    main += ins(0x10, 0x27, u8(0), E(3))
+    main += ins(0x10, 0x33, u8(0), u16(3), u16(3))       # Tips data init
+    for sub, parts in ((0x10, (E(1),)), (0x14, (E(1), E(2), E(3), E(4))),
+                       (0x15, (E(1), E(2), E(3), E(4))), (0x1A, (E(1),)),
+                       (0x03, (u8(1), E(2), u16(0))), (0x05, ())):
+        main += ins(0x10, 0x37, u8(sub), *parts)
+    main += ins(0x10, 0x3F, u8(1))
+    main += ins(0x10, 0x40)
+    main += ins(0x10, 0x41)
+    main += sghd_end_of_script()
+
+    sub1 = sghd_assign(1) + sghd_return()                 # label 1
+    sub2 = (sghd_return_if_flag(1, F)                     # label 2: returns
+            + ins(0x00, 0x00))                            # never reached
+    tips = b"\x00\x00"                                    # label 3: tips data
+    b.add_label(bytes(main))
+    b.add_label(sub1)
+    b.add_label(sub2)
+    b.add_label(tips)
+    for off in returns:
+        b.add_return(0, off)
+    return b.build()

@@ -18,7 +18,9 @@ import pathlib
 import struct
 import unittest
 
-from sc3fixtures import (ScxBuilder, decode_immediate, encode_immediate,
+from sc3fixtures import (SGHD_LAYOUTS, ScxBuilder, decode_immediate,
+                         decode_sghd, encode_immediate,
+                         sghd_reference_trace, sghd_task2_fixture,
                          eval_single_immediate, expr, scx_label_address,
                          scx_return_address, scx_string_address, sghd_assign,
                          sghd_call, sghd_call_far, sghd_call_if_flag,
@@ -33,53 +35,7 @@ REPO = pathlib.Path(__file__).resolve().parents[2]
 # Reference (SGHD) decoder
 # --------------------------------------------------------------------------
 
-def decode_sghd(blob: bytes, pos: int):
-    """Return (name, args, next_pos) for the SGHD instruction at pos."""
-    grp = blob[pos]
-    if grp == 0xFE:
-        value, p = eval_single_immediate(blob, pos + 1)
-        return "Assign", (value,), p
-    op = blob[pos + 1]
-    p = pos + 2
-    key = (grp, op)
-    if key == (0x00, 0x00):
-        return "EndOfScript", (), p
-    if key == (0x00, 0x07):
-        return "Jump", struct.unpack_from("<H", blob, p), p + 2
-    if key == (0x00, 0x0A):
-        cond_true = blob[p]
-        cond, p = eval_single_immediate(blob, p + 1)
-        (label,) = struct.unpack_from("<H", blob, p)
-        return "JumpIf", (cond_true, cond, label), p + 2
-    if key == (0x00, 0x0B):
-        label, ret = struct.unpack_from("<HH", blob, p)
-        return "Call", (label, ret), p + 4
-    if key == (0x00, 0x0D):
-        buf, p = eval_single_immediate(blob, p)
-        label, ret = struct.unpack_from("<HH", blob, p)
-        return "CallFar", (buf, label, ret), p + 4
-    if key == (0x00, 0x0E):
-        return "Return", (), p
-    if key == (0x00, 0x12):
-        flag, p = eval_single_immediate(blob, p)
-        return "SetFlag", (flag,), p
-    if key == (0x00, 0x54):
-        cond = blob[p]
-        flag, p = eval_single_immediate(blob, p + 1)
-        label, ret = struct.unpack_from("<HH", blob, p)
-        return "CallIfFlag", (cond, flag, label, ret), p + 4
-    if key == (0x00, 0x57):
-        cond = blob[p]
-        flag, p = eval_single_immediate(blob, p + 1)
-        return "ReturnIfFlag", (cond, flag), p
-    if key == (0x00, 0x5F):
-        return "Nop", (), p
-    if key == (0x01, 0x09):
-        kind = blob[p]
-        assert kind == 0
-        (cp,) = struct.unpack_from("<H", blob, p + 1)
-        return "GroupCheckpoint", (kind, cp), p + 3
-    raise AssertionError(f"fixture uses unhandled opcode {grp:02X} {op:02X}")
+# decode_sghd lives in sc3fixtures (shared with the runtime probe).
 
 
 # --------------------------------------------------------------------------
@@ -293,6 +249,63 @@ class SghdLayoutVersusImpacto(unittest.TestCase):
         self.assertEqual(nxt, guarded)
         # and the real reference instruction there is ReturnIfFlag
         self.assertEqual(decode_sghd(self.blob, guarded)[0], "ReturnIfFlag")
+
+
+class SghdAllAffectedOpcodesFixture(unittest.TestCase):
+    """Thread 04 Task 2: one script exercising all 37 opcodes Thread 03
+    found broken.  The same blob is run through the real VM by
+    test_runtime_probe.SghdTask2RuntimeProbe, which compares impacto's
+    executed addresses with sghd_reference_trace()."""
+
+    def setUp(self):
+        self.blob = sghd_task2_fixture()
+        self.gaps = __import__("json").loads(
+            (REPO / "tests" / "compat" / "fixtures" /
+             "sgps3_known_gaps.json").read_text())
+
+    def decoded_main(self):
+        pos = scx_label_address(self.blob, 0)
+        end = scx_label_address(self.blob, 1)
+        out = []
+        while pos < end:
+            name, args, nxt = decode_sghd(self.blob, pos)
+            out.append((pos, name, args))
+            pos = nxt
+        self.assertEqual(pos, end, "decoder must land exactly on label 1")
+        return out
+
+    def test_reference_decoder_walks_main_label_to_end(self):
+        decoded = self.decoded_main()
+        self.assertEqual(decoded[-1][1], "EndOfScript")
+
+    def test_fixture_contains_all_37_affected_opcodes(self):
+        documented = (set(self.gaps["dummy_slots_used_by_sghd"])
+                      | set(self.gaps["argument_layout_mismatches"]))
+        seen = set()
+        for label in range(3):
+            pos = scx_label_address(self.blob, label)
+            end = scx_label_address(self.blob, label + 1)
+            while pos < end:
+                if self.blob[pos] != 0xFE:
+                    seen.add(f"{self.blob[pos]:02X} {self.blob[pos + 1]:02X}")
+                pos = decode_sghd(self.blob, pos)[2]
+        self.assertEqual(documented - seen, set())
+
+    def test_every_affected_opcode_has_a_reference_layout(self):
+        documented = (set(self.gaps["dummy_slots_used_by_sghd"])
+                      | set(self.gaps["argument_layout_mismatches"]))
+        have = {f"{g:02X} {o:02X}" for g, o in SGHD_LAYOUTS}
+        self.assertEqual(documented - have, set())
+
+    def test_reference_trace_takes_both_conditional_calls_and_returns(self):
+        trace = sghd_reference_trace(self.blob)
+        ops = [op for _, op in trace]
+        self.assertEqual(ops[-1], "00:00")
+        # CallIfFlag taken -> Return; CallFarIfFlag taken -> ReturnIfFlag
+        self.assertEqual(ops[1:3], ["00:54", "00:0e"])
+        self.assertEqual(ops[4:6], ["00:56", "00:57"])
+        main_end = scx_label_address(self.blob, 1)
+        self.assertLess(trace[-1][0], main_end, "ends in the main label")
 
 
 class ImpactoDummyHandlerAudit(unittest.TestCase):

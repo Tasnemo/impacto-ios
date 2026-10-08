@@ -379,6 +379,7 @@ set(Impacto_Src
     src/vm/inst_misc.cpp
     src/vm/inst_movie.cpp
     src/vm/inst_sound.cpp
+    src/vm/inst_sghd.cpp
 
     src/vm/interface/scene3d.cpp
     src/vm/interface/input.cpp
@@ -744,6 +745,7 @@ set(Impacto_Header
     src/vm/inst_misc.h
     src/vm/inst_movie.h
     src/vm/inst_sound.h
+    src/vm/inst_sghd.h
     src/vm/opcodetables_rne.h
 
     src/vm/interface/scene3d.h

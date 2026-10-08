@@ -64,6 +64,12 @@ remain valid there.
   probe).
 
 ### C3 — 16 SGHD opcodes map to `InstDummy` → engine freezes
+- **Status (Thread 04 Task 2):** resolved for byte consumption.
+  `src/vm/opcodetables_sghd.h` has no `InstDummy`; never-emitted slots use
+  `InstUnknownSGHD` (advance 2 bytes, log an error once). `00 57` →
+  `InstReturnIfFlag`, `01 05` → `InstCalc`, `00 5F`/`10 12`/`10 40`/`10 41`
+  → no-op. `00 4B/4C/58/59`, `01 06-09`, `10 1A/3F` consume their sc3ntist
+  layouts and log `STUB … [SGHD, logged once]`: **semantics unknown**.
 - **Missing:** `InstDummy` is `{}` (`src/vm/inst_system.cpp:39`); `RunThread`
   loops until a handler blocks, so any Dummy slot spins forever (runtime
   probe 5: `00 5F` executed >1.2 M times in 4 s). Slots: `00 4B`, `00 4C`,
@@ -92,6 +98,16 @@ remain valid there.
   (`dummy_slots_used_by_sghd` must be empty); runtime probe reaches `End`.
 
 ### C4 — 21 argument-layout mismatches desynchronise the byte stream
+- **Status (Thread 04 Task 2):** resolved for byte consumption. Runtime probe
+  `SghdTask2RuntimeProbe` runs one script containing all 37 affected opcodes
+  through the real VM; every executed address equals the reference SGHD
+  trace through `End`. Existing handlers with identical layouts are wired
+  (CC's `InstSEplay`, `InstVoicePlay`, `InstVoiceStopNew`, `InstAutoSave`);
+  `InstSel`, `InstSetRevMes`, `InstCHAload`, `InstSaveMenu`, `InstLoadData`,
+  `InstTips` gained `InstructionSet::SGHD` branches; the rest are new
+  `src/vm/inst_sghd.cpp` handlers. Stubs (consume + log) remain for `00 35`,
+  `00 41`, `00 43` (modes 0A–11 look like SystemMes 0–7 + 10: unverified),
+  `00 50`, `00 53`, `01 0A`, `10 27`, `10 37`.
 - **Missing:** handlers exist but consume a different byte pattern than the
   SGHD compiler emits: `00 23` SEplay, `00 35`, `00 37` PlayVoice, `00 38`
   StopVoice, `00 41`, `00 43` SystemMessage, `00 50`, `00 52`, `00 53`, `00
@@ -168,6 +184,11 @@ remain valid there.
   choice on Windows.
 
 ### H3 — Flag-conditional call family broken
+- **Status (Thread 04 Task 2):** implemented. `InstCallIfFlag` (`00 54`),
+  `InstCallFarIfFlag` (`00 56`) call when `GetFlag(flag) == condition` (the
+  test `InstFlagOnJump`/`InstReturnIfFlag` use) and push the return id;
+  `00 57` is `InstReturnIfFlag`. Runtime probe: taken and not-taken calls and
+  the conditional return follow the reference trace.
 - Subset of C3/C4 called out because it drives route progression:
   `CallIfFlag` (`00 54`, wrong layout), `CallFarIfFlag` (`00 56`, Dummy),
   `ReturnIfFlag` (`00 57`, Dummy; impacto's handler sits at `00 55`).

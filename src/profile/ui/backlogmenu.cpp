@@ -22,6 +22,11 @@ void Configure() {
 
     Type = EnsureGetMember<BacklogMenuType>("Type");
 
+    // Read before the None early-return: the generic BacklogMenu sizes its
+    // entry ring buffer from this, and a zero-capacity buffer crashed on the
+    // first SetRevMes for every BacklogMenuType.None profile.
+    MaxEntryCount = TryGetMember<size_t>("MaxEntryCount").value_or(400);
+
     if (Type == BacklogMenuType::None) {
       UI::BacklogMenuPtr = new UI::BacklogMenu<Widgets::BacklogEntry>();
       UI::Menus[Game::DrawComponentType::None].push_back(UI::BacklogMenuPtr);
@@ -38,8 +43,6 @@ void Configure() {
     VoiceIcon = EnsureGetMember<Sprite>("VoiceIconSprite");
     ScrollbarThumb = EnsureGetMember<Sprite>("ScrollbarThumbSprite");
     ScrollbarTrack = EnsureGetMember<Sprite>("ScrollbarTrackSprite");
-
-    MaxEntryCount = TryGetMember<size_t>("MaxEntryCount").value_or(400);
 
     EntryYPadding = EnsureGetMember<float>("EntryYPadding");
     EntriesStart = EnsureGetMember<glm::vec2>("EntriesStart");

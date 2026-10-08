@@ -395,6 +395,10 @@ VmInstruction(InstSaveMenu) {
                  "STUB instruction SaveMenu(type: SaveResetThumnail)\n");
       break;
     case 10:
+      if (Profile::Vm::GameInstructionSet == InstructionSet::SGHD) {
+        PopUint8(sghdArg);  // sc3ntist Unk1023 type 0A
+        (void)sghdArg;
+      }
       ImpLogSlow(LogLevel::Warning, LogChannel::VMStub,
                  "STUB instruction SaveMenu(type: {:d})\n", type);
       break;
@@ -456,8 +460,15 @@ VmInstruction(InstLoadData) {
   StartInstruction;
   PopUint8(type);
   switch (type) {
-    case 0:
-    case 10: {
+    case 10:
+      if (Profile::Vm::GameInstructionSet == InstructionSet::SGHD) {
+        // sc3ntist Unk1024: only type 0 carries the two expressions
+        ImpLogSlow(LogLevel::Warning, LogChannel::VMStub,
+                   "STUB instruction LoadData(type: {:d})\n", type);
+        break;
+      }
+      [[fallthrough]];
+    case 0: {
       PopExpression(arg1);
       PopExpression(arg2);
       SaveSystem::LoadEntry(static_cast<SaveSystem::SaveType>(arg1), arg2);

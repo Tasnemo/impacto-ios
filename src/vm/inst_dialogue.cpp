@@ -949,6 +949,11 @@ VmInstruction(InstSel) {
           BlockThread;
         }
         // }
+      } else if (Profile::Vm::GameInstructionSet == InstructionSet::SGHD) {
+        // sc3ntist: string id; meaning unverified, consumed only
+        PopUint16(sghdArg);
+        ImpLogSlow(LogLevel::Warning, LogChannel::VMStub,
+                   "STUB instruction Sel(type: 0, SGHD arg: {:d})\n", sghdArg);
       }
       PopExpression(arg1);
       UI::SelectionMenuPtr->InitSelectionMenu((bool)arg1);
@@ -1150,7 +1155,8 @@ VmInstruction(InstTips) {
       uint32_t tipsDataAdr =
           ScriptGetLabelAddress(thread->ScriptBufferId, tipsLabelNum);
       if (Profile::Vm::GameInstructionSet == InstructionSet::MO8 ||
-          Profile::Vm::GameInstructionSet == InstructionSet::CHN) {
+          Profile::Vm::GameInstructionSet == InstructionSet::CHN ||
+          Profile::Vm::GameInstructionSet == InstructionSet::SGHD) {
         PopLocalLabel(tipsDataAdr1);
         (void)tipsDataAdr1;
       }
@@ -1208,6 +1214,21 @@ VmInstruction(InstSetRevMes) {
 
   std::optional<int> audioId;
   int animationId = 0;
+  if (Profile::Vm::GameInstructionSet == InstructionSet::SGHD && type == 3) {
+    // SGHD (sc3ntist Unk012503): line id, then three expressions. Treating
+    // them as audio id, animation id, save point is unverified.
+    PopUint16(sghdLineId);
+    audioId = ExpressionEval(thread);
+    animationId = ExpressionEval(thread);
+    ExpressionEval(thread);
+    uint32_t line = ScriptGetStrAddress(thread->ScriptBufferId, sghdLineId);
+    uint32_t scriptId = LoadedScriptMetas[thread->ScriptBufferId].Id;
+    SaveSystem::SetLineRead(scriptId, sghdLineId);
+    UI::BacklogMenuPtr->AddMessage(
+        {.ScriptBufferId = thread->ScriptBufferId, .IpOffset = line}, audioId,
+        animationId);
+    return;
+  }
   if (voiced) {
     audioId = ExpressionEval(thread);
     animationId = ExpressionEval(thread);

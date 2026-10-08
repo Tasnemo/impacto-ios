@@ -184,6 +184,9 @@ VmInstruction(InstCHAload) {
   PopUint8(arg1);
   PopExpression(bufferId);
   PopExpression(characterId);
+  if (Profile::Vm::GameInstructionSet == InstructionSet::SGHD && arg1 == 0) {
+    PopUint16(unused);  // sc3ntist LoadCharacter: unused u16 for type 0
+  }
 
   const int actualBufId = GetBufferId(bufferId);
   const size_t chaStructOffset = ScrWorkChaStructSize * actualBufId;

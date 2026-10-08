@@ -43,5 +43,6 @@
  },
  "profile_settings": {
   "UseReturnIds": "sgps3 profile says false; SGHD Call/CallFar/CallIfFlag/CallFarIfFlag carry a u16 return-address id, so a Steam profile must set true"
- }
+ },
+ "sghd_status": "Thread 04 Task 2: src/vm/opcodetables_sghd.h wires all 37 slots above (see SGHD_WIRING in test_opcode_table_audit.py); no InstDummy remains in the SGHD table. This file still describes the frozen sgps3 table."
 }
