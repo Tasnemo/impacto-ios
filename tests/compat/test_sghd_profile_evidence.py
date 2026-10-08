@@ -185,7 +185,7 @@ class SghdCensusEvidence(unittest.TestCase):
         self.assertTrue(rx <= x and ry <= y and x + w <= rx + rw and y + h <= ry + rh)
 
     def test_no_inherited_chaos_head_title_or_backlog_sprites(self):
-        text = "".join(p.read_text() for p in SGHD.rglob("*.lua"))
+        text = "".join(p.read_text(encoding="utf-8") for p in SGHD.rglob("*.lua"))
         for name in ("Seira", "CHLogo", "LCCLogo", "DelusionADV", "ChuLeftLogo",
                      "ScrollbarTrack", "BacklogBackground"):
             self.assertFalse(name in text, name)
