@@ -101,12 +101,17 @@ ARCHIVES = {
     "sghd": {"SCRIPT": "script.mpk", "SYSTEM_US": "system.mpk",
              "BGM": "bgm.mpk", "SE": "se.mpk", "VOICE": "voice.mpk",
              "BG": "bg.mpk", "CHARA": "chara.mpk", "MASK": "mask.mpk"},
+    # profiles/sghd-harness: asset-free, only the script archive
+    "sghd-harness": {"SCRIPT": "script.mpk"},
 }
+GAMEDATA_DIR = {"sghd-harness": "sghd"}
+# games that run from the committed profiles/ and gamedefinitions.lua
+UNPATCHED = ("sghd", "sghd-harness")
 
 
 def write_gamedata(root: Path, game: str = "sgps3",
                    script: bytes | None = None) -> None:
-    gd = root / "gamedata" / game
+    gd = root / "gamedata" / GAMEDATA_DIR.get(game, game)
     gd.mkdir(parents=True)
     png = tiny_png()
     for mount, name in ARCHIVES[game].items():
@@ -160,7 +165,7 @@ def write_config(root: Path, game: str = "sgps3") -> None:
     repository.
     """
     (root / "saves").mkdir()
-    profiles = PROFILES if game == "sghd" else root / "profiles"
+    profiles = PROFILES if game in UNPATCHED else root / "profiles"
     (root / "basepaths.lua").write_text(f"""root.BasePaths = {{
   RootInstallDir = "./",
   RootGamedataDir = "{root}/gamedata",
@@ -169,7 +174,7 @@ def write_config(root: Path, game: str = "sgps3") -> None:
   RootSavesDir = "{root}/saves",
 }};
 """)
-    if game == "sghd":
+    if game in UNPATCHED:
         shutil.copy(REPO / "gamedefinitions.lua", root / "gamedefs.lua")
         return
     (root / "gamedefs.lua").write_text("""root.GameDefinitions = {
@@ -335,10 +340,65 @@ class SghdTask2RuntimeProbe(unittest.TestCase):
             self.assertIn(needle, self.probe.log, needle)
 
 
-def main() -> int:
+HARNESS_EXIT_CODE_SCRWORK = 4000  # profiles/sghd-harness/game.lua
+
+
+def exit_status_script(status: int) -> bytes:
+    b = fx.ScxBuilder()
+    b.add_label(fx.sghd_assign_scrwork(HARNESS_EXIT_CODE_SCRWORK, status)
+                + fx.sghd_nop() + fx.sghd_end_of_script())
+    return b.build()
+
+
+@unittest.skipUnless(os.environ.get("IMPACTO_BIN"),
+                     "set IMPACTO_BIN=/path/to/impacto to run runtime probes")
+class SghdHarnessRuntimeProbe(unittest.TestCase):
+    """Thread 04 Task 3: profiles/sghd-harness needs only script.mpk, runs
+    the real VM and exits by itself with a script-controlled status."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.blob = fx.sghd_task2_fixture()
+        cls.task2 = run_probe(game="sghd-harness", script=cls.blob,
+                              seconds=30.0)
+        cls.status = run_probe(game="sghd-harness",
+                               script=exit_status_script(7), seconds=30.0)
+
+    def test_exits_by_itself_with_status_zero(self):
+        self.assertEqual(self.task2.returncode, 0, self.task2.log[-2000:])
+        self.assertIn("All script threads ended; exiting with status 0",
+                      self.task2.log)
+
+    def test_needs_no_sprites_fonts_or_other_archives(self):
+        self.assertNotIn("spritesheet", self.task2.log.lower())
+        self.assertNotIn("Expected member", self.task2.log)
+        self.assertEqual(self.task2.log.count('" as MPK'), 1)
+
+    def test_task2_fixture_trace_matches_reference(self):
+        self.assertEqual(self.task2.vm_trace(), fx.sghd_reference_trace(self.blob))
+
+    def test_exit_status_comes_from_scrwork(self):
+        self.assertEqual(self.status.returncode, 7, self.status.log[-2000:])
+        self.assertEqual([op for _, op in self.status.vm_trace()],
+                         ["00:5f", "00:00"])
+
+
+def main(argv: list[str]) -> int:
     if not os.environ.get("IMPACTO_BIN"):
         print("IMPACTO_BIN not set; nothing to do", file=sys.stderr)
         return 2
+    if argv:
+        # run an SCX file through the asset-free harness
+        r = run_probe(game="sghd-harness", script=Path(argv[0]).read_bytes(),
+                      seconds=float(argv[1]) if len(argv) > 1 else 30.0)
+        trace = r.vm_trace()
+        print(f"== sghd-harness {argv[0]}: exit={r.returncode}, {len(trace)} VM steps")
+        for addr, op in trace[-20:]:
+            print(f"   0x{addr:02x} {op}")
+        for line in r.log.splitlines():
+            if line.startswith(("ERROR", "CRITICAL", "WARN")):
+                print("  ", line)
+        return 0
     for label, flag in (("UseReturnIds=false", False), ("UseReturnIds=true", True)):
         r = run_probe(flag)
         trace = r.vm_trace()
@@ -353,4 +413,4 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    sys.exit(main(sys.argv[1:]))

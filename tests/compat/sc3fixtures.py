@@ -302,6 +302,14 @@ def sghd_assign(value: int) -> bytes:
     return bytes([0xFE]) + expr(value)
 
 
+def sghd_assign_scrwork(index: int, value: int) -> bytes:
+    """FE  ScrWork[index] = value  (tokens 0x28 FuncGlobalVars, 0x14 Assign;
+    src/vm/expression.cpp ExprTokenType)."""
+    return (bytes([0xFE, 0x28, 0x0A]) + encode_immediate(index)
+            + bytes([EXPR_PRECEDENCE_IMM, 0x14, 0x01]) + encode_immediate(value)
+            + bytes([EXPR_PRECEDENCE_IMM, 0x00]))
+
+
 def sghd_end_of_script() -> bytes:
     return bytes([0x00, 0x00])
 
@@ -460,8 +468,10 @@ def decode_sghd(blob: bytes, pos: int):
     Expressions in fixtures are single immediates, so their values are
     returned as arguments."""
     if blob[pos] == 0xFE:
-        value, p = eval_single_immediate(blob, pos + 1)
-        return "Assign", (value,), p
+        if blob[pos + 1] & 0x80:
+            value, p = eval_single_immediate(blob, pos + 1)
+            return "Assign", (value,), p
+        return "Assign", (), skip_expression(blob, pos + 1)
     key = (blob[pos], blob[pos + 1])
     if key not in SGHD_LAYOUTS:
         raise AssertionError(f"fixture uses unhandled opcode {key[0]:02X} {key[1]:02X}")

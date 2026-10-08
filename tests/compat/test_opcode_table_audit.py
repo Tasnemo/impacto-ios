@@ -111,7 +111,8 @@ class OpcodeTableAudit(unittest.TestCase):
         self.assertRegex(defs, r"(?m)^\s*sghd\s*=")
 
     def test_sghd_profile_selects_sghd_table_with_return_ids(self):
-        profile = (REPO / "profiles" / "sghd" / "game.lua").read_text()
+        profile = (REPO / "profiles" / "sghd" / "vm.lua").read_text()
+        self.assertIn("sghd/vm.lua", (REPO / "profiles" / "sghd" / "game.lua").read_text())
         self.assertIn("GameInstructionSet = InstructionSet.SGHD", profile)
         self.assertRegex(profile, r"UseReturnIds\s*=\s*true")
 

@@ -47,6 +47,12 @@ root.GameDefinitions = {
     LauncherOrderId = 9,
     GameProfile = root.BasePaths.RootProfilesDir .. "/sghd/game.lua",
   },
+  ["sghd-harness"] = {
+    Hidden = true,
+    Name = "STEINS;GATE VM test harness",
+    LauncherOrderId = 10,
+    GameProfile = root.BasePaths.RootProfilesDir .. "/sghd-harness/game.lua",
+  },
   characterviewer = {
     Hidden = true,
     Name = "Character Viewer",

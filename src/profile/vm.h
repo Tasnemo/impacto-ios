@@ -3,6 +3,8 @@
 #include "../impacto.h"
 #include "../vm/vm.h"
 
+#include <optional>
+
 namespace Impacto {
 namespace Profile {
 namespace Vm {
@@ -33,6 +35,11 @@ inline int MaxLinkedBgBuffers = 1;
 inline int SystemScriptBuffer = 1;
 
 inline int SpeakerPortraitsScrWorkOffset = 8;
+
+// Test harness support (profiles/sghd-harness): quit once no script thread
+// is left, optionally using ScrWork[ExitCodeScrWork] as the exit status.
+inline bool ExitWhenThreadsEnd = false;
+inline std::optional<int> ExitCodeScrWork;
 
 void Configure();
 

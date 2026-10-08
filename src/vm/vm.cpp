@@ -1,6 +1,8 @@
 #include "vm.h"
 
 #include "expression.h"
+
+#include <algorithm>
 #include "../log.h"
 #include "../io/io.h"
 #include "../game.h"
@@ -302,6 +304,18 @@ void Update(float dt) {
       DestroyThread(ThreadTable[cnt]);
     }
     cnt++;
+  }
+
+  if (Profile::Vm::ExitWhenThreadsEnd &&
+      std::all_of(std::begin(ThreadGroupCount), std::end(ThreadGroupCount),
+                  [](uint32_t count) { return count == 0; })) {
+    Game::ExitCode = Profile::Vm::ExitCodeScrWork
+                         ? ScrWork[*Profile::Vm::ExitCodeScrWork]
+                         : 0;
+    ImpLog(LogLevel::Info, LogChannel::VM,
+           "All script threads ended; exiting with status {:d}\n",
+           Game::ExitCode);
+    Game::ShouldQuit = true;
   }
 
   DrawAllThreads();

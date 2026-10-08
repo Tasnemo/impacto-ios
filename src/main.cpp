@@ -256,5 +256,5 @@ int main(int argc, char* argv[]) {
            "Unknown error occured, exiting!\n");
     exit(1);
   }
-  return 0;
+  return Game::ExitCode;
 }

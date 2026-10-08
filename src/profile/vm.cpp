@@ -46,6 +46,9 @@ void Configure() {
   TryGetMember<int>("SpeakerPortraitsScrWorkOffset",
                     SpeakerPortraitsScrWorkOffset);
 
+  TryGetMember<bool>("ExitWhenThreadsEnd", ExitWhenThreadsEnd);
+  ExitCodeScrWork = TryGetMember<int>("ExitCodeScrWork");
+
   Pop();
 }
 

@@ -68,6 +68,8 @@ void LauncherRender();
 inline DrawComponentType DrawComponents[Vm::MaxThreads];
 
 inline bool ShouldQuit = false;
+// Process exit status returned by main() after a normal shutdown.
+inline int ExitCode = 0;
 }  // namespace Game
 
 }  // namespace Impacto

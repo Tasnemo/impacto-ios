@@ -2,7 +2,7 @@ name: Desktop Linux
 
 on:
   push:
-    branches: [master, main, phase-01-desktop-baseline, phase-02-steins-compatibility]
+    branches: [master, main, phase-01-desktop-baseline, phase-02-steins-compatibility, phase-03-sghd-implementation]
   pull_request:
     branches: [master, main]
   workflow_dispatch:
@@ -61,9 +61,9 @@ jobs:
         run: ctest --test-dir ci-build/ci-release --output-on-failure 2>&1 | tee ci-build/logs/ctest.log
       - name: Run asset-free launcher smoke checks
         run: xvfb-run -a python3 .github/scripts/desktop-smoke.py release/ci-release/impacto 2>&1 | tee ci-build/logs/smoke.log
-      - name: STEINS;GATE runtime probes (synthetic fixtures, real binary)
-        # Documents the current sgps3 VM behaviour (Call/Return desync, InstDummy hang).
-        # These assertions describe KNOWN BUGS; update them when Thread 04 fixes the VM.
+      - name: STEINS;GATE runtime probes and VM harness (synthetic fixtures, real binary)
+        # sgps3 probes pin the frozen PS3 profile's known bugs; sghd probes and the
+        # asset-free profiles/sghd-harness run SCX fixtures through the real VM.
         env:
           IMPACTO_BIN: ${{ github.workspace }}/release/ci-release/impacto
         run: python3 -m unittest tests.compat.test_runtime_probe -v 2>&1 | tee ci-build/logs/runtime-probe.log

@@ -43,6 +43,23 @@ sudo docker run --rm -v "$PWD:$PWD" -w "$PWD" -e SDL_VIDEO_DRIVER=x11 \
 GitHub Actions (`.github/workflows/desktop.yml`) runs the unit tests before
 the build and the probes after it.
 
+## Asset-free VM harness (`profiles/sghd-harness`)
+
+Hidden game id `sghd-harness` loads the full `sghd` profile, marks every
+spritesheet `ScriptHandled` (no archive access) and mounts only
+`<gamedata>/sghd/script.mpk`. The real VM runs the start script from label 0;
+when every script thread has ended the engine exits with status
+`ScrWork[4000]` (`root.Vm.ExitWhenThreadsEnd` / `ExitCodeScrWork`, read by
+`src/profile/vm.cpp`). A hang is a test failure (timeout). Nothing is drawn.
+
+```sh
+# run your own SCX through the harness (container command as above)
+IMPACTO_BIN=release/ubuntu24/impacto python3 tests/compat/test_runtime_probe.py my.scx
+```
+
+`SghdHarnessRuntimeProbe` runs the 37-opcode fixture (exit 0, trace equals
+the reference) and a script that sets `ScrWork[4000] = 7` (exit 7).
+
 ## When Thread 04 fixes a bug these tests assert
 
 Flip the assertion in the same commit and update

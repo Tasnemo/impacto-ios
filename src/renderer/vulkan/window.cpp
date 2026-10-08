@@ -74,7 +74,7 @@ void VulkanWindow::Shutdown() {
   SDL_DestroyWindow(SDLWindow);
   SDL_Quit();
   // TODO move exit to users
-  exit(0);
+  exit(Game::ExitCode);
 }
 
 }  // namespace Vulkan
