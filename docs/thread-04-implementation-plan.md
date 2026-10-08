@@ -6,6 +6,21 @@ inputs, the files it touches, the test that proves it, and what it must not
 do. Tasks 1–4 need **no commercial assets**; tasks 5+ need the owner's Steam
 installation on Windows for validation (never in git, never in CI).
 
+## Status after Thread 04 (2026-10-08, branch `phase-03-sghd-implementation`)
+
+| Task | Status | Evidence |
+|---|---|---|
+| 1 Register `sghd`, reach the VM | **Done** | `SghdRuntimeProbe` |
+| 2 SGHD opcode table, layouts | **Done** (byte consumption; unknown semantics stubbed + logged) | `SghdOpcodeTableAudit`, `SghdTask2RuntimeProbe` |
+| 3 Asset-free VM harness | **Done** (`profiles/sghd-harness`, self-terminating, script exit status) | `SghdHarnessRuntimeProbe`, CI |
+| 4 Save adapter skeleton | **Done** (fork-native format, 80 + 48 slots) | `SghdSaveRoundTripProbe`, `docs/sghd-save-format.md` |
+| 5 First real boot | **Blocked** — needs the owner's Steam install evidence | `tools/sghd_evidence.py` prepared |
+| 6 Dialogue, charset, font | **Partial** — charset generated + tested; font/dialogue box blocked on Task 5 assets | `test_sghd_charset.py` |
+| 7 Phone and mail | **Blocked** — 7a needs the owner's script dump; 7b/7c depend on 7a | — |
+| 8 Audio/video details | **Blocked** except L1 (Win32 no-ops, done in Task 2); M2/M3/L2 need real files | — |
+
+Details: [threads/04-sghd-implementation.md](threads/04-sghd-implementation.md).
+
 Ground rules for Thread 04:
 
 - Add a new game id `sghd`; never modify `profiles/sgps3` or

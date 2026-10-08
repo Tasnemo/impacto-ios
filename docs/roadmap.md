@@ -8,7 +8,7 @@ after each thread. Modes: Ultra / High / Medium / Low (see `workme.md`).
 | 01 | Upstream architecture & feasibility | Ultra | `phase-00-upstream-analysis` | **Done** (docs only) | Architecture + blockers understood |
 | 02 | Reproducible desktop build | High | `phase-01-desktop-baseline` | **Done**, integrated into `master` | Ubuntu build + asset-free launcher and CI verified; no game tested |
 | 03 | SG desktop compatibility | Ultra | `phase-02-steins-compatibility` | **Done** (investigation, tests, plan); real-file checks still owner-gated | Runtime evidence of launch/VM failures, opcode gap list, backlog C1–L4, Thread 04 plan |
-| 04 | SG desktop implementation | High | `phase-02-steins-compatibility` (continue) or new branch | Next — start with Task 1 of `docs/thread-04-implementation-plan.md` | Title → prologue → first phone trigger → save/load on desktop |
+| 04 | SG desktop implementation | Medium | `phase-03-sghd-implementation` | **Tasks 1–4 done, Task 6 charset done; blocked at Task 5** (owner Steam evidence) | Title → prologue → first phone trigger → save/load on desktop |
 | 05 | iOS architecture & build feasibility | Ultra | `phase-03-ios-feasibility` | Pending | vcpkg `arm64-ios` deps + GL/Metal decision |
 | 06 | Minimal iOS build & sideloading | High | `phase-03-ios-feasibility` | Pending | App launches on iPhone from a Windows-driven workflow |
 | 07 | iOS rendering backend | High | `phase-04-ios-rendering` | Pending | Scenes render correctly on device |
@@ -49,3 +49,15 @@ after each thread. Modes: Ultra / High / Medium / Low (see `workme.md`).
   `system.mpk` ids) is still required for Tasks 5+; procedure in
   `tests/compat/README.md`.
 - The engine segfaults without an audio device; CI/probes use `ALSOFT_DRIVERS=null`.
+
+## Adjustments after Thread 04
+
+- `workme.md` now splits work into smaller Medium threads (04A–07C). Thread
+  04 executed plan Tasks 1–4 (≈ 04A–04D) plus the charset part of Task 6 in
+  one Medium thread on `phase-03-sghd-implementation`.
+- Everything asset-free is done: profile, opcode table, harness, save
+  engine side, charset. The next step is owner-gated: run
+  `tools/sghd_evidence.py` on the Steam install (one command, metadata only).
+- Real-file work (Task 5/6) stays Medium; phone semantics (Task 7a) may need
+  High if the script dump is ambiguous. iOS phases still require explicit
+  authorization.

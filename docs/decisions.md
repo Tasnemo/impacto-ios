@@ -62,3 +62,41 @@ never rewrite an accepted record — supersede it.
 - **Consequences:** No engine redesign or compatibility work. The desktop baseline
   does not establish game playability. Native GCC 12 is not a supported recipe;
   future real-game regressions need separate tests and legitimate data.
+
+## ADR-007 — SGHD handlers live in a new file; shared handlers get guarded branches only
+
+Thread 04. Slots whose SGHD layout matches an existing handler reuse it
+(mostly CC's: `InstSEplay`, `InstVoicePlay`, `InstVoiceStopNew`, `InstCalc`,
+`InstAutoSave`). Sub-type differences in shared handlers are
+`InstructionSet::SGHD` branches (`InstSel`, `InstSetRevMes`, `InstCHAload`,
+`InstSaveMenu`, `InstLoadData`, `InstTips`). Everything else is in
+`src/vm/inst_sghd.cpp`. Opcodes with unknown semantics consume their
+sc3ntist layout and log `STUB … [SGHD, logged once]` with `ImpLog` (visible
+in Release builds) — they are parsed, not implemented. `InstDummy` itself is
+unchanged; the SGHD table uses `InstUnknownSGHD` for never-emitted slots.
+
+## ADR-008 — Asset-free harness = full sghd profile with ScriptHandled sheets
+
+`profiles/sghd-harness` includes `profiles/sghd/game.lua`, marks every
+spritesheet `ScriptHandled` and mounts only `script.mpk`. This needed no
+change to `src/profile/sprites.cpp` and exercises the real UI configuration.
+Termination and pass/fail use two optional VM profile keys
+(`ExitWhenThreadsEnd`, `ExitCodeScrWork`) and `Game::ExitCode`, which the
+GL/Vulkan `Window::Shutdown` now passes to `exit()` (default 0: other games
+unchanged; DX9 window untouched because it cannot be built here).
+
+## ADR-009 — Fork-native save format first
+
+`SaveDataType.SGHD` writes a versioned `IMPSGHD` file
+([sghd-save-format.md](sghd-save-format.md)). It is not, and is never
+described as, Steam-compatible. Saved FlagWork/ScrWork ranges are profile
+data (CHLCC/sgps3 defaults until real scripts show otherwise); files with
+different ranges are refused. Raw IP + verbatim call stack are restored.
+
+## ADR-010 — Upstream-relevant fixes found by the probes
+
+The generic `BacklogMenu` was constructed with capacity 0 for every
+`BacklogMenuType.None` profile, so the first `SetRevMes` segfaulted;
+`MaxEntryCount` is now read before the `None` early return. Candidate for
+upstreaming. Probes run one private `Xvfb` instead of `xvfb-run` per engine
+run (xvfb-run occasionally replaced the exit status with 5).
