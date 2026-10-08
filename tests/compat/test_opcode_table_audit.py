@@ -141,6 +141,10 @@ SGHD_WIRING = {
     "10 37": "InstPhoneSGHD", "10 3F": "InstByteArgStubSGHD",
     "10 40": "InstNopSGHD", "10 41": "InstNopSGHD",
 }
+# Thread 06: slots the first owner census proved wrong (not in the Thread 03
+# gap list; evidence in docs/sghd-decode-integrity.md and
+# fixtures/sghd_steam_evidence.json "census_layouts").
+CENSUS_WIRING = {"10 3A": "InstUnk103ASGHD"}
 # shared handlers kept in place; the SGHD layout lives in a guarded branch
 SGHD_BRANCHED = {"InstSel", "InstSetRevMes", "InstCHAload", "InstSaveMenu",
                  "InstLoadData", "InstTips"}
@@ -186,7 +190,14 @@ class SghdOpcodeTableAudit(unittest.TestCase):
         replaced_dummies = {k for k in changed
                             if self.sgps3[k] in ("InstDummy", "InstSysVoicePlay")
                             and self.table[k] == "InstUnknownSGHD"}
-        self.assertEqual(changed - replaced_dummies - set(SGHD_WIRING), set())
+        self.assertEqual(
+            changed - replaced_dummies - set(SGHD_WIRING) - set(CENSUS_WIRING), set())
+
+    def test_census_wiring(self):
+        actual = {k: self.table[k] for k in CENSUS_WIRING}
+        self.assertEqual(actual, CENSUS_WIRING)
+        evidence = json.loads((FIXTURES / "sghd_steam_evidence.json").read_text())
+        self.assertEqual(evidence["census_layouts"]["10 3A"]["layout"], "E")
 
 
 if __name__ == "__main__":

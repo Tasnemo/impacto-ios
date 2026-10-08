@@ -2,8 +2,11 @@
 
 root.LayerCount = 100;
 root.GameFeatures = GameFeature.Sc3VirtualMachine | GameFeature.Renderer2D | GameFeature.Input | GameFeature.Audio | GameFeature.Video;
-root.DesignWidth = 1280;
-root.DesignHeight = 720;
+-- Steam assets are 1080p (full-screen masks BLOGMASK/TIPSMASK.DDS are
+-- 1920x1080, LAY vertices are 1080p pixels); script coordinates stay 720p
+-- and impacto scales them by DesignWidth/1280 (as for cclcc/mo8).
+root.DesignWidth = 1920;
+root.DesignHeight = 1080;
 
 root.WindowName = "STEINS;GATE";
 -- sghd: English Steam release (MAGES. 2016 PC port). Derived from profiles/sgps3,
@@ -15,9 +18,11 @@ root.CursorArrowPath = "resources/chlcc/icondata/cursor_arrow.png";
 root.CursorPointerPath = "resources/chlcc/icondata/cursor_pointer.png";
 
 root.CharaIsMvl = false;
-root.LayFileBigEndian = true;
-root.LayFileTexXMultiplier = 2048;
-root.LayFileTexYMultiplier = 1024;
+-- Steam LAY: little-endian, texture coordinates already in pixels, plus one
+-- trailing byte per vertex that impacto ignores (Thread 06 census).
+root.LayFileBigEndian = false;
+root.LayFileTexXMultiplier = 1;
+root.LayFileTexYMultiplier = 1;
 
 include(root.BasePaths.RootProfilesDir .. '/sghd/vm.lua');
 

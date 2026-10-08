@@ -614,7 +614,9 @@ def sghd_task2_fixture() -> bytes:
     main += ins(0x10, 0x33, u8(0), u16(3), u16(3))       # Tips data init
     for sub, parts in ((0x10, (E(1),)), (0x14, (E(1), E(2), E(3), E(4))),
                        (0x15, (E(1), E(2), E(3), E(4))), (0x1A, (E(1),)),
-                       (0x03, (u8(1), E(2), u16(0))), (0x05, ())):
+                       # 0x02 = jump if item 2 bit 1 is set: never set here,
+                       # so it falls through (Thread 06 phone semantics)
+                       (0x02, (u8(1), E(2), u16(0))), (0x05, ())):
         main += ins(0x10, 0x37, u8(sub), *parts)
     main += ins(0x10, 0x3F, u8(1))
     main += ins(0x10, 0x40)
@@ -675,7 +677,43 @@ SAVE_TEST = dict(
     slot=79,                # last of the 80 full slots
     script_id=2,            # StartScript
     read_line=0,
+    phone_item=334,         # 10 37 item / bit set before the save
+    phone_bit=2,
+    system_flag=3875,       # SystemFlagWorkRanges byte 484
+    system_scr=700,         # SystemScrWorkRanges
 )
+
+
+def sghd_phone_test_script() -> bytes:
+    """Phone item bits (10 37 types 0x00-0x03), 10 3A and 10 37 type 0x1E.
+
+    Exit status (ScrWork[4000] in sghd-harness): 42 when every branch went
+    the expected way, otherwise the number of the failed check."""
+    E = expr
+
+    def phone(kind, bit, item, label=None):
+        parts = [u8(kind), u8(bit), E(item)]
+        if label is not None:
+            parts.append(u16(label))
+        return ins(0x10, 0x37, *parts)
+
+    def result(code):
+        return sghd_assign_scrwork(4000, code) + sghd_end_of_script()
+
+    b = ScxBuilder()
+    b.add_label(phone(0x00, 1, 334) + phone(0x02, 1, 334, 2) + result(1))
+    b.add_label(result(42))  # 1: success (reached from label 4)
+    b.add_label(phone(0x03, 1, 334, 3)         # set -> no jump
+                + phone(0x01, 1, 334)
+                + phone(0x03, 1, 334, 4)       # cleared -> jump
+                + result(2))
+    b.add_label(result(3))
+    b.add_label(phone(0x02, 0, 645, 3)         # never set -> no jump
+                + phone(0x02, 1, 334, 3)       # still clear -> no jump
+                + ins(0x10, 0x3A, E(63))       # one expression (census)
+                + ins(0x10, 0x37, u8(0x1E))    # no arguments
+                + sghd_jump(1))
+    return b.build()
 
 
 def sghd_save_test_script(load_run: bool, save_file_no_scr: int):
@@ -702,6 +740,7 @@ def sghd_save_test_script(load_run: bool, save_file_no_scr: int):
     story += sghd_set_flag(T["saved_flag"])
     story += sghd_assign_scrwork(T["unsaved_scr"], 99)
     story += ins(0x01, 0x25, u8(0), u16(s_line))         # SetRevMes: line read
+    story += ins(0x10, 0x37, u8(0), u8(T["phone_bit"]), E(T["phone_item"]))
     story += sghd_call(4, 0)
     ret0 = len(story)
     story += sghd_add_scrwork(T["exit_scr"], 100)
@@ -712,6 +751,7 @@ def sghd_save_test_script(load_run: bool, save_file_no_scr: int):
                  + sghd_end_of_script())
     load_boot = (sghd_assign_scrwork(T["mark_scr"], 1)
                  + ins(0x00, 0x2A, u8(32)) + ins(0x00, 0x2A, u8(33))  # mount
+                 + ins(0x00, 0x2A, u8(2))                # load system data
                  + sghd_assign_scrwork(T["main_thread_ptr"], 1)
                  + ins(0x00, 0x01, E(4), E(0), u16(10))  # placeholder thread
                  + ins(0x10, 0x24, u8(0), E(0), E(T["slot"]))  # LoadEntry+Vars
@@ -724,6 +764,9 @@ def sghd_save_test_script(load_run: bool, save_file_no_scr: int):
     sub += ins(0x00, 0x0A, u8(1), expr_scr(T["mark_scr"]), u16(6))
     sub += sghd_assign_scrwork(save_file_no_scr, T["slot"])
     sub += ins(0x00, 0x2A, u8(16))                       # flush to full slot
+    sub += sghd_set_flag(T["system_flag"])               # global variables
+    sub += sghd_assign_scrwork(T["system_scr"], T["saved_value"])
+    sub += ins(0x00, 0x2A, u8(0))                        # save system data
     sub += ins(0x00, 0x2A, u8(30)) + ins(0x00, 0x2A, u8(31))  # write + wait
     sub += sghd_assign_scrwork(T["exit_scr"], 10)
     sub += sghd_return()
@@ -735,6 +778,13 @@ def sghd_save_test_script(load_run: bool, save_file_no_scr: int):
     verify += ins(0x00, 0x10, u8(0), E(T["saved_flag"]), u16(8))
     verify += ins(0x00, 0x0A, u8(0), expr_scr_equals(T["unsaved_scr"], 0),
                   u16(9))
+    # phone item bit restored from the slot (save format 2)
+    verify += ins(0x10, 0x37, u8(3), u8(T["phone_bit"]), E(T["phone_item"]),
+                  u16(11))
+    # global variables restored by 00 2A type 2 (save format 2)
+    verify += ins(0x00, 0x10, u8(0), E(T["system_flag"]), u16(12))
+    verify += ins(0x00, 0x0A, u8(0),
+                  expr_scr_equals(T["system_scr"], T["saved_value"]), u16(12))
     verify += sghd_assign_scrwork(T["exit_scr"], 42)
     verify += sghd_return()
 
@@ -744,7 +794,8 @@ def sghd_save_test_script(load_run: bool, save_file_no_scr: int):
     idle = ins(0x00, 0x05, E(10000)) + sghd_jump(10)
 
     labels = [label0, bytes(story), save_boot, load_boot, bytes(sub),
-              b"\x00\x00", bytes(verify), fail(1), fail(2), fail(3), idle]
+              b"\x00\x00", bytes(verify), fail(1), fail(2), fail(3), idle,
+              fail(4), fail(5)]
     for code in labels:
         b.add_label(code)
     b.add_return(1, ret0)

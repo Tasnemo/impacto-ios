@@ -1,4 +1,5 @@
 #include "savesystem.h"
+#include "phone.h"
 
 #include "../../io/physicalfilestream.h"
 #include "../../log.h"
@@ -10,6 +11,7 @@
 #include "../../vm/thread.h"
 #include "../../vm/vm.h"
 
+#include <algorithm>
 #include <bit>
 #include <cstring>
 #include <memory>
@@ -63,7 +65,46 @@ SaveFileEntry const* SaveSystem::Entry(SaveType type, int id) const {
   return nullptr;
 }
 
-void SaveSystem::InitializeSystemData() { ReadLines.clear(); }
+void SaveSystem::InitializeSystemData() {
+  ReadLines.clear();
+  SystemFlagWorkData.clear();
+  SystemScrWorkData.clear();
+  HasSystemData = false;
+}
+
+void SaveSystem::SaveSystemData() {
+  SystemFlagWorkData.clear();
+  SystemScrWorkData.clear();
+  for (auto const& [start, length] :
+       Ranges<FlagWorkSize>(SystemFlagWorkRanges)) {
+    SystemFlagWorkData.insert(SystemFlagWorkData.end(),
+                              FlagWork.begin() + start,
+                              FlagWork.begin() + start + length);
+  }
+  for (auto const& [start, length] : Ranges<ScrWorkSize>(SystemScrWorkRanges)) {
+    SystemScrWorkData.insert(SystemScrWorkData.end(), ScrWork.begin() + start,
+                             ScrWork.begin() + start + length);
+  }
+  HasSystemData = true;
+}
+
+SaveError SaveSystem::LoadSystemData() {
+  if (!HasSystemData) return SaveError::NotFound;
+  auto flags = SystemFlagWorkData.begin();
+  for (auto const& [start, length] :
+       Ranges<FlagWorkSize>(SystemFlagWorkRanges)) {
+    if (SystemFlagWorkData.end() - flags < (ptrdiff_t)length) break;
+    std::copy_n(flags, length, FlagWork.begin() + start);
+    flags += length;
+  }
+  auto values = SystemScrWorkData.begin();
+  for (auto const& [start, length] : Ranges<ScrWorkSize>(SystemScrWorkRanges)) {
+    if (SystemScrWorkData.end() - values < (ptrdiff_t)length) break;
+    std::copy_n(values, length, ScrWork.begin() + start);
+    values += length;
+  }
+  return SaveError::OK;
+}
 
 void SaveSystem::SaveMemory() {
   SaveFileEntry& entry = WorkingEntry;
@@ -83,6 +124,7 @@ void SaveSystem::SaveMemory() {
     entry.ScrWorkData.insert(entry.ScrWorkData.end(), ScrWork.begin() + start,
                              ScrWork.begin() + start + length);
   }
+  entry.PhoneItemBits.assign(Phone::ItemBits.begin(), Phone::ItemBits.end());
 
   Sc3VmThread const* thd = MainThread();
   if (thd == nullptr) {
@@ -143,6 +185,10 @@ void SaveSystem::LoadMemoryNew(LoadProcess process) {
       std::copy_n(values, length, ScrWork.begin() + start);
       values += length;
     }
+    Phone::ItemBits.fill(0);
+    std::copy_n(entry.PhoneItemBits.begin(),
+                std::min(entry.PhoneItemBits.size(), Phone::ItemBits.size()),
+                Phone::ItemBits.begin());
     return;
   }
 
@@ -222,9 +268,11 @@ static void WriteEntry(Io::Stream* s, SaveFileEntry const& e) {
   Io::WriteArrayLE<uint8_t>(e.FlagWorkData.data(), s, e.FlagWorkData.size());
   WriteU32(s, (uint32_t)e.ScrWorkData.size());
   Io::WriteArrayLE<int32_t>(e.ScrWorkData.data(), s, e.ScrWorkData.size());
+  WriteU32(s, (uint32_t)e.PhoneItemBits.size());
+  Io::WriteArrayLE<uint8_t>(e.PhoneItemBits.data(), s, e.PhoneItemBits.size());
 }
 
-static void ReadEntry(Io::Stream* s, SaveFileEntry& e) {
+static void ReadEntry(Io::Stream* s, SaveFileEntry& e, uint32_t version) {
   e = SaveFileEntry{};
   e.Status = Io::ReadLE<uint8_t>(s);
   if (e.Status == 0) return;
@@ -250,6 +298,10 @@ static void ReadEntry(Io::Stream* s, SaveFileEntry& e) {
   Io::ReadArrayLE<uint8_t>(e.FlagWorkData.data(), s, e.FlagWorkData.size());
   e.ScrWorkData.resize(ReadU32(s));
   Io::ReadArrayLE<int32_t>(e.ScrWorkData.data(), s, e.ScrWorkData.size());
+  if (version >= 2) {
+    e.PhoneItemBits.resize(ReadU32(s));
+    Io::ReadArrayLE<uint8_t>(e.PhoneItemBits.data(), s, e.PhoneItemBits.size());
+  }
 }
 
 SaveError SaveSystem::WriteSaveFile() {
@@ -281,6 +333,18 @@ SaveError SaveSystem::WriteSaveFile() {
 
   Io::WriteArrayLE<uint8_t>(QuickSaveRecentSortedId.data(), s.get(),
                             QuickSaveRecentSortedId.size());
+
+  // format 2: global variables
+  WriteRanges(s.get(), SystemFlagWorkRanges);
+  WriteRanges(s.get(), SystemScrWorkRanges);
+  Io::WriteLE<uint8_t>(s.get(), HasSystemData ? 1 : 0);
+  WriteU32(s.get(), (uint32_t)SystemFlagWorkData.size());
+  Io::WriteArrayLE<uint8_t>(SystemFlagWorkData.data(), s.get(),
+                            SystemFlagWorkData.size());
+  WriteU32(s.get(), (uint32_t)SystemScrWorkData.size());
+  Io::WriteArrayLE<int32_t>(SystemScrWorkData.data(), s.get(),
+                            SystemScrWorkData.size());
+
   for (SaveFileEntry const& e : FullEntries) WriteEntry(s.get(), e);
   for (SaveFileEntry const& e : QuickEntries) WriteEntry(s.get(), e);
   return SaveError::OK;
@@ -306,8 +370,9 @@ SaveError SaveSystem::MountSaveFile(std::vector<QueuedTexture>&) {
 
   char magic[sizeof(Magic)];
   Io::ReadArrayLE<char>(magic, s.get(), sizeof(magic));
+  uint32_t version = 0;
   if (std::memcmp(magic, Magic, sizeof(Magic)) != 0 ||
-      ReadU32(s.get()) != SaveFormatVersion ||
+      (version = ReadU32(s.get())) < 1 || version > SaveFormatVersion ||
       ReadU32(s.get()) != MaxFullSaves || ReadU32(s.get()) != MaxQuickSaves) {
     ImpLog(LogLevel::Error, LogChannel::IO,
            "{:s} is not an impacto SGHD save (version {:d})\n", SaveFilePath,
@@ -337,8 +402,34 @@ SaveError SaveSystem::MountSaveFile(std::vector<QueuedTexture>&) {
 
   Io::ReadArrayLE<uint8_t>(QuickSaveRecentSortedId.data(), s.get(),
                            QuickSaveRecentSortedId.size());
-  for (SaveFileEntry& e : FullEntries) ReadEntry(s.get(), e);
-  for (SaveFileEntry& e : QuickEntries) ReadEntry(s.get(), e);
+
+  SystemFlagWorkData.clear();
+  SystemScrWorkData.clear();
+  HasSystemData = false;
+  if (version >= 2) {
+    std::vector<uint32_t> storedFlags(ReadU32(s.get()));
+    for (uint32_t& v : storedFlags) v = ReadU32(s.get());
+    std::vector<uint32_t> storedScr(ReadU32(s.get()));
+    for (uint32_t& v : storedScr) v = ReadU32(s.get());
+    bool const present = Io::ReadLE<uint8_t>(s.get()) != 0;
+    std::vector<uint8_t> flags(ReadU32(s.get()));
+    Io::ReadArrayLE<uint8_t>(flags.data(), s.get(), flags.size());
+    std::vector<int> values(ReadU32(s.get()));
+    Io::ReadArrayLE<int32_t>(values.data(), s.get(), values.size());
+    if (storedFlags == SystemFlagWorkRanges &&
+        storedScr == SystemScrWorkRanges) {
+      SystemFlagWorkData = std::move(flags);
+      SystemScrWorkData = std::move(values);
+      HasSystemData = present;
+    } else {
+      ImpLog(LogLevel::Warning, LogChannel::IO,
+             "Save file system-data ranges differ from the profile; "
+             "ignoring its global variables\n");
+    }
+  }
+
+  for (SaveFileEntry& e : FullEntries) ReadEntry(s.get(), e, version);
+  for (SaveFileEntry& e : QuickEntries) ReadEntry(s.get(), e, version);
   return SaveError::OK;
 }
 

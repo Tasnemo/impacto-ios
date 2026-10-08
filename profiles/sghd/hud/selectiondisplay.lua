@@ -12,64 +12,64 @@ root.SelectionDisplay = {
     PlainSelectionFrameMiddleSprite = "PlainSelectionFrameMiddle",
     SelectionHighlightSprite = "SelectionHighlight",
     SelectionMaxCount = 5,
-    SelectionBackgroundX = 228,
-    SelectionBackgroundY = {277, 277, 196, 129, 95},
-    SelectionYSpacing = 81,
-    PlainSelectionYSpacing = 10,
+    SelectionBackgroundX = 342,
+    SelectionBackgroundY = {415.5, 415.5, 294, 193.5, 142.5},
+    SelectionYSpacing = 121.5,
+    PlainSelectionYSpacing = 15,
     FadeAnimationDurationInOut = 0.2
 };
 
 root.Sprites["SelectionBackground"] = {
     Sheet = "Data",
-    Bounds = { X = 1, Y = 535, Width = 829, Height = 69 }
+    Bounds = { X = 1.5, Y = 802.5, Width = 1243.5, Height = 103.5 }
 };
 
 root.Sprites["PlainSelectionFrameTopLeft"] = {
     Sheet = "Data",
-    Bounds = { X = 0, Y = 0, Width = 16, Height = 16 }
+    Bounds = { X = 0, Y = 0, Width = 24, Height = 24 }
 };
 
 root.Sprites["PlainSelectionFrameTopSide"] = {
     Sheet = "Data",
-    Bounds = { X = 16, Y = 0, Width = 16, Height = 16 }
+    Bounds = { X = 24, Y = 0, Width = 24, Height = 24 }
 };
 
 root.Sprites["PlainSelectionFrameTopRight"] = {
     Sheet = "Data",
-    Bounds = { X = 32, Y = 0, Width = 16, Height = 16 }
+    Bounds = { X = 48, Y = 0, Width = 24, Height = 24 }
 };
 
 root.Sprites["PlainSelectionFrameLeftSide"] = {
     Sheet = "Data",
-    Bounds = { X = 0, Y = 16, Width = 16, Height = 16 }
+    Bounds = { X = 0, Y = 24, Width = 24, Height = 24 }
 };
 
 root.Sprites["PlainSelectionFrameBottomLeft"] = {
     Sheet = "Data",
-    Bounds = { X = 0, Y = 32, Width = 16, Height = 16 }
+    Bounds = { X = 0, Y = 48, Width = 24, Height = 24 }
 };
 
 root.Sprites["PlainSelectionFrameRightSide"] = {
     Sheet = "Data",
-    Bounds = { X = 32, Y = 16, Width = 16, Height = 16 }
+    Bounds = { X = 48, Y = 24, Width = 24, Height = 24 }
 };
 
 root.Sprites["PlainSelectionFrameBottomRight"] = {
     Sheet = "Data",
-    Bounds = { X = 32, Y = 32, Width = 16, Height = 16 }
+    Bounds = { X = 48, Y = 48, Width = 24, Height = 24 }
 };
 
 root.Sprites["PlainSelectionFrameBottomSide"] = {
     Sheet = "Data",
-    Bounds = { X = 16, Y = 32, Width = 16, Height = 16 }
+    Bounds = { X = 24, Y = 48, Width = 24, Height = 24 }
 };
 
 root.Sprites["PlainSelectionFrameMiddle"] = {
     Sheet = "Data",
-    Bounds = { X = 16, Y = 16, Width = 16, Height = 16 }
+    Bounds = { X = 24, Y = 24, Width = 24, Height = 24 }
 };
 
 root.Sprites["SelectionHighlight"] = {
     Sheet = "Data",
-    Bounds = { X = 65, Y = 33, Width = 94, Height = 30 }
+    Bounds = { X = 97.5, Y = 49.5, Width = 141, Height = 45 }
 };

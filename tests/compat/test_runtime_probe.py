@@ -594,6 +594,16 @@ def parse_sghd_save(blob: bytes) -> dict:
         out["read_lines"][script_id] = blob[pos:pos + n]
         pos += n
     pos += 48  # quick-save recency order
+    if out["version"] >= 2:
+        out["sys_flag_ranges"] = list(take("I" * take("I")) or ())
+        out["sys_scr_ranges"] = list(take("I" * take("I")) or ())
+        out["sys_present"] = take("B")
+        n = take("I")
+        out["sys_flags"] = blob[pos:pos + n]
+        pos += n
+        n = take("I")
+        out["sys_scr"] = list(struct.unpack_from(f"<{n}i", blob, pos))
+        pos += 4 * n
     entries = []
     for _ in range(out["full"] + out["quick"]):
         status = take("B")
@@ -619,6 +629,10 @@ def parse_sghd_save(blob: bytes) -> dict:
         n = take("I")
         e["scr_data"] = list(struct.unpack_from(f"<{n}i", blob, pos))
         pos += 4 * n
+        if out["version"] >= 2:
+            n = take("I")
+            e["phone"] = blob[pos:pos + n]
+            pos += n
         entries.append(e)
     assert pos == len(blob), (pos, len(blob))
     out["entries"] = entries
@@ -667,7 +681,7 @@ class SghdSaveRoundTripProbe(unittest.TestCase):
         self.assertTrue(self.file, "save file was not written")
         s = parse_sghd_save(self.file)
         self.assertEqual((s["magic"], s["version"], s["full"], s["quick"]),
-                         (b"IMPSGHD\0", 1, 80, 48))
+                         (b"IMPSGHD\0", 2, 80, 48))
         self.assertEqual(s["flag_ranges"], [50, 50, 300, 100])
         self.assertEqual(s["scr_ranges"], [300, 300, 2300, 1300])
         e = s["entries"][T["slot"]]
@@ -682,6 +696,15 @@ class SghdSaveRoundTripProbe(unittest.TestCase):
         byte, bit = divmod(T["saved_flag"], 8)
         self.assertTrue(e["flag_data"][50 + byte - 300] & (1 << bit))
         self.assertEqual(s["read_lines"].get(T["script_id"], b"")[:1], b"\x01")
+        self.assertEqual((s["sys_flag_ranges"], s["sys_scr_ranges"]),
+                         ([100, 50, 460, 40], [600, 400]))
+        self.assertEqual(s["sys_present"], 1)
+        byte, bit = divmod(T["system_flag"], 8)
+        self.assertTrue(s["sys_flags"][50 + byte - 460] & (1 << bit))
+        self.assertEqual(s["sys_scr"][T["system_scr"] - 600], T["saved_value"])
+        self.assertEqual(len(e["phone"]), 1024)
+        self.assertEqual(e["phone"][T["phone_item"]], 1 << T["phone_bit"])
+        self.assertEqual(sum(e["phone"]), 1 << T["phone_bit"])
 
     def test_load_run_restores_state_and_call_stack(self):
         # 42 = all three checks passed in the restored subroutine,
@@ -694,6 +717,27 @@ class SghdSaveRoundTripProbe(unittest.TestCase):
         after = addrs[addrs.index(self.resume):]
         self.assertEqual(after[-1], self.end_after_call,
                          "restored Return continues right after the Call")
+
+
+@unittest.skipUnless(os.environ.get("IMPACTO_BIN"),
+                     "set IMPACTO_BIN=/path/to/impacto to run runtime probes")
+class SghdPhoneProbe(unittest.TestCase):
+    """Thread 06: phone item bits set/clear/branch (10 37 types 0x00-0x03),
+    10 3A as one expression and 10 37 type 0x1E without arguments."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.probe = run_probe(game="sghd-harness",
+                            script=fx.sghd_phone_test_script(), seconds=30.0)
+
+    def test_branches(self):
+        self.assertEqual(self.probe.returncode, 42,
+                         self.probe.stdout[-1500:] + self.probe.log[-2500:])
+
+    def test_no_desync_or_unknown_subtype(self):
+        self.assertNotIn("unknown SGHD subtype", self.probe.log)
+        self.assertNotIn("is not part of the SGHD instruction set", self.probe.log)
+        self.assertIn("STUB instruction Unk103A(arg1: 63)", self.probe.log)
 
 
 def main(argv: list[str]) -> int:

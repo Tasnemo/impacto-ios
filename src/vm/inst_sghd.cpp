@@ -10,6 +10,7 @@
 #include "../mem.h"
 #include "../profile/scriptvars.h"
 #include "../profile/vm.h"
+#include "../games/sghd/phone.h"
 
 namespace Impacto {
 
@@ -275,22 +276,46 @@ VmInstruction(InstPhoneSGHD) {
   switch (type) {
     case 0x00:
     case 0x01: {
-      PopUint8(arg1);
-      PopExpression(arg2);
-      args = fmt::format("arg1: {:d}, arg2: {:d}", arg1, arg2);
-    } break;
+      // set / clear item attribute bit (games/sghd/phone.h)
+      PopUint8(bit);
+      PopExpression(item);
+      if (!SGHD::Phone::ValidItem(item, bit)) {
+        ImpLog(LogLevel::Error, LogChannel::VM,
+               "Phone: item {:d} bit {:d} out of range\n", item, bit);
+        return;
+      }
+      uint8_t& bits = SGHD::Phone::ItemBits[item];
+      if (type == 0x00)
+        bits |= (uint8_t)(1u << bit);
+      else
+        bits &= (uint8_t) ~(1u << bit);
+      ImpLog(LogLevel::Debug, LogChannel::VM,
+             "Phone: item {:d} bit {:d} {:s}\n", item, bit,
+             type == 0x00 ? "set" : "cleared");
+      return;
+    }
     case 0x02:
     case 0x03: {
-      PopUint8(arg1);
-      PopExpression(arg2);
-      PopUint16(label);
-      args =
-          fmt::format("arg1: {:d}, arg2: {:d}, label: {:d}", arg1, arg2, label);
+      // jump if item attribute bit set (0x02) / clear (0x03)
+      PopUint8(bit);
+      PopExpression(item);
+      PopUint16(labelNum);
       if (type == 0x03) {
         // Kept from InstPhoneSG (sgps3) for parity.
         ScrWork[SW_PHONE_DISP_CT] = GetFlag(SF_Phone_Open) ? 20 : 0;
       }
-    } break;
+      if (!SGHD::Phone::ValidItem(item, bit)) {
+        ImpLog(LogLevel::Error, LogChannel::VM,
+               "Phone: item {:d} bit {:d} out of range\n", item, bit);
+        return;
+      }
+      bool const isSet = (SGHD::Phone::ItemBits[item] >> bit) & 1;
+      if (isSet == (type == 0x02)) {
+        thread->IpOffset =
+            ScriptGetLabelAddress(thread->ScriptBufferId, labelNum);
+      }
+      return;
+    }
     case 0x04:
       thread->IpOffset += 6 * 2;  // six local labels
       break;
@@ -326,6 +351,7 @@ VmInstruction(InstPhoneSGHD) {
     case 0x17:
     case 0x18:
     case 0x19:
+    case 0x1E:  // no arguments (census: _SYSTEM.SCX, next instruction at +3)
       break;
     default:
       ImpLog(LogLevel::Error, LogChannel::VM,
@@ -333,6 +359,12 @@ VmInstruction(InstPhoneSGHD) {
       return;
   }
   StubOnce(fmt::format("Phone(type: {:#x})", type), args);
+}
+
+VmInstruction(InstUnk103ASGHD) {
+  StartInstruction;
+  PopExpression(arg1);
+  StubOnce("Unk103A", fmt::format("arg1: {:d}", arg1));
 }
 
 }  // namespace Vm

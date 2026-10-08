@@ -597,7 +597,7 @@ InstructionProc inline constexpr OpcodeTableUser1_SGHD[256] = {
     InstPhoneSGHD,         // 10 37
     InstUnk1038Darling,    // 10 38
     InstTwipo,             // 10 39
-    InstUnk103A,           // 10 3A
+    InstUnk103ASGHD,       // 10 3A
     InstUnknownSGHD,       // 10 3B
     InstUnknownSGHD,       // 10 3C
     InstUnknownSGHD,       // 10 3D

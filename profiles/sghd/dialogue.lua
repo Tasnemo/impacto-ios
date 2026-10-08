@@ -1,11 +1,11 @@
 root.Sprites["ADVBox"] = {
     Sheet = "Data",
-    Bounds = { X = 767, Y = 806, Width = 1280, Height = 216 },
+    Bounds = { X = 1150.5, Y = 1209, Width = 1920, Height = 324 },
 };
 
 root.Sprites["DialogueWaitIcon"] = {
     Sheet = "Data",
-    Bounds = { X = 1, Y = 97, Width = 32, Height = 32 }
+    Bounds = { X = 1.5, Y = 145.5, Width = 48, Height = 48 }
 };
 
 root.Dialogue = {
@@ -17,7 +17,7 @@ root.Dialogue = {
     REVOutlineMode = 2,
     REVNameOutlineMode = 2,
     ADVBoxSprite = "ADVBox",
-    ADVBoxPos = { X = 0, Y = 504 },
+    ADVBoxPos = { X = 0, Y = 756 },
     FadeOutDuration = 0.33,
     FadeInDuration = 0.33,
     TextFadeInDuration = 0.33,
@@ -26,19 +26,19 @@ root.Dialogue = {
     NVLBoxMaxOpacity = 0.55,
 
     NametagCurrentType = NametagType.TwoPiece,
-    NametagPosition = { X = 400, Y = 680 },
+    NametagPosition = { X = 600, Y = 1020 },
     NametagLeftSprite = "NametagLeftSprite",
     NametagRightSprite = "NametagRightSprite",
 
     WaitIconCurrentType = WaitIconType.Rotating,
     WaitIconSprite = "DialogueWaitIcon",
     KeyWaitIconPos = { X = 0, Y = 0 }, -- TODO
-    WaitIconOffset = { X = 4, Y = 4 },
+    WaitIconOffset = { X = 6, Y = 6 },
     WaitIconAnimationDuration = 3.2,
 
     DialogueFont = "Default",
     SetFontSizeRatio = 1000.0,
-    DefaultFontSize = 32,
+    DefaultFontSize = 48,
     ColorTable = {
         {0xFFFFFF, 0x000000}, {0x5080FF, 0x000000},
         {0xFF7080, 0x000000}, {0xFFA0F8, 0x000000},
@@ -83,10 +83,10 @@ root.Dialogue = {
 
 root.Sprites["NametagLeftSprite"] = {
     Sheet = "Data",
-    Bounds = { X = 768, Y = 787, Width = 195, Height = 11 }
+    Bounds = { X = 1152, Y = 1180.5, Width = 292.5, Height = 16.5 }
 };
 
 root.Sprites["NametagRightSprite"] = {
     Sheet = "Data",
-    Bounds = { X = 964, Y = 787, Width = 200, Height = 11 }
+    Bounds = { X = 1446, Y = 1180.5, Width = 300, Height = 16.5 }
 };

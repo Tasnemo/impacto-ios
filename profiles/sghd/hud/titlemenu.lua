@@ -3,57 +3,57 @@ root.TitleMenu = {
     -- (DelusionADVPosition ...) that do not apply to STEINS;GATE.
     Type = TitleMenuType.None,
     DrawType = DrawComponentType.SystemMenu,
-    PressToStartPos = { X = 72, Y = 595 },
+    PressToStartPos = { X = 108, Y = 892.5 },
     PressToStartAnimDurationIn = 0.5,
     PressToStartAnimDurationOut = 0.5,
     PressToStartSprite = "TitleMenuPressToStart",
     IntroBackgroundSprite = "TitleMenuIntroBackground",
     BackgroundSprite = "TitleMenuBackground",
     DelusionADVUnderSprite = "DelusionADVUnder", -- "DelusionADVUnderEnglish" with the TLed assets, "DelusionADVUnder" with the original ones
-    DelusionADVUnderX = 78, --74 with the TLed assets, 78 with the original ones
-    DelusionADVUnderY = 394, --396 with the TLed assets, 394 with the original ones
+    DelusionADVUnderX = 117, --74 with the TLed assets, 78 with the original ones
+    DelusionADVUnderY = 591, --396 with the TLed assets, 394 with the original ones
     DelusionADVSprite = "DelusionADV", -- "DelusionADVEnglish" with the TLed assets, "DelusionADV" with the original ones
     DelusionADVX = 78, --74 with the TLed assets, 78 with the original ones
     DelusionADVY = 394, --396 with the TLed assets, 394 with the original ones
     SeiraUnderSprite = "SeiraUnder",
-    SeiraUnderX = 733,
+    SeiraUnderX = 1099.5,
     SeiraUnderY = 0,
     SeiraSprite = "Seira",
-    SeiraX = 728,
-    SeiraY = -47,
+    SeiraX = 1092,
+    SeiraY = -70.5,
     CHLogoSprite = "CHLogo",
-    CHLogoX = 61,
-    CHLogoY = 279,
+    CHLogoX = 91.5,
+    CHLogoY = 418.5,
     LCCLogoUnderSprite = "LCCLogoUnder",
-    LCCLogoUnderX = 241,
-    LCCLogoUnderY = 327,
+    LCCLogoUnderX = 361.5,
+    LCCLogoUnderY = 490.5,
     ChuLeftLogoSprite = "ChuLeftLogo",
-    ChuLeftLogoX = 353,
-    ChuLeftLogoY = 336,
+    ChuLeftLogoX = 529.5,
+    ChuLeftLogoY = 504,
     ChuRightLogoSprite = "ChuRightLogo",
-    ChuRightLogoX = 500,
-    ChuRightLogoY = 316,
+    ChuRightLogoX = 750,
+    ChuRightLogoY = 474,
     LoveLogoSprite = "LoveLogo",
-    LoveLogoX = 235, --231 with the TLed assets, 235 with the original ones
-    LoveLogoY = 336, --335 with the TLed assets, 336 with the original ones
+    LoveLogoX = 352.5, --231 with the TLed assets, 235 with the original ones
+    LoveLogoY = 504, --335 with the TLed assets, 336 with the original ones
     StarLogoSprite = "StarLogo",
-    StarLogoX = 465,
-    StarLogoY = 316,
+    StarLogoX = 697.5,
+    StarLogoY = 474,
     ExclMarkLogoSprite = "ExclMarkLogo",
-    ExclMarkLogoX = 614,
-    ExclMarkLogoY = 316,
+    ExclMarkLogoX = 921,
+    ExclMarkLogoY = 474,
     CopyrightTextSprite = "CopyrightText",
-    CopyrightTextX = 72,
-    CopyrightTextY = 675,
+    CopyrightTextX = 108,
+    CopyrightTextY = 1012.5,
     SpinningCircleSprite = "SpinningCircle",
-    SpinningCircleX = 610.5,
-    SpinningCircleY = -285.5,
+    SpinningCircleX = 915.75,
+    SpinningCircleY = -428.25,
     SpinningCircleAnimationDuration = 15,
     ItemHighlightSprite = "TitleMenuItemHighlight",
-    ItemHighlightOffsetX = 73,
-    ItemHighlightOffsetY = 7,
-    ItemPadding = 40,
-    ItemYBase = 69,
+    ItemHighlightOffsetX = 109.5,
+    ItemHighlightOffsetY = 10.5,
+    ItemPadding = 60,
+    ItemYBase = 103.5,
     ItemFadeInDuration = 0.3,
     ItemFadeOutDuration = 0.6,
     SecondaryItemFadeInDuration = 0.2,
@@ -69,35 +69,35 @@ root.TitleMenu = {
     ItemDownLine = "TitleMenuItemDownLine",
     ItemSuperDownLine = "TitleMenuItemSuperDownLine",
     ItemLoadQuickSprite = "TitleMenuItemLoadQuick",
-    SecondaryItemX = 320,
-    ItemLoadY = 109,
-    ItemLoadQuickY = 83,
+    SecondaryItemX = 480,
+    ItemLoadY = 163.5,
+    ItemLoadQuickY = 124.5,
     ItemLoadSprite = "TitleMenuItemLoad",
     ItemLoadQuickHighlightedSprite = "TitleMenuItemLoadQuickHighlighted",
     ItemLoadHighlightedSprite = "TitleMenuItemLoadHighlighted",
     SecondaryItemHighlightSprite = "TitleMenuSecondaryItemHighlight",
-    ItemClearListY = 71,
-    ItemCGLibraryY = 97,
-    ItemSoundLibraryY = 123,
-    ItemMovieLibraryY = 149,
-    ItemTipsY = 175,
-    ItemTrophyY = 201,
-    ItemConfigY = 163,
-    ItemSystemSaveY = 189,
-    SecondaryItemHighlightX = 286,
-    SecondaryMenuPaddingY = 26,
-    SecondaryMenuLoadOffsetY = 76,
-    SecondaryMenuLineX = 241,
-    SecondaryMenuLoadLineY = 93,
-    SecondaryMenuLoadQuickLineY = 119,
-    SecondaryMenuExtraClearY = 81,
+    ItemClearListY = 106.5,
+    ItemCGLibraryY = 145.5,
+    ItemSoundLibraryY = 184.5,
+    ItemMovieLibraryY = 223.5,
+    ItemTipsY = 262.5,
+    ItemTrophyY = 301.5,
+    ItemConfigY = 244.5,
+    ItemSystemSaveY = 283.5,
+    SecondaryItemHighlightX = 429,
+    SecondaryMenuPaddingY = 39,
+    SecondaryMenuLoadOffsetY = 114,
+    SecondaryMenuLineX = 361.5,
+    SecondaryMenuLoadLineY = 139.5,
+    SecondaryMenuLoadQuickLineY = 178.5,
+    SecondaryMenuExtraClearY = 121.5,
     SecondaryMenuExtraCGY = 107,
-    SecondaryMenuExtraSoundY = 133,
-    SecondaryMenuExtraMovieY = 159,
-    SecondaryMenuExtraTipsY = 159,
-    SecondaryMenuExtraTrophyY = 159,
-    SecondaryMenuSystemConfigY = 173,
-    SecondaryMenuSystemSaveY = 199,
+    SecondaryMenuExtraSoundY = 199.5,
+    SecondaryMenuExtraMovieY = 238.5,
+    SecondaryMenuExtraTipsY = 238.5,
+    SecondaryMenuExtraTrophyY = 238.5,
+    SecondaryMenuSystemConfigY = 259.5,
+    SecondaryMenuSystemSaveY = 298.5,
     MenuEntriesNum = 14,
     MenuEntriesSprites = {},
     MenuEntriesHighlightedSprites = {},
@@ -109,10 +109,10 @@ for i = 0, 3 do
     root.Sprites["TitleMenuEntry" .. i] = {
         Sheet = "Title",
         Bounds = {
-            X = 1151,
-            Y = 101 + i * 25,
-            Width = 188,
-            Height = 23
+            X = 1726.5,
+            Y = 151.5 + i * 25,
+            Width = 282,
+            Height = 34.5
         }
     };
     root.TitleMenu.MenuEntriesSprites[#root.TitleMenu.MenuEntriesSprites + 1] = "TitleMenuEntry" .. i;
@@ -122,10 +122,10 @@ for i = 0, 9 do
     root.Sprites["TitleMenuEntry" .. (i + 4)] = {
         Sheet = "Title",
         Bounds = {
-            X = 1369,
-            Y = 684 + i * 22,
-            Width = 216,
-            Height = 20
+            X = 2053.5,
+            Y = 1026 + i * 22,
+            Width = 324,
+            Height = 30
         }
     };
     root.TitleMenu.MenuEntriesSprites[#root.TitleMenu.MenuEntriesSprites + 1] = "TitleMenuEntry" .. (i + 4);
@@ -135,10 +135,10 @@ for i = 0, 3 do
     root.Sprites["TitleMenuEntryHighlighted" .. i] = {
         Sheet = "Title",
         Bounds = {
-            X = 1151,
-            Y = 1 + i * 25,
-            Width = 188,
-            Height = 23
+            X = 1726.5,
+            Y = 1.5 + i * 25,
+            Width = 282,
+            Height = 34.5
         }
     };
     root.TitleMenu.MenuEntriesHighlightedSprites[#root.TitleMenu.MenuEntriesHighlightedSprites + 1] = "TitleMenuEntryHighlighted" .. i;
@@ -148,10 +148,10 @@ for i = 0, 9 do
     root.Sprites["TitleMenuEntryHighlighted" .. (i + 4)] = {
         Sheet = "Title",
         Bounds = {
-            X = 1151,
-            Y = 684 + i * 22,
-            Width = 216,
-            Height = 20
+            X = 1726.5,
+            Y = 1026 + i * 22,
+            Width = 324,
+            Height = 30
         }
     };
     root.TitleMenu.MenuEntriesHighlightedSprites[#root.TitleMenu.MenuEntriesHighlightedSprites + 1] = "TitleMenuEntryHighlighted" .. (i + 4);
@@ -159,127 +159,127 @@ end
 
 root.Sprites["TitleMenuPressToStart"] = {
     Sheet = "Title",
-    Bounds = { X = 1, Y = 921, Width = 313, Height = 28 },
+    Bounds = { X = 1.5, Y = 1381.5, Width = 469.5, Height = 42 },
 };
 
 root.Sprites["DelusionADVUnder"] = {
     Sheet = "Title",
-    Bounds = { X = 1863, Y = 772, Width = 163, Height = 27 },
+    Bounds = { X = 2794.5, Y = 1158, Width = 244.5, Height = 40.5 },
 };
 
 root.Sprites["DelusionADVUnderEnglish"] = {
     Sheet = "Title",
-    Bounds = { X = 1862, Y = 785, Width = 157, Height = 37 },
+    Bounds = { X = 2793, Y = 1177.5, Width = 235.5, Height = 55.5 },
 };
 
 root.Sprites["DelusionADV"] = {
     Sheet = "Title",
-    Bounds = { X = 1863, Y = 728, Width = 163, Height = 27 },
+    Bounds = { X = 2794.5, Y = 1092, Width = 244.5, Height = 40.5 },
 };
 
 root.Sprites["DelusionADVEnglish"] = {
     Sheet = "Title",
-    Bounds = { X = 1862, Y = 734, Width = 153, Height = 33 },
+    Bounds = { X = 2793, Y = 1101, Width = 229.5, Height = 49.5 },
 };
 
 root.Sprites["SeiraUnder"] = {
     Sheet = "Title",
-    Bounds = { X = 555, Y = 1, Width = 594, Height = 768 },
+    Bounds = { X = 832.5, Y = 1.5, Width = 891, Height = 1152 },
 };
 
 root.Sprites["Seira"] = {
     Sheet = "Title",
-    Bounds = { X = 1, Y = 1, Width = 552, Height = 768 },
+    Bounds = { X = 1.5, Y = 1.5, Width = 828, Height = 1152 },
 };
 
 root.Sprites["CHLogo"] = {
     Sheet = "Title",
-    Bounds = { X = 1, Y = 771, Width = 594, Height = 115 },
+    Bounds = { X = 1.5, Y = 1156.5, Width = 891, Height = 172.5 },
 };
 
 root.Sprites["LCCLogoUnder"] = {
     Sheet = "Title",
-    Bounds = { X = 597, Y = 771, Width = 462, Height = 122 },
+    Bounds = { X = 895.5, Y = 1156.5, Width = 693, Height = 183 },
 };
 
 root.Sprites["ChuLeftLogo"] = {
     Sheet = "Title",
-    Bounds = { X = 483, Y = 915, Width = 136, Height = 108 },
+    Bounds = { X = 724.5, Y = 1372.5, Width = 204, Height = 162 },
 };
 
 root.Sprites["ChuRightLogo"] = {
     Sheet = "Title",
-    Bounds = { X = 693, Y = 895, Width = 136, Height = 128 },
+    Bounds = { X = 1039.5, Y = 1342.5, Width = 204, Height = 192 },
 };
 
 root.Sprites["LoveLogo"] = {
     Sheet = "Title",
-    Bounds = { X = 341, Y = 915, Width = 140, Height = 108 },
+    Bounds = { X = 511.5, Y = 1372.5, Width = 210, Height = 162 },
 };
 
 root.Sprites["StarLogo"] = {
     Sheet = "Title",
-    Bounds = { X = 621, Y = 895, Width = 70, Height = 128 },
+    Bounds = { X = 931.5, Y = 1342.5, Width = 105, Height = 192 },
 };
 
 root.Sprites["ExclMarkLogo"] = {
     Sheet = "Title",
-    Bounds = { X = 831, Y = 895, Width = 82, Height = 128 },
+    Bounds = { X = 1246.5, Y = 1342.5, Width = 123, Height = 192 },
 };
 
 root.Sprites["CopyrightText"] = {
     Sheet = "Title",
-    Bounds = { X = 193, Y = 891, Width = 380, Height = 24 },
+    Bounds = { X = 289.5, Y = 1336.5, Width = 570, Height = 36 },
 };
 
 root.Sprites["SpinningCircle"] = {
     Sheet = "Title",
-    Bounds = { X = 1366, Y = 1, Width = 681, Height = 681 },
+    Bounds = { X = 2049, Y = 1.5, Width = 1021.5, Height = 1021.5 },
 };
 
 root.Sprites["TitleMenuIntroBackground"] = {
     Sheet = "TitleBg1",
-    Bounds = { X = 0, Y = 0, Width = 1280, Height = 720 },
+    Bounds = { X = 0, Y = 0, Width = 1920, Height = 1080 },
 };
 
 root.Sprites["TitleMenuBackground"] = {
     Sheet = "TitleBg2",
-    Bounds = { X = 0, Y = 0, Width = 1280, Height = 720 },
+    Bounds = { X = 0, Y = 0, Width = 1920, Height = 1080 },
 };
 
 root.Sprites["TitleMenuItemHighlight"] = {
     Sheet = "Title",
-    Bounds = { X = 915, Y = 951, Width = 244, Height = 36 },
+    Bounds = { X = 1372.5, Y = 1426.5, Width = 366, Height = 54 },
 };
 
 root.Sprites["TitleMenuItemHyperUpLine"] = {
     Sheet = "Title",
-    Bounds = { X = 1805, Y = 686, Width = 51, Height = 80 },
+    Bounds = { X = 2707.5, Y = 1029, Width = 76.5, Height = 120 },
 };
 
 root.Sprites["TitleMenuItemSuperUpLine"] = {
     Sheet = "Title",
-    Bounds = { X = 1805, Y = 776, Width = 51, Height = 54 },
+    Bounds = { X = 2707.5, Y = 1164, Width = 76.5, Height = 81 },
 };
 
 root.Sprites["TitleMenuItemUpLine"] = {
     Sheet = "Title",
-    Bounds = { X = 1805, Y = 845, Width = 51, Height = 28 },
+    Bounds = { X = 2707.5, Y = 1267.5, Width = 76.5, Height = 42 },
 };
 
 root.Sprites["TitleMenuItemStraightLine"] = {
     Sheet = "Title",
-    Bounds = { X = 1805, Y = 888, Width = 51, Height = 2 },
+    Bounds = { X = 2707.5, Y = 1332, Width = 76.5, Height = 3 },
 };
 
 root.Sprites["TitleMenuItemDownLine"] = {
     Sheet = "Title",
-    Bounds = { X = 1805, Y = 910, Width = 51, Height = 28 },
+    Bounds = { X = 2707.5, Y = 1365, Width = 76.5, Height = 42 },
 };
 
 root.Sprites["TitleMenuItemSuperDownLine"] = {
     Sheet = "Title",
-    Bounds = { X = 1805, Y = 959, Width = 51, Height = 54 },
+    Bounds = { X = 2707.5, Y = 1438.5, Width = 76.5, Height = 81 },
 };
 
 root.TitleMenu.LineEntriesSprites[#root.TitleMenu.LineEntriesSprites + 1] = "TitleMenuItemHyperUpLine";
@@ -291,25 +291,25 @@ root.TitleMenu.LineEntriesSprites[#root.TitleMenu.LineEntriesSprites + 1] = "Tit
 
 root.Sprites["TitleMenuItemLoadQuick"] = {
     Sheet = "Title",
-    Bounds = { X = 1369, Y = 684, Width = 216, Height = 20 },
+    Bounds = { X = 2053.5, Y = 1026, Width = 324, Height = 30 },
 };
 
 root.Sprites["TitleMenuItemLoad"] = {
     Sheet = "Title",
-    Bounds = { X = 1369, Y = 706, Width = 216, Height = 20 },
+    Bounds = { X = 2053.5, Y = 1059, Width = 324, Height = 30 },
 };
 
 root.Sprites["TitleMenuItemLoadQuickHighlighted"] = {
     Sheet = "Title",
-    Bounds = { X = 1151, Y = 684, Width = 216, Height = 20 },
+    Bounds = { X = 1726.5, Y = 1026, Width = 324, Height = 30 },
 };
 
 root.Sprites["TitleMenuItemLoadHighlighted"] = {
     Sheet = "Title",
-    Bounds = { X = 1151, Y = 706, Width = 216, Height = 20 },
+    Bounds = { X = 1726.5, Y = 1059, Width = 324, Height = 30 },
 };
 
 root.Sprites["TitleMenuSecondaryItemHighlight"] = {
     Sheet = "Title",
-    Bounds = { X = 915, Y = 989, Width = 285, Height = 34 },
+    Bounds = { X = 1372.5, Y = 1483.5, Width = 427.5, Height = 51 },
 };

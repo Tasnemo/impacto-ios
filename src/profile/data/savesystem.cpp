@@ -126,6 +126,12 @@ void Configure() {
       Implementation = new Impacto::SGHD::SaveSystem();
       FlagWorkRanges = EnsureGetMember<std::vector<uint32_t>>("FlagWorkRanges");
       ScrWorkRanges = EnsureGetMember<std::vector<uint32_t>>("ScrWorkRanges");
+      SystemFlagWorkRanges =
+          TryGetMember<std::vector<uint32_t>>("SystemFlagWorkRanges")
+              .value_or(std::vector<uint32_t>{});
+      SystemScrWorkRanges =
+          TryGetMember<std::vector<uint32_t>>("SystemScrWorkRanges")
+              .value_or(std::vector<uint32_t>{});
       break;
     case SaveDataType::None:
       ImpLog(LogLevel::Warning, LogChannel::Profile,

@@ -5,23 +5,23 @@ root.SysMesBoxDisplay = {
     Type = SysMesBoxType.CHLCC,
     DrawType = DrawComponentType.SystemMessage,
     BoxX = 0,
-    BoxY = 230,
-    TextFontSize = 32,
-    TextMiddleY = 236,
-    TextX = 640,
-    TextLineHeight = 34,
-    TextMarginY = 14,
-    ChoicePadding = 40,
-    ChoiceY = 365,
-    ChoiceXBase = 680,
-    MinMaxMesWidth = 294,
-    MinHighlightWidth = 48,
-    HighlightBaseWidth = 144,
+    BoxY = 345,
+    TextFontSize = 48,
+    TextMiddleY = 354,
+    TextX = 960,
+    TextLineHeight = 51,
+    TextMarginY = 21,
+    ChoicePadding = 60,
+    ChoiceY = 547.5,
+    ChoiceXBase = 1020,
+    MinMaxMesWidth = 441,
+    MinHighlightWidth = 72,
+    HighlightBaseWidth = 216,
     HighlightYOffset = 0,
     HighlightXOffset = 0,
-    HighlightXBase = 658,
-    HighlightXStep = 132,
-    HighlightRightPartSpriteWidth = 24,
+    HighlightXBase = 987,
+    HighlightXStep = 198,
+    HighlightRightPartSpriteWidth = 36,
     AnimationSpeed = 55,
     FadeInDuration = 0.33,
     FadeOutDuration = 0.25
@@ -30,10 +30,10 @@ root.SysMesBoxDisplay = {
 root.Sprites[name .. "Box"] = {
     Sheet = sheet,
     Bounds = {
-        X = 767,
-        Y = 637,
-        Width = 1280,
-        Height = 172
+        X = 1150.5,
+        Y = 955.5,
+        Width = 1920,
+        Height = 258
     }
 };
 root.SysMesBoxDisplay.Box = name .. "Box";
@@ -41,10 +41,10 @@ root.SysMesBoxDisplay.Box = name .. "Box";
 root.Sprites[name .. "BoxDecoration"] = {
     Sheet = sheet,
     Bounds = {
-        X = 1383,
-        Y = 117,
-        Width = 592,
-        Height = 8
+        X = 2074.5,
+        Y = 175.5,
+        Width = 888,
+        Height = 12
     }
 };
 root.SysMesBoxDisplay.BoxDecoration = name .. "BoxDecoration";
@@ -52,10 +52,10 @@ root.SysMesBoxDisplay.BoxDecoration = name .. "BoxDecoration";
 root.Sprites[name .. "SelectionLeftPart"] = {
     Sheet = sheet,
     Bounds = {
-        X = 502,
-        Y = 51,
-        Width = 144,
-        Height = 38
+        X = 753,
+        Y = 76.5,
+        Width = 216,
+        Height = 57
     }
 };
 root.SysMesBoxDisplay.SelectionLeftPart = name .. "SelectionLeftPart";
@@ -63,10 +63,10 @@ root.SysMesBoxDisplay.SelectionLeftPart = name .. "SelectionLeftPart";
 root.Sprites[name .. "SelectionRightPart"] = {
     Sheet = sheet,
     Bounds = {
-        X = 634,
-        Y = 51,
-        Width = 24,
-        Height = 38
+        X = 951,
+        Y = 76.5,
+        Width = 36,
+        Height = 57
     }
 };
 root.SysMesBoxDisplay.SelectionRightPart = name .. "SelectionRightPart";
@@ -74,10 +74,10 @@ root.SysMesBoxDisplay.SelectionRightPart = name .. "SelectionRightPart";
 root.Sprites[name .. "SelectionMiddlePart"] = {
     Sheet = sheet,
     Bounds = {
-        X = 515,
-        Y = 51,
-        Width = 132,
-        Height = 38
+        X = 772.5,
+        Y = 76.5,
+        Width = 198,
+        Height = 57
     }
 };
 root.SysMesBoxDisplay.SelectionMiddlePart = name .. "SelectionMiddlePart";
@@ -86,8 +86,8 @@ root.SysMesBoxDisplay.SelectionMiddlePart = name .. "SelectionMiddlePart";
 -- layout is known (Task 5).
 root.Sprites[name .. "LoadingStar"] = {
     Sheet = sheet,
-    Bounds = { X = 0, Y = 0, Width = 8, Height = 8 }
+    Bounds = { X = 0, Y = 0, Width = 12, Height = 12 }
 };
 root.SysMesBoxDisplay.LoadingStar = name .. "LoadingStar";
-root.SysMesBoxDisplay.LoadingStarsPosition = { X = 580, Y = 357 };
+root.SysMesBoxDisplay.LoadingStarsPosition = { X = 870, Y = 535.5 };
 root.SysMesBoxDisplay.LoadingStarsFadeDuration = 0.533;

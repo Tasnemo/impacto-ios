@@ -18,14 +18,17 @@ using namespace Impacto::SaveSystem;
 
 constexpr int MaxFullSaves = 80;
 constexpr int MaxQuickSaves = 48;
-constexpr uint32_t SaveFormatVersion = 1;
+// 2 (Thread 06): adds the per-entry phone item block (games/sghd/phone.h).
+// Version 1 files still load; their entries carry no phone state.
+constexpr uint32_t SaveFormatVersion = 2;
 
 class SaveFileEntry : public SaveFileEntryBase {
  public:
   uint32_t CheckpointId = 0;
   uint32_t MainThreadLoopLabelNum = 0;
-  std::vector<uint8_t> FlagWorkData;  // concatenated FlagWorkRanges
-  std::vector<int> ScrWorkData;       // concatenated ScrWorkRanges
+  std::vector<uint8_t> FlagWorkData;   // concatenated FlagWorkRanges
+  std::vector<int> ScrWorkData;        // concatenated ScrWorkRanges
+  std::vector<uint8_t> PhoneItemBits;  // Phone::ItemBits; empty = none saved
 };
 
 class SaveSystem : public SaveSystemBase {
@@ -40,8 +43,10 @@ class SaveSystem : public SaveSystemBase {
   void LoadMemoryNew(LoadProcess process) override;
   void FlushWorkingSaveEntry(SaveType type, int id, int autoSaveType) override;
 
-  void SaveSystemData() override {}
-  SaveError LoadSystemData() override { return SaveError::OK; }
+  // Global variables (SystemFlagWorkRanges / SystemScrWorkRanges), kept in
+  // the file header (format 2).
+  void SaveSystemData() override;
+  SaveError LoadSystemData() override;
   void InitializeSystemData() override;
 
   void SaveThumbnailData() override {}
@@ -87,6 +92,9 @@ class SaveSystem : public SaveSystemBase {
   uint32_t CheckpointId = 0;
   // script id -> bitmap of read line ids
   std::map<uint32_t, std::vector<uint8_t>> ReadLines;
+  std::vector<uint8_t> SystemFlagWorkData;
+  std::vector<int> SystemScrWorkData;
+  bool HasSystemData = false;
 };
 
 }  // namespace SGHD

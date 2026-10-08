@@ -35,6 +35,9 @@ VmInstruction(InstUnk0107SGHD);
 VmInstruction(InstCheckpointSGHD);
 VmInstruction(InstEncyclopediaSGHD);
 VmInstruction(InstPhoneSGHD);
+// 10 3A: one expression in the Steam scripts (Thread 06 census); the sgps3
+// handler InstUnk103A reads a type byte and desyncs.
+VmInstruction(InstUnk103ASGHD);
 
 }  // namespace Vm
 

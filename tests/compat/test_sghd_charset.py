@@ -69,16 +69,15 @@ class SghdCharset(unittest.TestCase):
                 ids = {CHARSET.index(c) for c in chars}
                 self.assertEqual(ids, set(sgps3_index_list(name)))
 
-    def test_ps3_glyph_grid_is_smaller_than_the_steam_charset(self):
-        # Documented gap (M1): font.lua still describes the PS3 font sheet
-        # (64 x 14 cells), far fewer than the 2895 Steam glyph ids. Needs the
-        # Steam font sheet (Task 5) before it can change.
+    def test_steam_glyph_grid_covers_the_charset(self):
+        # Gap M1 closed (Thread 06): font.lua now describes the Steam
+        # FONT.PNG (64 x 46 cells of 48 px), which holds all 2895 glyph ids.
         font = (REPO / "profiles" / "sghd" / "font.lua").read_text(encoding="utf-8")
         cols, rows = map(int, re.search(
             r"GridSize = \{ X = (\d+), Y = (\d+) \}", font).groups())
-        self.assertEqual((cols, rows), (64, 14))
-        self.assertLess(cols * rows, len(CHARSET))
-
+        self.assertEqual((cols, rows), (64, 46))
+        self.assertGreaterEqual(cols * rows, len(CHARSET))
+        self.assertEqual((len(CHARSET) - 1) // cols, rows - 1)  # last glyph in the last row
 
 if __name__ == "__main__":
     unittest.main()

@@ -1,42 +1,96 @@
 {
- "_source": "Minimal constants from the owner's tools/sghd_evidence.py report on the English Steam STEINS;GATE install (Thread 05, 2026-10-08). The private report itself is not committed. Only facts the sghd profile depends on are recorded here.",
+ "_source": "Minimal constants from the owner's tools/sghd_evidence.py report on the English Steam STEINS;GATE install (Thread 05, 2026-10-08). The private report itself is not committed. Only facts the sghd profile depends on are recorded here. Thread 06 added constants from the owner's second-round tools/sghd_census.py report (also private, not committed).",
  "archives": {
   "_note": "USRDIR/<name>, all MPK v2.0, uncompressed entries (compression 0). Entry counts identify the build.",
-  "bg.mpk": 507, "bgm.mpk": 83, "chara.mpk": 330, "manual.mpk": 2,
-  "mask.mpk": 20, "mgsshader.mpk": 102, "script.mpk": 190, "se.mpk": 199,
-  "shader.mpk": 119, "system.mpk": 32, "voice.mpk": 14512
+  "bg.mpk": 507,
+  "bgm.mpk": 83,
+  "chara.mpk": 330,
+  "manual.mpk": 2,
+  "mask.mpk": 20,
+  "mgsshader.mpk": 102,
+  "script.mpk": 190,
+  "se.mpk": 199,
+  "shader.mpk": 119,
+  "system.mpk": 32,
+  "voice.mpk": 14512
  },
- "mpk_version": [2, 0],
+ "mpk_version": [
+  2,
+  0
+ ],
  "script_mpk": {
   "_note": "Startup script and system scripts (ids and names).",
-  "0": "_ATCH.SCX", "1": "_MAIL.SCX", "2": "_STARTUP_WIN.SCX", "3": "_SYSTEM.SCX",
-  "4": "_TIPS.SCX", "7": "MACROSYS.SCX", "8": "MACROSYS2.SCX", "9": "MAIN00.SCX"
+  "0": "_ATCH.SCX",
+  "1": "_MAIL.SCX",
+  "2": "_STARTUP_WIN.SCX",
+  "3": "_SYSTEM.SCX",
+  "4": "_TIPS.SCX",
+  "7": "MACROSYS.SCX",
+  "8": "MACROSYS2.SCX",
+  "9": "MAIN00.SCX"
  },
  "system_mpk": {
   "_note": "Complete system.mpk table of contents (id -> entry name).",
-  "0": "ALBUM.DDS", "1": "ALBUM_THUM.DDS", "2": "BACKLOG.DDS", "3": "BLOGMASK.DDS",
-  "4": "CLEARLIST.DDS", "5": "CONFIG.DDS", "6": "DATA01.DDS", "7": "DATA03.DDS",
-  "8": "EFF_LENZFLARE.DDS", "9": "FONT.PNG", "10": "FONT2.PNG", "11": "GSYSMES.DDS",
-  "12": "LOADMENU.DDS", "13": "MOVMENU.DDS", "14": "MUSIC.DDS", "15": "PACG.DDS",
-  "16": "PHONE.DDS", "17": "PHONE_B.DDS", "18": "PHONE_C.DDS", "19": "PHONE_D.DDS",
-  "20": "PHONE_E.DDS", "21": "PHONE2.DDS", "22": "PHONE3.DDS", "23": "PWCG.DDS",
-  "24": "PWCGTHUM.DDS", "25": "QLOADMENU.DDS", "26": "SAVEMENU.DDS",
-  "27": "SYSMESSWINDOW.DDS", "28": "TIPSCHIPS.DDS", "29": "TIPSMASK.DDS",
-  "30": "TITLE_CHIP.DDS", "31": "WAVTABLE.DAT"
+  "0": "ALBUM.DDS",
+  "1": "ALBUM_THUM.DDS",
+  "2": "BACKLOG.DDS",
+  "3": "BLOGMASK.DDS",
+  "4": "CLEARLIST.DDS",
+  "5": "CONFIG.DDS",
+  "6": "DATA01.DDS",
+  "7": "DATA03.DDS",
+  "8": "EFF_LENZFLARE.DDS",
+  "9": "FONT.PNG",
+  "10": "FONT2.PNG",
+  "11": "GSYSMES.DDS",
+  "12": "LOADMENU.DDS",
+  "13": "MOVMENU.DDS",
+  "14": "MUSIC.DDS",
+  "15": "PACG.DDS",
+  "16": "PHONE.DDS",
+  "17": "PHONE_B.DDS",
+  "18": "PHONE_C.DDS",
+  "19": "PHONE_D.DDS",
+  "20": "PHONE_E.DDS",
+  "21": "PHONE2.DDS",
+  "22": "PHONE3.DDS",
+  "23": "PWCG.DDS",
+  "24": "PWCGTHUM.DDS",
+  "25": "QLOADMENU.DDS",
+  "26": "SAVEMENU.DDS",
+  "27": "SYSMESSWINDOW.DDS",
+  "28": "TIPSCHIPS.DDS",
+  "29": "TIPSMASK.DDS",
+  "30": "TITLE_CHIP.DDS",
+  "31": "WAVTABLE.DAT"
  },
  "audio": {
-  "_note": "Entry name suffixes per audio archive (Ogg files; codec not yet probed).",
-  "bgm.mpk": ".ogg", "se.mpk": ".OGG", "voice.mpk": ".OGG"
+  "_note": "Codec of every entry by header (census): all Ogg Vorbis, uncompressed.",
+  "bgm.mpk": {
+   "suffix": ".ogg",
+   "ogg-vorbis": 83
+  },
+  "se.mpk": {
+   "suffix": ".OGG",
+   "ogg-vorbis": 199
+  },
+  "voice.mpk": {
+   "suffix": ".OGG",
+   "ogg-vorbis": 14512
+  }
  },
  "movies": {
   "_note": "Loose files, not in an archive. Every file starts with 4b 42 32 6a ('KB2j', Bink 2), which FFmpeg/impacto cannot decode.",
-  "dirs": ["USRDIR/movie/1280x720", "USRDIR/movie/1920x1080"],
+  "dirs": [
+   "USRDIR/movie/1280x720",
+   "USRDIR/movie/1920x1080"
+  ],
   "files_per_dir": 38,
   "extension": ".bk2",
   "signature": "4b42326a"
  },
  "sprite_sheets": {
-  "_note": "profiles/sghd/sprites.lua sheet -> system.mpk entry, chosen by name only. Sheet dimensions and sprite rectangles are NOT verified (need tools/sghd_census.py --assets). null = no Steam counterpart in system.mpk; the sheet is ScriptHandled (never loaded from an archive).",
+  "_note": "profiles/sghd/sprites.lua sheet -> system.mpk entry, chosen by name. Sheet sizes are verified (system_images); sprite rectangles are PS3 x1.5 and NOT verified. null = no Steam counterpart in system.mpk; the sheet is ScriptHandled.",
   "Backlog": "BACKLOG.DDS",
   "Data": "DATA01.DDS",
   "Font": "FONT.PNG",
@@ -44,5 +98,332 @@
   "Menu": null,
   "TitleBg1": null,
   "TitleBg2": null
+ },
+ "system_images": {
+  "_note": "system.mpk image sizes [width, height, format] (census). Every DDS is DXT5 with no mip count.",
+  "ALBUM.DDS": [
+   3072,
+   1536,
+   "DXT5"
+  ],
+  "ALBUM_THUM.DDS": [
+   3072,
+   3936,
+   "DXT5"
+  ],
+  "BACKLOG.DDS": [
+   2048,
+   1080,
+   "DXT5"
+  ],
+  "BLOGMASK.DDS": [
+   1920,
+   1080,
+   "DXT5"
+  ],
+  "CLEARLIST.DDS": [
+   3072,
+   1536,
+   "DXT5"
+  ],
+  "CONFIG.DDS": [
+   3072,
+   2048,
+   "DXT5"
+  ],
+  "DATA01.DDS": [
+   3072,
+   1788,
+   "DXT5"
+  ],
+  "DATA03.DDS": [
+   512,
+   512,
+   "DXT5"
+  ],
+  "EFF_LENZFLARE.DDS": [
+   3072,
+   1536,
+   "DXT5"
+  ],
+  "FONT.PNG": [
+   3072,
+   2208,
+   "PNG RGBA8"
+  ],
+  "FONT2.PNG": [
+   3072,
+   2208,
+   "PNG RGBA8"
+  ],
+  "GSYSMES.DDS": [
+   128,
+   128,
+   "DXT5"
+  ],
+  "LOADMENU.DDS": [
+   3072,
+   1080,
+   "DXT5"
+  ],
+  "MOVMENU.DDS": [
+   3072,
+   1536,
+   "DXT5"
+  ],
+  "MUSIC.DDS": [
+   3072,
+   1536,
+   "DXT5"
+  ],
+  "PACG.DDS": [
+   4096,
+   4096,
+   "DXT5"
+  ],
+  "PHONE.DDS": [
+   3072,
+   1536,
+   "DXT5"
+  ],
+  "PHONE_B.DDS": [
+   3072,
+   1536,
+   "DXT5"
+  ],
+  "PHONE_C.DDS": [
+   3072,
+   1536,
+   "DXT5"
+  ],
+  "PHONE_D.DDS": [
+   3072,
+   1536,
+   "DXT5"
+  ],
+  "PHONE_E.DDS": [
+   3072,
+   1536,
+   "DXT5"
+  ],
+  "PHONE2.DDS": [
+   3072,
+   1536,
+   "DXT5"
+  ],
+  "PHONE3.DDS": [
+   3072,
+   1536,
+   "DXT5"
+  ],
+  "PWCG.DDS": [
+   4096,
+   2048,
+   "DXT5"
+  ],
+  "PWCGTHUM.DDS": [
+   768,
+   768,
+   "DXT5"
+  ],
+  "QLOADMENU.DDS": [
+   3072,
+   1080,
+   "DXT5"
+  ],
+  "SAVEMENU.DDS": [
+   3072,
+   1080,
+   "DXT5"
+  ],
+  "SYSMESSWINDOW.DDS": [
+   128,
+   128,
+   "DXT5"
+  ],
+  "TIPSCHIPS.DDS": [
+   3072,
+   1080,
+   "DXT5"
+  ],
+  "TIPSMASK.DDS": [
+   1920,
+   1080,
+   "DXT5"
+  ],
+  "TITLE_CHIP.DDS": [
+   3072,
+   1536,
+   "DXT5"
+  ]
+ },
+ "design_resolution": {
+  "_note": "Full-screen masks BLOGMASK.DDS and TIPSMASK.DDS are 1920x1080 and LAY vertices are 1080p pixels, so the profile uses a 1920x1080 design (script coordinates are scaled from 720p by impacto).",
+  "value": [
+   1920,
+   1080
+  ]
+ },
+ "font": {
+  "_note": "FONT.PNG and FONT2.PNG: same grid; FONT2 differs only in rows 2-3 (full-width Latin centred instead of left-aligned proportional). Ink per cell measured at alpha > 0x20. 15 inked cells in row 45 match the 2895-glyph sc3tools charset (45*64 + 15).",
+  "sheet": "FONT.PNG",
+  "size": [
+   3072,
+   2208
+  ],
+  "grid": [
+   64,
+   46
+  ],
+  "cell": 48,
+  "last_row_inked_cells": 15,
+  "charset_glyphs": 2895
+ },
+ "lay": {
+  "_note": "chara.mpk LAY (first three files): little-endian header (big-endian reading gives absurd state counts); texture coordinates are pixels (max x 2017 in a 2048-wide texture); file size = 8 + 12*states + 16*vertices + vertices, i.e. one trailing byte per vertex that impacto ignores.",
+  "byte_order": "little",
+  "tex_coords": "pixels",
+  "trailing_bytes_per_vertex": 1,
+  "samples": [
+   {
+    "bytes": 53305,
+    "states": 37,
+    "vertices": 3109
+   },
+   {
+    "bytes": 53203,
+    "states": 37,
+    "vertices": 3103
+   },
+   {
+    "bytes": 40054,
+    "states": 25,
+    "vertices": 2338
+   }
+  ]
+ },
+ "census_layouts": {
+  "_note": "Layouts the first census proved or added (docs/sghd-decode-integrity.md).",
+  "10 3A": {
+   "layout": "E",
+   "uses": 1,
+   "evidence": "label entry 10 3A 2D 0A A0 3F 14 00: one complete expression (TV[63]); the sgps3 handler read a type byte and desynced"
+  },
+  "10 0D": {
+   "layout": "type byte; 1: E L (impacto CHAmove)",
+   "label_entries": 18,
+   "evidence": "18 labels of 13 bytes each start 10 0D 01 2D 0A A0 3F 14 = CHAmove type 1, expression, label, Return"
+  },
+  "10 2E": {
+   "layout": "E",
+   "label_entries": 1
+  },
+  "10 37 1E": {
+   "layout": "",
+   "uses": 1,
+   "evidence": "next instruction 3 bytes later"
+  }
+ },
+ "phone_subtypes": {
+  "_note": "10 37 / 10 38 sub-type use counts across all 190 scripts (census).",
+  "10 37 00": 153,
+  "10 37 01": 221,
+  "10 37 02": 18,
+  "10 37 03": 9,
+  "10 37 04": 1,
+  "10 37 05": 28,
+  "10 37 06": 9,
+  "10 37 07": 1,
+  "10 37 08": 1,
+  "10 37 09": 7,
+  "10 37 0A": 2,
+  "10 37 0F": 14,
+  "10 37 10": 5,
+  "10 37 11": 2,
+  "10 37 12": 1,
+  "10 37 13": 86,
+  "10 37 14": 20,
+  "10 37 15": 11,
+  "10 37 16": 5,
+  "10 37 17": 2,
+  "10 37 18": 4,
+  "10 37 19": 1,
+  "10 37 1A": 2,
+  "10 37 1E": 1,
+  "10 38 00": 1,
+  "10 38 01": 1,
+  "10 38 02": 1,
+  "10 38 03": 1,
+  "10 38 04": 1,
+  "10 38 05": 1,
+  "10 38 06": 1
+ },
+ "variable_refs": {
+  "_note": "Hundreds-buckets of ScrWork / FlagWork indices named by immediates in the scripts (census); used to judge save ranges.",
+  "scrwork": [
+   0,
+   100,
+   200,
+   300,
+   400,
+   600,
+   700,
+   1000,
+   1100,
+   1200,
+   1300,
+   1400,
+   1600,
+   2000,
+   2100,
+   2300,
+   2400,
+   2500,
+   2700,
+   3000,
+   3300,
+   3500,
+   3600,
+   3700,
+   4300,
+   4400,
+   4500,
+   4600,
+   4700,
+   5000,
+   5100,
+   5200,
+   5300,
+   5400,
+   5700,
+   5800,
+   5900,
+   6000,
+   6100,
+   6200,
+   6300,
+   6700,
+   6800
+  ],
+  "flagwork": [
+   0,
+   100,
+   400,
+   600,
+   800,
+   900,
+   1200,
+   1300,
+   1500,
+   1600,
+   1800,
+   1900,
+   2300,
+   2400,
+   2500,
+   2600,
+   3000,
+   3800
+  ]
  }
 }

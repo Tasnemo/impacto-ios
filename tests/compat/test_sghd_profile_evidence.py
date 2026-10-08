@@ -69,5 +69,69 @@ class SghdSteamEvidence(unittest.TestCase):
             self.assertEqual(EVIDENCE["system_mpk"][sheet_id], name)
 
 
+
+def lua_sheet_sizes() -> dict:
+    text = (SGHD / "sprites.lua").read_text()
+    out = {}
+    for name, body in re.findall(r'\["(\w+)"\] = \{(.*?)\n    \}', text, re.S):
+        w = re.search(r"DesignWidth = (\d+)", body)
+        h = re.search(r"DesignHeight = (\d+)", body)
+        out[name] = [int(w.group(1)), int(h.group(1))]
+    return out
+
+
+class SghdCensusEvidence(unittest.TestCase):
+    """Thread 06: constants from the second-round census."""
+
+    def test_design_resolution(self):
+        game = (SGHD / "game.lua").read_text()
+        w = int(re.search(r"root\.DesignWidth = (\d+)", game).group(1))
+        h = int(re.search(r"root\.DesignHeight = (\d+)", game).group(1))
+        self.assertEqual([w, h], EVIDENCE["design_resolution"]["value"])
+        self.assertEqual(EVIDENCE["system_images"]["BLOGMASK.DDS"][:2], [w, h])
+
+    def test_loaded_sheet_sizes_are_steam_texture_sizes(self):
+        sizes = lua_sheet_sizes()
+        for name, entry in EVIDENCE["sprite_sheets"].items():
+            if name.startswith("_") or entry is None:
+                continue
+            with self.subTest(sheet=name):
+                self.assertEqual(sizes[name], EVIDENCE["system_images"][entry][:2])
+
+    def test_font_grid_and_widths(self):
+        text = (SGHD / "font.lua").read_text()
+        grid = re.search(r"GridSize = \{ X = (\d+), Y = (\d+) \}", text)
+        self.assertEqual([int(grid.group(1)), int(grid.group(2))], EVIDENCE["font"]["grid"])
+        size = EVIDENCE["font"]["size"]
+        self.assertEqual(size[0] // EVIDENCE["font"]["grid"][0], EVIDENCE["font"]["cell"])
+        self.assertEqual(size[1] // EVIDENCE["font"]["grid"][1], EVIDENCE["font"]["cell"])
+        widths = [int(v) for v in re.findall(
+            r"\d+", text.split("AdvanceWidthsTable = {", 1)[1].split("}", 1)[0])]
+        self.assertEqual(len(widths), 64 * 46)
+        self.assertTrue(all(1 <= v <= EVIDENCE["font"]["cell"] for v in widths))
+        charset = (REPO / "tools/data/sghd_charset.utf8").read_text(encoding="utf-8")
+        self.assertEqual(len(charset), EVIDENCE["font"]["charset_glyphs"])
+        self.assertEqual(45 * 64 + EVIDENCE["font"]["last_row_inked_cells"], len(charset))
+
+    def test_lay_settings(self):
+        game = (SGHD / "game.lua").read_text()
+        self.assertEqual(EVIDENCE["lay"]["byte_order"], "little")
+        self.assertRegex(game, r"LayFileBigEndian = false")
+        self.assertEqual(EVIDENCE["lay"]["tex_coords"], "pixels")
+        self.assertRegex(game, r"LayFileTexXMultiplier = 1;")
+        self.assertRegex(game, r"LayFileTexYMultiplier = 1;")
+        for sample in EVIDENCE["lay"]["samples"]:
+            # 8-byte header, 12-byte states, 16-byte vertices, 1 trailing byte each
+            self.assertEqual(8 + 12 * sample["states"] + 17 * sample["vertices"], sample["bytes"])
+
+    def test_every_phone_subtype_is_parsed(self):
+        body = (REPO / "src/vm/inst_sghd.cpp").read_text().split("VmInstruction(InstPhoneSGHD)")[1]
+        body = body.split("VmInstruction(", 1)[0]
+        handled = {int(v, 16) for v in re.findall(r"case (0x[0-9A-Fa-f]+):", body)}
+        used = {int(k.split()[2], 16) for k in EVIDENCE["phone_subtypes"]
+                if k.startswith("10 37")}
+        self.assertEqual(used - handled, set())
+
+
 if __name__ == "__main__":
     unittest.main()

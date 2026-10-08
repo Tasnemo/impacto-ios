@@ -22,6 +22,9 @@ inline std::vector<uint32_t> StoryScriptIDs;
 // save stores (SaveDataType::SGHD).
 inline std::vector<uint32_t> FlagWorkRanges;
 inline std::vector<uint32_t> ScrWorkRanges;
+// Same, for the global (system) data saved once per file (SGHD, optional).
+inline std::vector<uint32_t> SystemFlagWorkRanges;
+inline std::vector<uint32_t> SystemScrWorkRanges;
 inline std::vector<Impacto::SaveSystem::ScriptMessageDataPair>
     ScriptMessageData;
 inline uint16_t AlbumEvData[MaxAlbumEntries][MaxAlbumSubEntries];
