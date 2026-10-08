@@ -48,6 +48,7 @@ void Configure() {
 
   TryGetMember<bool>("ExitWhenThreadsEnd", ExitWhenThreadsEnd);
   ExitCodeScrWork = TryGetMember<int>("ExitCodeScrWork");
+  TryGetMember<float>("StallReportSeconds", StallReportSeconds);
 
   Pop();
 }

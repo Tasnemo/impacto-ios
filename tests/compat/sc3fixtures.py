@@ -451,6 +451,8 @@ SGHD_LAYOUTS = {
     (0x10, 0x24): ("Unk1024", 1, lambda t: "E E" if t[0] == 0 else ""),
     (0x10, 0x27): ("Unk1027", 1, lambda t: "E E" if t[0] == 1 else "E"),
     (0x10, 0x33): ("GroupTips", 1, lambda t: "H H" if t[0] == 0 else ""),
+    (0x10, 0x34): ("Unk1034", 0, "B"),
+    (0x10, 0x36): ("Nop3", 0, "B"),
     (0x10, 0x37): ("Group1037", 1, _sub({
         0x00: "B E", 0x01: "B E", 0x02: "B E H", 0x03: "B E H",
         0x04: "H H H H H H", 0x0F: "E", 0x10: "E", 0x12: "E E",
@@ -714,6 +716,25 @@ def sghd_phone_test_script() -> bytes:
                       E(128))                  # six expressions (census v2)
                 + ins(0x10, 0x37, u8(0x1E))    # no arguments
                 + sghd_jump(1))
+    return b.build()
+
+
+def sghd_title_startup_script(sleep_frames: int = 360) -> bytes:
+    """Thread 08: 10 34 (TitleMenu, one type byte) and 10 36 (one byte) as
+    the Steam scripts encode them, then a Sleep long enough for the stall
+    report (profiles/sghd/vm.lua StallReportSeconds).
+
+    Exit status (ScrWork[4000] in sghd-harness): 34 when every instruction
+    was consumed with its census layout and nothing blocked forever. With the
+    old CHAOS;HEAD handler the first 10 34 blocked for good (the harness then
+    times out); with InstBGeffect the 10 36 type 0 read four expressions."""
+    b = ScxBuilder()
+    b.add_label(ins(0x10, 0x34, u8(0))           # TitleMenu Init
+                + ins(0x10, 0x34, u8(1))         # TitleMenu Main
+                + ins(0x10, 0x34, u8(2))
+                + ins(0x10, 0x36, u8(0))         # Nop3: one byte only
+                + ins(0x00, 0x05, expr(sleep_frames))  # Sleep
+                + sghd_assign_scrwork(4000, 34) + sghd_end_of_script())
     return b.build()
 
 

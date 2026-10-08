@@ -187,8 +187,9 @@ void Init() {
 bool LoadScript(uint32_t bufferId, uint32_t scriptId) {
   Io::FileMeta meta;
   Io::VfsGetMeta("script", scriptId, &meta);
-  ImpLogSlow(LogLevel::Debug, LogChannel::VM, "Loading script \"{:s}\"\n",
-             meta.FileName);
+  ImpLog(LogLevel::Info, LogChannel::VM,
+         "Loading script \"{:s}\" (id {:d}) into buffer {:d}\n", meta.FileName,
+         scriptId, bufferId);
 
   void* file;
   int64_t fileSize;
@@ -289,6 +290,48 @@ static void SortThreadExecTable() {
   }
 }
 
+// Bring-up diagnostic (profile root.Vm.StallReportSeconds, 0 = off): log
+// once per position a script thread that has ended every frame at the same
+// instruction for that long, i.e. one blocked on input, a menu, a flag or a
+// polling loop. Release builds hide most stub logs (ImpLogSlow), so this is
+// how a real-data run shows where the scripts wait.
+static void ReportStalledThreads(float dt) {
+  if (Profile::Vm::StallReportSeconds <= 0.0f) return;
+  struct StallState {
+    uint32_t Id = UINT32_MAX;
+    uint32_t ScriptBufferId = 0;
+    uint32_t IpOffset = 0;
+    float Time = 0.0f;
+    bool Reported = false;
+  };
+  static StallState states[MaxThreads];
+
+  for (int i = 0; ThreadTable[i]; i++) {
+    Sc3VmThread* thread = ThreadTable[i];
+    if (thread->Flags & TF_Destroy) continue;
+    StallState& state = states[thread - ThreadPool];
+    if (state.Id != thread->Id ||
+        state.ScriptBufferId != thread->ScriptBufferId ||
+        state.IpOffset != thread->IpOffset) {
+      state = {thread->Id, thread->ScriptBufferId, thread->IpOffset};
+      continue;
+    }
+    state.Time += dt;
+    if (state.Reported || state.Time < Profile::Vm::StallReportSeconds)
+      continue;
+    state.Reported = true;
+    uint8_t const* ip = thread->GetIp();
+    ImpLog(LogLevel::Info, LogChannel::VM,
+           "Script thread {:d} (group {:d}) has not advanced for {:.0f} s: "
+           "script \"{:s}\" (buffer {:d}) at {:#x}, next opcode "
+           "{:02x}:{:02x}, call depth {:d}\n",
+           thread->Id, thread->GroupId, state.Time,
+           LoadedScriptMetas[thread->ScriptBufferId].FileName,
+           thread->ScriptBufferId, thread->IpOffset, ip[0], ip[1],
+           thread->CallStackDepth);
+  }
+}
+
 void Update(float dt) {
   CreateThreadExecTable();
   SortThreadExecTable();
@@ -297,6 +340,7 @@ void Update(float dt) {
   while (ThreadTable[cnt]) {
     RunThread(ThreadTable[cnt++], dt);
   }
+  ReportStalledThreads(dt);
 
   cnt = 0;
   while (ThreadTable[cnt]) {

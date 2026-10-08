@@ -796,6 +796,51 @@ class SghdPhoneProbe(unittest.TestCase):
                       self.probe.log)
 
 
+@unittest.skipUnless(os.environ.get("IMPACTO_BIN"),
+                     "set IMPACTO_BIN=/path/to/impacto to run runtime probes")
+class SghdTitleStartupProbe(unittest.TestCase):
+    """Thread 08 (first real boot): 10 34 takes one type byte and no longer
+    waits for a title menu that SGHD does not have; 10 36 takes one byte;
+    a thread parked at one instruction is reported (StallReportSeconds) and
+    script loads are logged at Info level."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.blob = fx.sghd_title_startup_script(sleep_frames=360)
+        cls.probe = run_probe(game="sghd-harness", script=cls.blob,
+                              seconds=40.0)
+
+    def test_runs_through_and_exits(self):
+        self.assertEqual(self.probe.returncode, 34,
+                         self.probe.stdout[-1500:] + self.probe.log[-2500:])
+
+    def test_trace_matches_census_layouts(self):
+        trace = self.probe.vm_trace()
+        # the Sleep re-executes once per frame; collapse repeated addresses
+        ops = [op for i, (adr, op) in enumerate(trace)
+               if i == 0 or adr != trace[i - 1][0]]
+        self.assertEqual(ops[:4], ["10:34"] * 3 + ["10:36"])
+        self.assertEqual(ops[4:], ["00:05", "00:00"])
+        self.assertEqual([op for _, op in trace].count("10:34"), 3)
+        self.assertNotIn("is not part of the SGHD instruction set", self.probe.log)
+        for kind in (0, 1, 2):
+            self.assertIn(f"STUB instruction TitleMenu(type: {kind})", self.probe.log)
+
+    def test_stall_is_reported_once_with_position(self):
+        # three 3-byte 10 34 and one 3-byte 10 36 precede the Sleep
+        sleep_at = fx.scx_label_address(self.blob, 0) + 4 * 3
+        self.assertEqual(self.blob[sleep_at:sleep_at + 2], bytes([0x00, 0x05]))
+        lines = re.findall(r"Script thread \d+ \(group \d+\) has not advanced "
+                           r"for 5 s: script \"[^\"]*\" \(buffer 0\) at "
+                           r"(0x[0-9a-f]+), next opcode ([0-9a-f]{2}:[0-9a-f]{2})",
+                           self.probe.log)
+        self.assertEqual(lines, [(hex(sleep_at), "00:05")], self.probe.log[-3000:])
+
+    def test_script_load_is_logged_at_info(self):
+        self.assertRegex(self.probe.log,
+                         r"INFO: .*Loading script \"[^\"]*\" \(id 2\) into buffer 0")
+
+
 def main(argv: list[str]) -> int:
     if not os.environ.get("IMPACTO_BIN"):
         print("IMPACTO_BIN not set; nothing to do", file=sys.stderr)

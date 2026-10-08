@@ -19,7 +19,7 @@ VmInstruction(InstUnknownSGHD);
 VmInstruction(InstNopSGHD);
 // 00 4B WaitForSomething004B (no arguments, semantics unknown).
 VmInstruction(InstStubSGHD);
-// 00 35, 00 41, 01 08, 01 0A, 10 1A, 10 3F: one byte argument.
+// 00 35, 00 41, 01 08, 01 0A, 10 1A, 10 36, 10 3F: one byte argument.
 VmInstruction(InstByteArgStubSGHD);
 
 VmInstruction(InstUnk004CSGHD);
@@ -35,6 +35,8 @@ VmInstruction(InstUnk0107SGHD);
 VmInstruction(InstCheckpointSGHD);
 VmInstruction(InstEncyclopediaSGHD);
 VmInstruction(InstPhoneSGHD);
+// 10 34: type byte; never waits, yields the frame (no Steam title menu yet).
+VmInstruction(InstTitleMenuSGHD);
 // 10 3A: six expressions in the Steam scripts (Thread 06/07 census); the
 // sgps3 handler InstUnk103A reads a type byte and desyncs.
 VmInstruction(InstUnk103ASGHD);

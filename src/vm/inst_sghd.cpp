@@ -361,6 +361,23 @@ VmInstruction(InstPhoneSGHD) {
   StubOnce(fmt::format("Phone(type: {:#x})", type), args);
 }
 
+// 10 34: one type byte in the Steam scripts (sc3ntist Unk1034, confirmed by
+// the census over all 190 scripts). The sgps3 table used the CHAOS;HEAD
+// handler InstTitleMenuOld, which reads no argument (desync) and blocks
+// until an engine title menu reports a choice; with no SGHD title menu that
+// wait can never end. The layout is RNE's TitleMenu(type), but the Steam
+// title protocol (which ScrWork receives the choice) is not established, so
+// this consumes the byte and never waits: the script continues with its own
+// menu variables untouched. It yields the rest of the frame, so a script
+// that polls the menu in a loop cannot freeze the engine inside one frame
+// (the stall report then shows the loop).
+VmInstruction(InstTitleMenuSGHD) {
+  StartInstruction;
+  PopUint8(type);
+  StubOnce(fmt::format("TitleMenu(type: {:d})", type));
+  BlockThread;
+}
+
 VmInstruction(InstUnk103ASGHD) {
   StartInstruction;
   PopExpression(arg1);

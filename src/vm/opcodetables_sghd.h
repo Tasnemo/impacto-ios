@@ -591,9 +591,9 @@ InstructionProc inline constexpr OpcodeTableUser1_SGHD[256] = {
     InstGeotag,            // 10 31
     InstNameID,            // 10 32
     InstTips,              // 10 33
-    InstTitleMenuOld,      // 10 34
+    InstTitleMenuSGHD,     // 10 34
     InstUnknownSGHD,       // 10 35
-    InstBGeffect,          // 10 36
+    InstByteArgStubSGHD,   // 10 36
     InstPhoneSGHD,         // 10 37
     InstUnk1038Darling,    // 10 38
     InstTwipo,             // 10 39

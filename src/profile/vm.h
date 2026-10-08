@@ -40,6 +40,9 @@ inline int SpeakerPortraitsScrWorkOffset = 8;
 // is left, optionally using ScrWork[ExitCodeScrWork] as the exit status.
 inline bool ExitWhenThreadsEnd = false;
 inline std::optional<int> ExitCodeScrWork;
+// Real-data bring-up: log script threads stuck at one instruction for this
+// many seconds (0 = off). See ReportStalledThreads in src/vm/vm.cpp.
+inline float StallReportSeconds = 0.0f;
 
 void Configure();
 

@@ -25,6 +25,13 @@ Sections (each can be selected with --scripts / --assets / --exe):
   chara.mpk .lay entry.
 * exe: offsets of the movie base names inside Game.exe, in file order (the
   movie id -> file mapping lives in the executable).
+* context (Thread 08, only when asked for): every use of the given opcodes
+  with the 6 preceding and 16 following decoded instructions, e.g. the title
+  menu protocol around 10 34:
+
+    python tools\\sghd_census.py "<STEINS;GATE folder>" --context=10:34,00:44 > sghd-context.txt
+
+  "--context" alone means 10:34,00:44,00:53.
 
 Only opcode names, numbers, sizes and offsets are printed. Dialogue text is
 never decoded: string arguments are printed as string-table indices only.
@@ -854,6 +861,49 @@ def exe_report(root: Path) -> list[str]:
     return out
 
 
+DEFAULT_CONTEXT = ((0x10, 0x34), (0x00, 0x44), (0x00, 0x53))
+
+
+def parse_context(argv: list[str]):
+    """Opcode slots from --context[=gg:oo,...]; None when not requested."""
+    for a in argv:
+        if a == "--context":
+            return DEFAULT_CONTEXT
+        if a.startswith("--context="):
+            return tuple(tuple(int(x, 16) for x in s.split(":"))
+                         for s in a.split("=", 1)[1].split(",") if s)
+    return None
+
+
+def context_report(root: Path, slots, before: int = 6,
+                   after: int = 16) -> list[str]:
+    path = root / "USRDIR" / "script.mpk"
+    wanted = set(slots)
+    out = ["## Context of " + ", ".join(slot_text(s) for s in slots)
+           + f" ({before} before, {after} after; numbers only)"]
+    if not path.exists():
+        return out + ["  script.mpk not found"]
+    for entry in mpk_entries(path):
+        name = entry[1]
+        if not name.upper().endswith(".SCX"):
+            continue
+        try:
+            insts = walk_script(mpk_read(path, entry))[0]
+        except DecodeError:
+            continue
+        for i, (label_id, pos, slot, iname, args) in enumerate(insts):
+            if slot not in wanted:
+                continue
+            out.append(f"### {name} label{label_id} @{pos:#x}: "
+                       f"{slot_text(slot)} {iname} {fmt_args(args)}")
+            for j in range(max(0, i - before), min(len(insts), i + after + 1)):
+                l2, p2, s2, n2, a2 = insts[j]
+                mark = "<" if j < i else ">" if j > i else "*"
+                out.append(f"  {mark} label{l2} @{p2:#x} {slot_text(s2)} {n2} "
+                           f"{fmt_args(a2)}")
+    return out
+
+
 def main(argv: list[str]) -> int:
     args = [a for a in argv if not a.startswith("--")]
     if len(args) != 1:
@@ -863,9 +913,14 @@ def main(argv: list[str]) -> int:
     if not (root / "USRDIR").is_dir():
         print(f"no USRDIR under {root}", file=sys.stderr)
         return 2
+    context = parse_context(argv)
     picked = [s for s in ("--scripts", "--assets", "--exe") if s in argv]
-    picked = picked or ["--scripts", "--assets", "--exe"]
+    if not picked and context is None:
+        picked = ["--scripts", "--assets", "--exe"]
     print("# sghd census (numbers/names only; private, do not publish)")
+    if context is not None:
+        print()
+        print("\n".join(context_report(root, context)))
     for flag, fn in (("--scripts", scripts_report), ("--assets", assets_report),
                      ("--exe", exe_report)):
         if flag in picked:

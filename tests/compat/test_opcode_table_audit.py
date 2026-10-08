@@ -144,7 +144,10 @@ SGHD_WIRING = {
 # Thread 06: slots the first owner census proved wrong (not in the Thread 03
 # gap list; evidence in docs/sghd-decode-integrity.md and
 # fixtures/sghd_steam_evidence.json "census_layouts").
-CENSUS_WIRING = {"10 3A": "InstUnk103ASGHD"}
+CENSUS_WIRING = {"10 3A": "InstUnk103ASGHD",
+                 # Thread 08 (first real boot): fixed one-byte slots that
+                 # SghdFixedLayoutAudit found the sgps3 handlers misread
+                 "10 34": "InstTitleMenuSGHD", "10 36": "InstByteArgStubSGHD"}
 # shared handlers kept in place; the SGHD layout lives in a guarded branch
 SGHD_BRANCHED = {"InstSel", "InstSetRevMes", "InstCHAload", "InstSaveMenu",
                  "InstLoadData", "InstTips"}
@@ -199,6 +202,70 @@ class SghdOpcodeTableAudit(unittest.TestCase):
         evidence = json.loads((FIXTURES / "sghd_steam_evidence.json").read_text())
         self.assertEqual(evidence["census_layouts"]["10 3A"]["layout"],
                          "E E E E E E")
+
+
+# Byte width of each census layout token / impacto Pop macro. Labels, return
+# ids, string indices and raw u16 all take two bytes; E is an expression.
+CENSUS_TOKEN = {"B": "B", "E": "E", "H": "H", "L": "H", "R": "H", "S": "H"}
+POP_TOKEN = {"PopUint8": "B", "PopExpression": "E", "ExpressionEval": "E",
+             "PopUint16": "H", "PopLocalLabel": "H", "PopFarLabel": "H",
+             "PopString": "H"}
+# Fixed-layout slots whose handler pops differ only inside a branch that is
+# not taken for SGHD (reviewed in Thread 08); value = why it is safe.
+FIXED_LAYOUT_EXCEPTIONS = {
+    "00 18": "InstMemberWrite: PopUint8 only when noExpressions (not SGHD)",
+    "00 26": "InstSSEplay: channel byte only for CHN",
+    "10 13": "InstOption: extra expression only for CHLCC type 4",
+    "10 29": "InstSetEVflag: leading byte only for MO8/CHN",
+}
+
+
+class SghdFixedLayoutAudit(unittest.TestCase):
+    """Thread 08: every SGHD slot with a fixed (untyped) census layout must
+    be read by a handler that pops the same byte classes in the same order.
+
+    The census layout table (tools/sghd_census.py) decoded every reachable
+    instruction of the 190 Steam scripts without error (Thread 07), so it is
+    the reference. Thread 04 only audited the 37 slots documented in Thread
+    03 and missed 10 34 (CHAOS;HEAD TitleMenuOld: no byte, blocks on a title
+    menu) and 10 36 (BGeffect: up to four expressions after the byte)."""
+
+    @classmethod
+    def setUpClass(cls):
+        import sys
+        sys.path.insert(0, str(REPO / "tools"))
+        import sghd_census
+        cls.layouts = sghd_census.ALL_LAYOUTS
+        cls.table = load_table("sghd", "SGHD")
+        cls.bodies = load_handler_bodies()
+
+    def handler_tokens(self, handler: str) -> str:
+        calls = re.findall(r"\b(Pop\w+|ExpressionEval)\(", self.bodies[handler])
+        return " ".join(POP_TOKEN[c] for c in calls if c in POP_TOKEN)
+
+    def test_fixed_layout_slots_consume_census_bytes(self):
+        mismatched = {}
+        for (group, opcode), entry in self.layouts.items():
+            if len(entry) != 2:  # typed layouts are covered by probes
+                continue
+            slot = f"{group:02X} {opcode:02X}"
+            want = " ".join(CENSUS_TOKEN[t] for t in entry[1].split())
+            got = self.handler_tokens(self.table[slot])
+            if got != want and slot not in FIXED_LAYOUT_EXCEPTIONS:
+                mismatched[slot] = (entry[0], want, self.table[slot], got)
+        self.assertEqual(mismatched, {})
+
+    def test_exceptions_are_still_branch_only(self):
+        for slot, why in FIXED_LAYOUT_EXCEPTIONS.items():
+            with self.subTest(slot=slot):
+                body = self.bodies[self.table[slot]]
+                self.assertRegex(body, r"if \(|switch \(", why)
+
+    def test_title_menu_slot_never_waits(self):
+        # yields the frame (BlockThread) but never re-executes itself
+        body = self.bodies[self.table["10 34"]]
+        self.assertNotIn("ResetInstruction", body)
+        self.assertIn("PopUint8(type)", body)
 
 
 if __name__ == "__main__":

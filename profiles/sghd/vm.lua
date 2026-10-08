@@ -10,4 +10,7 @@ root.Vm = {
     ScrWorkChaOffsetStructSize = 10,
     ScrWorkBgStructSize = 20,
     ScrWorkBgOffsetStructSize = 10,
+
+    -- Bring-up diagnostic: log where a script thread has waited this long.
+    StallReportSeconds = 5,
 };

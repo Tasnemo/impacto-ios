@@ -280,6 +280,25 @@ class CensusTool(unittest.TestCase):
     def test_audio_codecs(self):
         self.assertIn("voice.mpk: not-ogg:52494646 x1, ogg-vorbis x2", self.out)
 
+    def test_context_mode_lists_uses_with_neighbours(self):
+        root = Path(self.tmp.name)
+        proc = subprocess.run([sys.executable, str(TOOL), str(root),
+                               "--context=10:37"],
+                              capture_output=True, text=True)
+        self.assertEqual(proc.returncode, 0, proc.stderr)
+        self.assertNotIn("## Scripts", proc.stdout)  # context only
+        self.assertIn("## Context of 10 37", proc.stdout)
+        self.assertIn("### _STARTUP_WIN.SCX label0 @", proc.stdout)
+        self.assertIn("  * label0 @", proc.stdout)
+        self.assertIn("10 37 Group1037 type=0x14 (1) (2) (3) (4)", proc.stdout)
+        self.assertRegex(proc.stdout, r"  [<>] label\d+ @0x")
+        self.assertNotIn("SECRET", proc.stdout)
+        self.assertEqual(census.parse_context(["--context"]),
+                         census.DEFAULT_CONTEXT)
+        self.assertEqual(census.parse_context(["--context=10:34,00:44"]),
+                         ((0x10, 0x34), (0x00, 0x44)))
+        self.assertIsNone(census.parse_context(["--scripts"]))
+
     def test_exe_movie_order(self):
         section = self.out.split("## Game.exe")[1]
         names = [line.split()[1] for line in section.strip().splitlines()[1:]]
