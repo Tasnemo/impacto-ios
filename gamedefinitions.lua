@@ -41,6 +41,12 @@ root.GameDefinitions = {
     LauncherOrderId = 2,
     GameProfile = root.BasePaths.RootProfilesDir .. "/rne/game.lua",
   },
+  sghd = {
+    Hidden = true,
+    Name = "STEINS;GATE (Steam, work in progress)",
+    LauncherOrderId = 9,
+    GameProfile = root.BasePaths.RootProfilesDir .. "/sghd/game.lua",
+  },
   characterviewer = {
     Hidden = true,
     Name = "Character Viewer",

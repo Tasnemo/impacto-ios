@@ -17,6 +17,7 @@
 #include "opcodetables_dash.h"
 #include "opcodetables_cc.h"
 #include "opcodetables_sgps3.h"
+#include "opcodetables_sghd.h"
 #include "opcodetables_chn.h"
 #include "../profile/game.h"
 #include "../profile/vm.h"
@@ -117,6 +118,12 @@ void Init() {
       OpcodeTableSystem = OpcodeTableSystem_SGPS3;
       OpcodeTableGraph = OpcodeTableGraph_SGPS3;
       OpcodeTableUser1 = OpcodeTableUser1_SGPS3;
+      break;
+    }
+    case InstructionSet::SGHD: {
+      OpcodeTableSystem = OpcodeTableSystem_SGHD;
+      OpcodeTableGraph = OpcodeTableGraph_SGHD;
+      OpcodeTableUser1 = OpcodeTableUser1_SGHD;
       break;
     }
     case InstructionSet::MO8: {

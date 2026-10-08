@@ -17,6 +17,11 @@ remain valid there.
 ## Critical
 
 ### C1 — No game definition / profile for the Steam release
+- **Status (Thread 04 Task 1):** resolved for the asset-free path. `sghd`
+  is registered (hidden) in `gamedefinitions.lua`; `profiles/sghd/` reaches
+  "Initializing SC3 virtual machine" with the synthetic fixture and no
+  patches (`SghdRuntimeProbe`). Sprite ids and `StartScript` are still
+  placeholders until the owner's Steam listing exists (C5).
 - **Missing:** `gamedefinitions.lua` has no SG entry (runtime: `-g sgps3` →
   `std::out_of_range`, exit 134). `profiles/sgps3` targets the PS3 build and
   is bit-rotted: `Expected member LoadingStar`
@@ -42,6 +47,8 @@ remain valid there.
   files, the title spritesheet loads.
 
 ### C2 — `UseReturnIds = false` desynchronises every `Call`
+- **Status (Thread 04 Task 1):** resolved — `profiles/sghd/game.lua` sets
+  `UseReturnIds = true`; runtime probe shows `Return` resumes at Call+6.
 - **Missing:** SGHD `Call` (`00 0B`), `CallFar` (`00 0D`), `CallIfFlag` (`00
   54`), `CallFarIfFlag` (`00 56`) carry a u16 return-address id; impacto only
   reads it when `Profile::Vm::UseReturnIds` (`src/vm/inst_controlflow.cpp:59-63`).

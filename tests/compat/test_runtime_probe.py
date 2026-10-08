@@ -95,18 +95,28 @@ def probe_script() -> bytes:
     return b.build()
 
 
-def write_gamedata(root: Path) -> None:
-    gd = root / "gamedata" / "sgps3"
+# Archive file names per game id (profiles/<game>/vfs.lua)
+ARCHIVES = {
+    "sgps3": {m: f"{m}.CPK" for m in MOUNTS},
+    "sghd": {"SCRIPT": "script.mpk", "SYSTEM_US": "system.mpk",
+             "BGM": "bgm.mpk", "SE": "se.mpk", "VOICE": "voice.mpk",
+             "BG": "bg.mpk", "CHARA": "chara.mpk", "MASK": "mask.mpk"},
+}
+
+
+def write_gamedata(root: Path, game: str = "sgps3",
+                   script: bytes | None = None) -> None:
+    gd = root / "gamedata" / game
     gd.mkdir(parents=True)
     png = tiny_png()
-    for mount in MOUNTS:
+    for mount, name in ARCHIVES[game].items():
         if mount == "SYSTEM_US":
             files = [fx.MpkFile(i, f"sheet{i}.png", png) for i in SYSTEM_SHEET_IDS]
         elif mount == "SCRIPT":
-            files = [fx.MpkFile(2, "probe.scx", probe_script())]
+            files = [fx.MpkFile(2, "probe.scx", script or probe_script())]
         else:
             files = [fx.MpkFile(0, "empty.bin", b"\0" * 16)]
-        (gd / f"{mount}.CPK").write_bytes(fx.build_mpk(files))
+        (gd / name).write_bytes(fx.build_mpk(files))
 
 
 def write_profiles(root: Path, use_return_ids: bool) -> None:
@@ -141,16 +151,27 @@ root.SysMesBoxDisplay.LoadingStarsFadeDuration = 0.533;
                                    "Type = TitleMenuType.None"))
 
 
-def write_config(root: Path) -> None:
+def write_config(root: Path, game: str = "sgps3") -> None:
+    """basepaths + game definitions.
+
+    sgps3 is not registered upstream, so the probe writes its own definition
+    and a patched profile copy.  sghd must work from the committed files
+    unmodified: profiles/ and gamedefinitions.lua are used straight from the
+    repository.
+    """
     (root / "saves").mkdir()
+    profiles = PROFILES if game == "sghd" else root / "profiles"
     (root / "basepaths.lua").write_text(f"""root.BasePaths = {{
   RootInstallDir = "./",
   RootGamedataDir = "{root}/gamedata",
-  RootProfilesDir = "{root}/profiles",
+  RootProfilesDir = "{profiles}",
   RootPatchesDir = "./patches",
   RootSavesDir = "{root}/saves",
 }};
 """)
+    if game == "sghd":
+        shutil.copy(REPO / "gamedefinitions.lua", root / "gamedefs.lua")
+        return
     (root / "gamedefs.lua").write_text("""root.GameDefinitions = {
   sgps3 = {
     Name = "STEINS;GATE (sgps3 runtime probe)",
@@ -178,15 +199,17 @@ class ProbeResult:
                            self.log)]
 
 
-def run_probe(use_return_ids: bool, seconds: float = 4.0) -> ProbeResult:
+def run_probe(use_return_ids: bool = False, seconds: float = 4.0,
+              game: str = "sgps3", script: bytes | None = None) -> ProbeResult:
     binary = Path(os.environ["IMPACTO_BIN"]).resolve()
     root = Path(tempfile.mkdtemp(prefix="impacto-probe-"))
     try:
-        write_gamedata(root)
-        write_profiles(root, use_return_ids)
-        write_config(root)
+        write_gamedata(root, game, script)
+        if game == "sgps3":
+            write_profiles(root, use_return_ids)
+        write_config(root, game)
         log = root / "impacto.log"
-        cmd = [str(binary), "-g", "sgps3",
+        cmd = [str(binary), "-g", game,
                "-bp", str(root / "basepaths.lua"),
                "-gc", str(root / "gamedefs.lua"),
                "-uc", str(root / "user.toml"),
@@ -250,6 +273,33 @@ class SgPs3RuntimeProbe(unittest.TestCase):
         self.assertGreater(len(spins), 1000, "InstDummy should re-execute every VM tick")
         self.assertEqual(len(set(spins)), 1, "IP never advances past the Dummy slot")
         self.assertEqual(self.retids.returncode, 124, "engine must be killed by the timeout")
+
+
+@unittest.skipUnless(os.environ.get("IMPACTO_BIN"),
+                     "set IMPACTO_BIN=/path/to/impacto to run runtime probes")
+class SghdRuntimeProbe(unittest.TestCase):
+    """The committed sghd profile, unpatched, against the same fixture."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.probe = run_probe(game="sghd")
+
+    def test_all_archives_are_mounted_as_mpk(self):
+        for name in ARCHIVES["sghd"].values():
+            self.assertIn(f'{name}" as MPK', self.probe.log, name)
+        self.assertNotIn("Could not open spritesheet", self.probe.log)
+
+    def test_vm_starts_without_profile_patches(self):
+        self.assertIn("Initializing SC3 virtual machine", self.probe.log)
+        self.assertNotIn("Expected member", self.probe.log)
+
+    def test_return_resumes_right_after_call(self):
+        trace = self.probe.vm_trace()
+        ops = [op for _, op in trace]
+        self.assertEqual(ops[:3], ["00:12", "00:0b", "00:0e"], trace[:4])
+        self.assertEqual(trace[3][0], trace[1][0] + 6,
+                         "Return resumes at Call+6 (UseReturnIds = true)")
+        self.assertEqual(ops[3], "00:5f", trace[:4])
 
 
 def main() -> int:

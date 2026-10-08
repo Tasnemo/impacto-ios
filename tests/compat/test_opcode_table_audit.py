@@ -102,8 +102,14 @@ class OpcodeTableAudit(unittest.TestCase):
 
     def test_sgps3_is_not_a_launchable_game_definition(self):
         defs = (REPO / "gamedefinitions.lua").read_text()
-        self.assertNotRegex(defs, r"^\s*sgps3\s*=", )
-        self.assertNotIn("sghd", defs)
+        self.assertNotRegex(defs, r"(?m)^\s*sgps3\s*=")
+        # Thread 04 Task 1 registered the Steam release as its own game id
+        self.assertRegex(defs, r"(?m)^\s*sghd\s*=")
+
+    def test_sghd_profile_selects_sghd_table_with_return_ids(self):
+        profile = (REPO / "profiles" / "sghd" / "game.lua").read_text()
+        self.assertIn("GameInstructionSet = InstructionSet.SGHD", profile)
+        self.assertRegex(profile, r"UseReturnIds\s*=\s*true")
 
 
 if __name__ == "__main__":
