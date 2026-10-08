@@ -18,6 +18,7 @@
 * `vendor/squish`: [Squish](http://sjbrown.co.uk/?code=squish)
 * `vendor/mspack`: [libmspack](https://www.cabextract.org.uk/libmspack/), only includes LZX decompressor to reduce code size
 * `vendor/mio`: [mio](https://github.com/vimpunk/mio), except for platforms without mmap support
+* `tools/data/sghd_charset.utf8` (and the generated `profiles/sghd/charset.lua`): `resources/sghd/charset.utf8` from [sc3tools](https://github.com/CommitteeOfZero/sc3tools) (data file, not compiled in)
 
 All third-party code mentioned above is mandatory, included in the build process and compiled into the output executable for impacto on every supported platform and build configuration.
 
@@ -81,6 +82,14 @@ https://github.com/ifeherva/bcndecode/blob/5bc7043002d7b2485c857624f5ef6f55576ba
 >       run: dd bs=1 skip=128 if=bc3_test.dds | ./bcndecode 256 256 3 1 > bc3_test.png
 
 See below for license text.
+
+## sc3tools
+
+https://github.com/CommitteeOfZero/sc3tools/blob/2945fe1a65e9e69c9c39eabcf729fd3895c4998f/resources/sghd/charset.utf8
+
+Copyright (c) Committee of Zero
+
+See below for license text(MIT)
 
 ## Magic Enum
 

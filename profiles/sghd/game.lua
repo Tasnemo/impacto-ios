@@ -30,6 +30,7 @@ include(root.BasePaths.RootProfilesDir .. '/sghd/vfs.lua');
 include(root.BasePaths.RootProfilesDir .. '/sghd/sprites.lua');
 include(root.BasePaths.RootProfilesDir .. '/common/animation.lua');
 include(root.BasePaths.RootProfilesDir .. '/common/achievementnotification.lua');
+include(root.BasePaths.RootProfilesDir .. '/common/charset.lua');
 include(root.BasePaths.RootProfilesDir .. '/sghd/charset.lua');
 include(root.BasePaths.RootProfilesDir .. '/sghd/font.lua');
 include(root.BasePaths.RootProfilesDir .. '/sghd/dialogue.lua');
