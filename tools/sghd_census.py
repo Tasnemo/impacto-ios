@@ -15,6 +15,10 @@ Sections (each can be selected with --scripts / --assets / --exe):
   instruction (10 37 / 10 38) with its numeric arguments and the
   surrounding instructions, movie instructions (playNo arguments), and the
   ScrWork/FlagWork index ranges the scripts touch (save ranges).
+  Since Thread 06 (v2): padding/data after an unconditional end of flow and
+  undecodable label entries are reported separately from real decode errors,
+  real errors come with the preceding instructions and a hex window, and
+  text-style data (01 0E) is dumped.
 * assets: image headers (PNG size/colour type, DDS size/format/mipmaps) of
   every system.mpk entry and the first chara.mpk images; per-glyph ink
   extents of FONT*.PNG; LAY header plausibility (byte order) of the first
@@ -228,6 +232,23 @@ LAYOUTS = {
     (0x10, 0x41): ("Win32_DestroyWindow", ""),
 }
 
+# Slots the Steam scripts use that the sc3ntist table above lacks (Thread 06,
+# first census: labels starting with these opcodes were undecodable).
+# Layouts follow impacto's handlers for the same slots (CHAmove, SetSceneView
+# Flag); 10 3A is "E" because its only use is a complete expression ending
+# exactly 8 bytes in (impacto's sgps3-era handler read a type byte instead).
+EXTRA_LAYOUTS = {
+    (0x10, 0x0D): ("CHAmove", "", {0: "", 1: "E L", 2: "E", 3: "", 4: "E E",
+                                   5: "E E E E E E E"}),
+    (0x10, 0x2E): ("SetSceneViewFlag", "E"),
+    (0x10, 0x3A): ("Unk103A", "E"),
+}
+ALL_LAYOUTS = {**LAYOUTS, **EXTRA_LAYOUTS}
+# unconditional end of control flow: bytes after one of these and before the
+# next label are unreachable (alignment padding or data), not code
+TERMINATORS = {(0x00, 0x00), (0x00, 0x07), (0x00, 0x08), (0x00, 0x0C),
+               (0x00, 0x0E)}
+
 # opcodes impacto parses but only stubs for SGHD (docs/handoff.md)
 IMPACTO_STUBS = {
     (0x00, 0x35), (0x00, 0x41), (0x00, 0x43), (0x00, 0x4B), (0x00, 0x4C),
@@ -240,7 +261,18 @@ MOVIE = {(0x01, 0x22), (0x01, 0x23), (0x01, 0x24), (0x01, 0x26),
          (0x01, 0x27), (0x01, 0x28), (0x01, 0x29), (0x01, 0x2A),
          (0x01, 0x2B)}
 # instructions whose label argument points at data, not code
-DATA_LABEL_OPS = {(0x00, 0x08), (0x00, 0x20), (0x01, 0x0E), (0x01, 0x21)}
+DATA_LABEL_OPS = {(0x00, 0x08), (0x00, 0x20), (0x01, 0x0E), (0x01, 0x21),
+                  (0x10, 0x0D),   # CHAmove type 1: sequence data
+                  (0x10, 0x38)}   # type 0: u16 table (_ATCH.SCX)
+
+
+def data_label_refs(slot, args) -> list[int]:
+    """Labels an instruction names as data rather than as a jump target."""
+    if slot in DATA_LABEL_OPS:
+        return [v for k, v in args if k == "L"]
+    if slot == (0x10, 0x37) and ("T", 4) in args:  # six table labels (_MAIL.SCX)
+        return [v for k, v in args if k == "L"]
+    return []
 
 EXPR_OPS = {
     0x01: "*", 0x02: "/", 0x03: "+", 0x04: "-", 0x05: "%", 0x06: "<<",
@@ -316,7 +348,7 @@ def decode(code: bytes, pos: int):
         toks, p = read_expression(code, pos + 1)
         return (0xFE, 0), "Assign", [("E", toks)], p
     slot = (code[pos], code[pos + 1])
-    entry = LAYOUTS.get(slot)
+    entry = ALL_LAYOUTS.get(slot)
     if entry is None:
         raise DecodeError(f"unrecognized opcode {slot[0]:02X} {slot[1]:02X}")
     p = pos + 2
@@ -418,16 +450,30 @@ def scx_labels(blob: bytes) -> tuple[list[int], int]:
 # scripts
 # --------------------------------------------------------------------------
 
+def hex_context(blob: bytes, pos: int, before: int = 16, after: int = 32) -> str:
+    start = max(0, pos - before)
+    return (f"{start:#x}: {blob[start:pos].hex(' ')} | "
+            f"{blob[pos:pos + after].hex(' ')}")
+
+
 def walk_script(blob: bytes):
-    """Decode every code label; returns (instructions, errors).
+    """Decode every code label; returns (instructions, errors, data labels,
+    notes).
 
     instructions: [(label, addr, slot, name, args)] in address order.
-    Labels referenced as data (jump tables, text styles, string arrays) are
-    skipped in a second pass."""
+    errors: [(label, addr, message, first bytes, context lines)] -- decode
+    failures inside reachable code, i.e. evidence of a wrong layout.
+    notes: [(kind, label, addr, message, first bytes)] -- failures that are
+    not layout evidence: "after-end" (bytes after an unconditional end of
+    flow: padding or data), "padding" (zero bytes before the string table),
+    "entry" (the label's first instruction is undecodable: a data label or an
+    opcode missing from the table).
+    Labels referenced as data (jump tables, text styles, string arrays,
+    LT label-table expressions) are skipped in a second pass."""
     labels, code_end = scx_labels(blob)
 
     def run(skip: set[int]):
-        insts, errors, data_labels = [], [], set()
+        insts, errors, notes, data_labels = [], [], [], set()
         starts = {}  # address -> first label id (labels may share addresses)
         for label_id, addr in enumerate(labels):
             if label_id not in skip and addr < code_end:
@@ -435,26 +481,48 @@ def walk_script(blob: bytes):
         bounds = sorted(set(labels) | {code_end})
         for addr, label_id in sorted(starts.items()):
             end = min(b for b in bounds if b > addr)
-            pos = addr
+            pos, trail = addr, []
+
+            def fail(at: int, msg: str):
+                head = blob[at:at + 8].hex(" ")
+                if trail and trail[-1][2] in TERMINATORS:
+                    notes.append(("after-end", label_id, at, msg, head))
+                elif end == code_end and end - at < 4 and not any(blob[at:end]):
+                    notes.append(("padding", label_id, at, msg, head))
+                elif at == addr:
+                    notes.append(("entry", label_id, at, msg, head))
+                else:
+                    ctx = [f"      < @{p:#x} {slot_text(s)} {n} {fmt_args(a)}"
+                           for _, p, s, n, a in trail[-4:]]
+                    ctx.append("      bytes " + hex_context(blob, at))
+                    errors.append((label_id, at, msg, head, ctx))
+
             while pos < end:
                 try:
                     slot, name, args, nxt = decode(blob, pos)
                 except (DecodeError, IndexError, struct.error) as e:
-                    errors.append((label_id, pos, str(e),
-                                   blob[pos:pos + 8].hex(" ")))
+                    fail(pos, str(e))
                     break
-                insts.append((label_id, pos, slot, name, args))
-                if slot in DATA_LABEL_OPS:
-                    data_labels.update(v for k, v in args if k == "L")
+                if nxt > end:
+                    fail(pos, f"{slot_text(slot)} {name} overran next label "
+                              f"(@{end:#x}) by {nxt - end} bytes")
+                    break
+                inst = (label_id, pos, slot, name, args)
+                insts.append(inst)
+                trail.append(inst)
+                data_labels.update(data_label_refs(slot, args))
+                for kind, value in args:
+                    if kind == "E":
+                        data_labels.update(
+                            value[i + 1] for i, tok in enumerate(value[:-1])
+                            if tok == "LT" and isinstance(value[i + 1], int))
                 pos = nxt
-            if pos > end:
-                errors.append((label_id, end, f"overran next label by {pos - end} bytes", ""))
-        return insts, errors, data_labels
+        return insts, errors, notes, data_labels
 
-    insts, errors, data_labels = run(set())
+    insts, errors, notes, data_labels = run(set())
     if data_labels:
-        insts, errors, _ = run(data_labels)
-    return insts, errors, data_labels
+        insts, errors, notes, _ = run(data_labels)
+    return insts, errors, data_labels, notes
 
 
 # expression arguments that name a flag directly (sc3ntist ExprFlagRef), by
@@ -483,24 +551,30 @@ def scripts_report(root: Path) -> list[str]:
     ops = Counter()
     stubs = defaultdict(Counter)
     phone_kinds = Counter()
-    phone_lines, movie_lines, error_lines = [], [], []
+    phone_lines, movie_lines, error_lines, style_lines = [], [], [], []
     refs = {"W": Counter(), "F": Counter()}
-    per_file = []
+    per_file, entry_lines = [], []
+    note_counts = Counter()
     for entry in mpk_entries(path):
         file_id, name = entry[0], entry[1]
         if not name.upper().endswith(".SCX"):
             continue
         blob = mpk_read(path, entry)
         try:
-            insts, errors, data_labels = walk_script(blob)
+            insts, errors, data_labels, notes = walk_script(blob)
         except DecodeError as e:
             per_file.append(f"  id {file_id:3d} {name:16s} not decodable: {e}")
             continue
         per_file.append(f"  id {file_id:3d} {name:16s} labels {len(scx_labels(blob)[0]):4d}"
                         f"  data-labels {len(data_labels):3d}  instructions {len(insts):6d}"
-                        f"  errors {len(errors)}")
-        for label_id, pos, msg, head in errors:
+                        f"  errors {len(errors)}  notes {len(notes)}")
+        for label_id, pos, msg, head, ctx in errors:
             error_lines.append(f"  {name} label{label_id} @{pos:#x}: {msg}  [{head}]")
+            error_lines.extend(ctx)
+        for kind, label_id, pos, msg, head in notes:
+            note_counts[kind] += 1
+            if kind == "entry":
+                entry_lines.append(f"  {name} label{label_id} @{pos:#x}: {msg}  [{head}]")
         for i, (label_id, pos, slot, iname, args) in enumerate(insts):
             ops[(slot, iname)] += 1
             var_refs(slot, args, refs)
@@ -508,6 +582,12 @@ def scripts_report(root: Path) -> list[str]:
             if slot in IMPACTO_STUBS:
                 key = tuple(v for k, v in args if k in ("B", "T"))
                 stubs[(slot, iname)][key] += 1
+            if slot == (0x01, 0x0E):  # InstantiateTextStyle E L -> 24 x u16
+                label = next(v for k, v in args if k == "L")
+                addr = scx_labels(blob)[0][label]
+                vals = struct.unpack_from("<24h", blob, addr)
+                style_lines.append(f"  {where}: id {fmt_args(args[:1])} "
+                                   + " ".join(str(v) for v in vals))
             if slot in MOVIE:
                 movie_lines.append(f"  {where}: {slot_text(slot)} {iname} {fmt_args(args)}")
             if slot in PHONE:
@@ -521,7 +601,12 @@ def scripts_report(root: Path) -> list[str]:
                     mark = "<" if j < i else ">"
                     phone_lines.append(f"      {mark} @{p2:#x} {slot_text(s2)} {n2} {fmt_args(a2)}")
     out += ["### Per file"] + per_file
-    out += ["### Decode errors (should be empty)"] + (error_lines or ["  none"])
+    out += ["### Decode errors in reachable code (should be empty; each is layout evidence)"]
+    out += error_lines or ["  none"]
+    out += ["### Non-code after an unconditional end of flow / string-table padding (count)"]
+    out += [f"  {k}: {note_counts[k]}" for k in ("after-end", "padding")]
+    out += ["### Labels whose first instruction is undecodable (data or unknown opcode)"]
+    out += entry_lines or ["  none"]
     out += ["### Opcode counts"]
     out += [f"  {slot_text(s)} {n:24s} {c}" for (s, n), c in sorted(ops.items())]
     out += ["### Opcodes impacto only stubs (count per byte/type argument tuple)"]
@@ -532,6 +617,12 @@ def scripts_report(root: Path) -> list[str]:
     out += [f"  {slot_text(s)} type={k:#04x}: {c}" for (s, k), c in sorted(phone_kinds.items())]
     out += ["### Phone/mail instructions with context (< before, > after)"] + phone_lines
     out += ["### Movie instructions"] + (movie_lines or ["  none"])
+    out += ["### Text styles (01 0E data: DisplayMode WindowId WindowPosX/Y "
+            "NameDispMode MaxNameWidth NamePosX/Y NameGlyphW/H MaxLineWidth "
+            "WaitIconDispMode WaitIconPosX/Y TextGlyphW/H RubyGlyphW/H "
+            "LineSpacing RubyLineSpacing RubyDispMode LinefeedSpacing "
+            "NamePosFlags NameLengthL)"]
+    out += style_lines or ["  none"]
     for kind, label in (("W", "ScrWork"), ("F", "FlagWork")):
         out.append(f"### {label} indices referenced by immediates (per 100: count)")
         out.append("  " + " ".join(f"{k}:{v}" for k, v in sorted(refs[kind].items())))
@@ -625,15 +716,26 @@ def dds_info(data: bytes):
     if data[:4] != b"DDS " or len(data) < 128:
         return None
     size, flags, h, w, pitch, depth, mips = struct.unpack_from("<7I", data, 4)
-    pf_flags, fourcc, bits, rmask, gmask, bmask, amask = struct.unpack_from("<I4s5I", data, 80)
+    pf_size, pf_flags, fourcc, bits, rmask, gmask, bmask, amask = struct.unpack_from(
+        "<II4s5I", data, 76)
+    caps1 = struct.unpack_from("<I", data, 108)[0]
     fourcc_text = fourcc.decode("ascii", "replace") if pf_flags & 0x4 else "-"
     extra = ""
     if fourcc == b"DX10":
         extra = f" dxgi={struct.unpack_from('<I', data, 128)[0]} (impacto: unsupported)"
     elif pf_flags & 0x4 and fourcc not in (b"DXT1", b"DXT2", b"DXT3", b"DXT4", b"DXT5"):
         extra = " (impacto: unsupported fourcc)"
+    # header sanity checks of impacto's DDS loader (src/texture/ddsloader.cpp)
+    required = {"size": size == 124, "pfsize": pf_size == 32,
+                "DDSCAPS_TEXTURE": caps1 & 0x1000, "DDSD_CAPS": flags & 0x1,
+                "DDSD_HEIGHT": flags & 0x2, "DDSD_WIDTH": flags & 0x4,
+                "DDSD_PIXELFORMAT": flags & 0x1000}
+    missing = [k for k, ok in required.items() if not ok]
+    if missing:
+        extra += " (impacto: rejected, missing " + ",".join(missing) + ")"
     return (f"DDS {w}x{h} mips {mips} pfflags {pf_flags:#x} fourcc {fourcc_text} "
-            f"bits {bits} masks {rmask:#x}/{gmask:#x}/{bmask:#x}/{amask:#x}{extra}")
+            f"bits {bits} masks {rmask:#x}/{gmask:#x}/{bmask:#x}/{amask:#x} "
+            f"flags {flags:#x} caps {caps1:#x}{extra}")
 
 
 def image_line(name: str, data: bytes) -> str:

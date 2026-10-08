@@ -89,12 +89,14 @@ def census_script() -> bytes:
             + fx.ins(0x00, 0x35, fx.u8(9))                          # stub
             + fx.ins(0x01, 0x0C, fx.u8(0), E(0), fx.u16(s))           # LoadDialogue
             + fx.ins(0x00, 0x08, E(0), fx.u16(1))                    # JumpTable -> data label 1
-            + fx.ins(0x10, 0x38, fx.u8(0), fx.u16(0))
+            + fx.ins(0x10, 0x38, fx.u8(0), fx.u16(1))             # u16 table -> data label 1
+            + fx.ins(0x01, 0x0E, E(0), fx.u16(3))                    # text style -> label 3
             + fx.sghd_assign_scrwork(2123, 5)
             + fx.sghd_end_of_script())
     b.add_label(main)
     b.add_label(b"\xff\xff\xff\xff")                                # data, not code
     b.add_label(bytes([0x20, 0x00]) + fx.sghd_end_of_script())     # unknown opcode
+    b.add_label(struct.pack("<24h", *range(24)))                    # text style data
     return b.build()
 
 
@@ -107,8 +109,9 @@ class CensusLayoutTable(unittest.TestCase):
 
     def test_agrees_with_reference_decoder_on_task2_fixture(self):
         blob = fx.sghd_task2_fixture()
-        insts, errors, _ = census.walk_script(blob)
+        insts, errors, _, notes = census.walk_script(blob)
         self.assertEqual(errors, [])
+        self.assertEqual(notes, [])
         # every instruction the reference decoder sees in label 0, at the same
         # addresses (census additionally decodes the other labels)
         pos = fx.scx_label_address(blob, 0)
@@ -121,11 +124,70 @@ class CensusLayoutTable(unittest.TestCase):
         got = [p for label, p, *_ in insts if label == 0]
         self.assertEqual(got, ref)
 
+    def test_dds_loader_sanity_check_reported(self):
+        good = census.dds_info(dds_dxt5(8, 8))
+        self.assertIn("flags 0x1007 caps 0x1000", good)
+        self.assertNotIn("rejected", good)
+        bad = bytearray(dds_dxt5(8, 8))
+        struct.pack_into("<I", bad, 108, 0)  # no DDSCAPS_TEXTURE
+        self.assertIn("(impacto: rejected, missing DDSCAPS_TEXTURE)", census.dds_info(bytes(bad)))
+
     def test_full_expressions_decode(self):
         # ScrWork[2123] = 5  ->  W 2123 = 5
         blob = fx.sghd_assign_scrwork(2123, 5)
         slot, name, args, nxt = census.decode(blob, 0)
         self.assertEqual((name, args, nxt), ("Assign", [("E", ["W", 2123, "=", 5])], len(blob)))
+
+
+class CensusClassification(unittest.TestCase):
+    """Thread 06: separate layout evidence from padding and data."""
+
+    @staticmethod
+    def script() -> bytes:
+        E = fx.expr
+        b = fx.ScxBuilder()
+        # 0: code, Return, then one stray byte before label 1 (after-end)
+        b.add_label(fx.sghd_assign(1) + fx.sghd_return() + b"\x10")
+        # 1: real mid-code failure: Assign then an unknown opcode
+        b.add_label(fx.sghd_assign(2) + bytes([0x00, 0x60]) + fx.sghd_return())
+        # 2: slots missing from sc3ntist decode with impacto's layouts
+        b.add_label(fx.ins(0x10, 0x0D, fx.u8(1), E(63), fx.u16(4))
+                    + fx.ins(0x10, 0x3A, E(63)) + fx.ins(0x10, 0x2E, E(4300))
+                    + fx.sghd_return())
+        # 3: unreferenced u32 table; 4: CHAmove sequence data
+        b.add_label(struct.pack("<3i", 297, 301, -1))
+        b.add_label(struct.pack("<4H", 1, 0, 360, 60))
+        # 5: last label, EndOfScript and one alignment byte before strings
+        b.add_label(fx.sghd_end_of_script() + b"\x00")
+        return b.build()
+
+    def test_classification(self):
+        blob = self.script()
+        insts, errors, data_labels, notes = census.walk_script(blob)
+        self.assertEqual([(e[0], e[2]) for e in errors],
+                         [(1, "unrecognized opcode 00 60")])
+        self.assertTrue(any("bytes" in line for line in errors[0][4]))
+        self.assertIn(("after-end", 0), [(n[0], n[1]) for n in notes])
+        self.assertIn(("after-end", 5), [(n[0], n[1]) for n in notes])
+        names = [i[3] for i in insts if i[0] == 2]
+        self.assertEqual(names, ["CHAmove", "Unk103A", "SetSceneViewFlag", "Return"])
+        # label 3 is unreferenced data: an entry note, never an error;
+        # label 4 is CHAmove sequence data and is skipped
+        self.assertIn(("entry", 3), [(n[0], n[1]) for n in notes])
+        self.assertEqual(data_labels, {4})
+
+    def test_lt_reference_marks_data_label(self):
+        b = fx.ScxBuilder()
+        # TV 64 = LT(1, TV 63): expression tokens as impacto encodes them
+        def imm(v):
+            return fx.encode_immediate(v) + b"\x0a"
+        b.add_label(b"\xfe\x2d\x0a" + imm(64) + b"\x14\x01\x2b\x0a" + imm(1)
+                    + b"\x2d\x0a" + imm(63) + b"\x00" + fx.sghd_return())
+        b.add_label(struct.pack("<2i", 5, -1))
+        _, errors, data_labels, notes = census.walk_script(b.build())
+        self.assertEqual(errors, [])
+        self.assertEqual(data_labels, {1})
+        self.assertEqual(notes, [])
 
 
 class CensusTool(unittest.TestCase):
@@ -172,15 +234,21 @@ class CensusTool(unittest.TestCase):
         self.assertIn("LoadDialogue type=0x00 (0) str#0", self.out)
 
     def test_data_label_skipped_unknown_opcode_reported(self):
-        self.assertIn("_STARTUP_WIN.SCX label2 @", self.out)
-        self.assertIn("unrecognized opcode 20 00", self.out)
-        self.assertIn("data-labels   1", self.out)
+        entry = self.out.split("### Labels whose first instruction")[1].split("###")[0]
+        self.assertIn("_STARTUP_WIN.SCX label2 @", entry)
+        self.assertIn("unrecognized opcode 20 00", entry)
         self.assertNotIn("label1 @", self.out.split("### Decode errors")[1].split("###")[0])
+
+    def test_text_style_dump(self):
+        section = self.out.split("### Text styles")[1].split("###")[0]
+        self.assertIn("id (0) 0 1 2 3 4 5", section)
+        self.assertIn(" 21 22 23", section)
+        self.assertIn("data-labels   2", self.out)
 
     def test_phone_instruction_with_context(self):
         self.assertIn("10 37 Group1037 type=0x14 (1) (2) (3) (4)", self.out)
         self.assertIn("10 37 type=0x14: 1", self.out)
-        self.assertIn("10 38 Group1038 type=0x00 label0", self.out)
+        self.assertIn("10 38 Group1038 type=0x00 label1", self.out)
         self.assertIn("> @", self.out)  # following instructions listed
 
     def test_movie_and_stub_and_ranges(self):
