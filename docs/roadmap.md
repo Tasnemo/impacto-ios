@@ -6,7 +6,7 @@ after each thread. Modes: Ultra / High / Medium / Low (see `workme.md`).
 | # | Thread | Mode | Branch | Status | Gate |
 |---|---|---|---|---|---|
 | 01 | Upstream architecture & feasibility | Ultra | `phase-00-upstream-analysis` | **Done** (docs only) | Architecture + blockers understood |
-| 02 | Reproducible desktop build | High | `phase-01-desktop-baseline` | **Done**, branch unmerged | Ubuntu build + asset-free launcher and CI verified; no game tested |
+| 02 | Reproducible desktop build | High | `phase-01-desktop-baseline` | **Done**, integrated into `master` | Ubuntu build + asset-free launcher and CI verified; no game tested |
 | 03 | SG desktop compatibility (RE with real Steam files) | Ultra | `phase-02-steins-compatibility` | Next; needs legitimate game evidence | MPK version, movie signature, opcode set, phone/mail semantics documented |
 | 04 | SG desktop implementation | High | `phase-02-steins-compatibility` | Pending | Title → prologue → first phone trigger → save/load on desktop |
 | 05 | iOS architecture & build feasibility | Ultra | `phase-03-ios-feasibility` | Pending | vcpkg `arm64-ios` deps + GL/Metal decision |
@@ -36,5 +36,5 @@ after each thread. Modes: Ultra / High / Medium / Low (see `workme.md`).
   Native Debian 12/GCC 12 cannot compile the pinned OpenAL Soft version.
 - The asset-free launcher is verified; viewer/game profiles were not tested and
   require original data. Do not interpret the green desktop CI as game compatibility.
-- Branch Thread 03 from `origin/phase-01-desktop-baseline` unless this work has
-  been reviewed and merged into `master`. Read the updated handoff first.
+- Thread 02 was shipped to `origin/master` at the user's request. Branch Thread 03
+  from the latest `origin/master`; read the updated handoff first.

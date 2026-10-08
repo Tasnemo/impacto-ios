@@ -19,12 +19,12 @@ Thread 03 has **not** started. This is not proof of game compatibility.
   [51478a26](https://github.com/Tasnemo/impacto-ios/commit/51478a26).
   Smoke logging fix and Ubuntu Docker recipe:
   [a97fb46c](https://github.com/Tasnemo/impacto-ios/commit/a97fb46c).
-  Both are pushed; CI passed on `a97fb46c`. This handoff and the detailed reports
-  are the following documentation-only checkpoint (CI skipped because no build
-  inputs changed); obtain its exact commit with
+  Both are pushed; CI passed on `a97fb46c`. The subsequent documentation-only
+  checkpoints record the reports and shipping state (CI skipped because no build
+  inputs changed); obtain the exact handoff commit with
   `git log -1 --format=%H -- docs/handoff.md`.
-- Thread 02 is **not merged into master**. Start the next branch from
-  `origin/phase-01-desktop-baseline`, or merge after review before branching.
+- Thread 02 is integrated into **origin/master** by the user-authorized Ship
+  request. Start the next branch from the latest `origin/master`.
 - `src/`, profiles, resources and game behavior are unchanged. CMake only pins
   LibAtrac9 instead of fetching moving `master`.
 
@@ -87,7 +87,7 @@ analysis. Do not begin iOS work. Use High later for bounded implementation fixes
 
 ## Next Objective
 Read `workme.md` (lowercase filename), this handoff, the desktop reports and all
-Thread 01 architecture/compatibility reports. Start from the Thread 02 branch,
+Thread 01 architecture/compatibility reports. Start from the latest `origin/master`,
 reproduce the build/smoke check, then investigate original English Steam SG using
 legally obtained local evidence. Request the Windows install listing, first 64
 bytes of archive/movie headers and selected sc3tools output before drawing runtime
