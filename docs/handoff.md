@@ -1,84 +1,114 @@
 # Project Handoff
 
 ## Current Milestone
-Thread 07 — Steam gameplay baseline and roadmap synchronisation, Medium,
-branch `phase-03-sghd-implementation`. The owner's round-3 reports
-(census v2, sprite regions, Game.exe width table) are fully applied and
-tested. **No first-boot log was provided, so no real game data has been
-executed yet.** Next major milestone: **Thread 08 — native iOS ARM64 build
-(Medium)**; the first Windows boot runs in parallel on the owner's machine.
+Thread 07b — first real Steam boot follow-up (Medium), branch
+`phase-03-sghd-implementation`. The owner's first Windows boot on real data
+(`sghd-debug.log`, private) started everything and ran `_STARTUP_WIN.SCX`,
+then showed no title and no dialogue. Cause found in the opcode table
+(`10 34` waited forever for a title menu SGHD does not have, and read the
+wrong number of bytes); fixed, with a stall report so the next real run
+shows any remaining wait. Report: [threads/07b-first-real-boot.md](threads/07b-first-real-boot.md).
+Next major milestone unchanged: **Thread 08 — native iOS ARM64 build (Medium)**.
 
 ## Repository State
-- `Tasnemo/impacto-ios`; `master` = Thread 05 head (`3546e4ea`); Threads
-  04–07 on `phase-03-sghd-implementation`.
-- Thread 07 commits: `1e6b9db0` (evidence: `10 3A`, font widths, text
-  styles, sprite checks, `sghd_inspect regions`), `f2d4f729` (roadmap/iOS
-  docs), `86acccac` (UTF-8 test fix), plus this docs commit.
-- No commercial assets, script dumps, private reports or secrets are
-  committed. Evidence constants only: `tests/compat/fixtures/sghd_steam_evidence.json`.
+- `Tasnemo/impacto-ios`; `master` = Thread 07 head (`048210d0`); Threads
+  04–07b on `phase-03-sghd-implementation`.
+- No commercial assets, script dumps, private reports, logs, screenshots or
+  secrets are committed. Evidence constants only:
+  `tests/compat/fixtures/sghd_steam_evidence.json`.
 
-## Completed Work (Thread 07)
-Report: [threads/07-gameplay-baseline.md](threads/07-gameplay-baseline.md).
-- Roadmap synchronised with `workme.md`: [roadmap.md](roadmap.md) (desktop =
-  test infrastructure, Medium default, Thread 08 = iOS build).
-- `10 3A` = six expressions (census v2's only reachable decode error); with
-  it every reachable instruction stream of the 190 scripts decodes.
-- `font.lua` generated from the Game.exe width table (0x12d7f0, 384 glyphs,
-  32-unit em, correlation 0.946): `tools/gen_sghd_font_widths.py --exe-widths`.
-- Text-style data is 720p → impacto's 1.5× design scaling is right (pinned).
-- Sprites checked against Steam opaque regions: ADVBox, left nametag, wait
-  icon consistent; inherited CHAOS;HEAD title sprites, backlog sprites and
-  `systemmenu.lua` removed; mismatches (selection, system message box)
-  recorded in the fixture (`sprite_checks`).
-- `tools/sghd_inspect.py`: pixel-level split of merged regions; `regions`
-  mode crops every region for naming.
-- iOS preparation: [ios-transition.md](ios-transition.md).
+## Completed Work (Thread 07b)
+- Startup stubs triaged from the log: SystemMes 0/3/2/6/7 (timed notice, no
+  input wait), Phone 0x04 (data tables), `10 3F`, `00 53` do not stop
+  progression.
+- `10 34` (Steam: one type byte, RNE-style `TitleMenu(type)`) was wired to
+  CHAOS;HEAD `InstTitleMenuOld` (no byte, blocks until a title menu reports
+  a choice; SGHD has `TitleMenuType.None`) → now `InstTitleMenuSGHD`:
+  consumes the byte, logs `TitleMenu(type: N)` once, never waits, yields the
+  frame. Synthetic reproduction: with the old table the harness hangs at
+  `10 34` and the stall report names it.
+- `10 36` (Steam `Nop3`, one byte) no longer read by `InstBGeffect`.
+- `SghdFixedLayoutAudit`: every untyped census layout vs handler pops.
+- Stall report (`root.Vm.StallReportSeconds = 5` for sghd) and Info-level
+  script-load log lines for Release builds.
+- `tools/sghd_census.py --context=gg:oo,...` for the title protocol.
+- Title menu: the Steam title is engine-drawn from `TITLE_CHIP.DDS`
+  (START/LOAD/EXTRA/CONFIG/HELP + cursor bar, per the owner's screenshot of
+  the original game); not implemented yet — needs chip names and the `10 34`
+  protocol. No placeholder artwork added.
+- Fresh-config fix reproduced as `-uc <new file>`; root cause of the old
+  config's crash still unknown (needs that file).
 
 ## Verification
-- Orb, `impacto-desktop:ubuntu24`, rebuilt binary: `python3 -m unittest
-  discover -s tests/compat` **117/117** with `IMPACTO_BIN` (89 + 28
-  probes); without a binary 89 pass, 28 skipped. clang-format clean.
+- Orb, `impacto-desktop:ubuntu24`, binary rebuilt from this branch:
+  `python3 -m unittest discover -s tests/compat` with `IMPACTO_BIN` →
+  **125/125 OK** (93 unit + 32 probes); launcher smoke PASS
+  (`ALSOFT_DRIVERS=null`). Old table reverted on purpose: the new probe
+  fails (exit 124 hang, stall report `0x10 10:34`) and the audit names
+  exactly `10 34`, `10 36`.
+- clang-format clean on changed C++ (one pre-existing warning in
+  `inst_sghd.cpp` phone code is unrelated).
 - GitHub Actions: see CI section.
 
 ## Status split
-- **Synthetic-verified:** VM/opcodes, branching, phone item bits, saves
-  (format 2), Ogg audio path, movie skip, voice table, profile load.
-- **Verified against real Steam data (reports, not execution):** script
-  decoding, image sizes/DDS headers, LAY, audio codecs, font widths, 720p
-  text styles, ADVBox/nametag/wait-icon rectangles.
-- **Implemented, not validated:** real boot, title, dialogue rendering,
-  BG/character rendering, voice/BGM, phone polarity, system data.
-- **Missing:** phone UI (0x05-0x1E), movies (Bink 2), menus, selection and
-  system-message sprites, Steam save import.
+- **Synthetic-verified:** VM/opcodes incl. `10 34`/`10 36`, branching,
+  phone item bits, saves (format 2), Ogg audio path, movie skip, voice
+  table, profile load, stall report.
+- **Verified on real Steam data:** script decoding (census), image/LAY/
+  audio formats, font widths, text styles, some sprite rectangles; **real
+  boot through `_STARTUP_WIN` startup stubs without crash or desync** (log).
+- **Implemented, not validated on real data:** passing the title wait,
+  first dialogue, BG/character rendering, voice/BGM.
+- **Missing:** SG title menu (TITLE_CHIP), phone UI (0x05-0x1E), movies
+  (Bink 2), backlog/system/save menus, selection and system-message sprites,
+  Steam save import.
 
-## Blocker — owner action: Windows round 4 (short)
-1. First boot (the only desktop gate before device work). Download artifact
-   `impacto-windows-x64-<sha>` of the latest green `Desktop Windows` run,
-   unzip, then in that folder:
+## Blocker — owner action: Windows round 5 (short)
+1. Boot again with the new build. Download artifact
+   `impacto-windows-x64-<sha>` of the latest green `Desktop Windows` run
+   for this branch, unzip, copy your existing `gamedata\sghd` folder into
+   it, then in that folder:
+   ```powershell
+   .\impacto.exe -g sghd -uc .\sghd-test-config.toml -ll Info -lf sghd-boot2.log
+   ```
+   Wait 20 s without input, press Enter three times (2 s apart), wait 20 s
+   more, close the window. Share `sghd-boot2.log` privately and say in one
+   line what was visible/audible. Expected lines:
+   - `Loading script "_STARTUP_WIN.SCX" (id 2) into buffer 0`, then the next
+     scripts it loads;
+   - `STUB instruction TitleMenu(type: N)` when the title code is reached;
+   - success: `Loading script "MAIN00.SCX" ...` and further scenario
+     scripts, a text box on screen;
+   - otherwise `Script thread N (group G) has not advanced for 5 s: script
+     "X" (buffer B) at 0x..., next opcode gg:oo, ...` — the exact wait.
+2. Title protocol (numbers only, ~1 min), from a checkout of this branch:
    ```powershell
    $G = "C:\Program Files (x86)\Steam\steamapps\common\STEINS;GATE"
-   mkdir gamedata\sghd
-   foreach ($a in "script","system","bgm","se","voice","bg","chara","mask") { Copy-Item "$G\USRDIR\$a.mpk" gamedata\sghd\ }
-   .\impacto.exe -g sghd -ll Info -lf sghd.log
+   python tools\sghd_census.py $G --context=10:34,00:44 > sghd-context.txt
    ```
-   Click/press Enter through whatever appears for ~2 minutes, close the
-   window, share `sghd.log` privately and say in one line what was visible
-   (black screen / title / text box / characters / sound).
-2. Optional, sprites: `python tools\sghd_inspect.py regions $G regions`
-   (from a checkout of this branch), open `regions\index.html` locally, and
-   reply with lines such as `selection background: DATA01 x y w h` for the
-   choice box, system message box, date display, save icon (names + numbers
-   only; never share the PNGs).
+   Share `sghd-context.txt` privately.
+3. Old-config crash: share the contents of
+   `%APPDATA%\Committee of Zero\Impacto\userconfig.toml` (settings only),
+   or at least its `ActiveRenderer`, `Display` and resolution lines.
+4. Later, for the title menu UI: `python tools\sghd_inspect.py regions $G
+   regions`, open `regions\index.html` locally and reply with lines such as
+   `title START normal: TITLE_CHIP x y w h` for the menu items (normal and
+   selected), cursor bar, background panel, satellite, logo, gears,
+   copyright, key hints. Names and numbers only; never share the PNGs.
 
 ## Architectural Decisions
 ADR-007…010 unchanged. Thread 07: desktop is test infrastructure; inherited
 UI from other titles is removed rather than scaled; the font uses the
-executable's own table (32-unit em scaled to the 48 px cell).
+executable's own table (32-unit em scaled to the 48 px cell). Thread 07b:
+an SGHD instruction whose engine UI does not exist yet must never wait for
+that UI (consume, log, yield); the census layout table is the reference for
+byte consumption.
 
 ## Next Thread
 Thread 08 — native iOS ARM64 build and minimal app shell. **Mode: Medium.**
 Scope and dependency list: [ios-transition.md](ios-transition.md). Apply
-`sghd.log` findings in a short Medium follow-up when the owner provides it.
+the round-5 boot log / context report in a short Medium follow-up (title
+protocol, then the SG title menu from `TITLE_CHIP.DDS` once named).
 Phone UI stays a separate High task.
 
 ### Continuation prompt
