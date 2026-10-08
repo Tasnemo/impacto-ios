@@ -197,7 +197,8 @@ class SghdOpcodeTableAudit(unittest.TestCase):
         actual = {k: self.table[k] for k in CENSUS_WIRING}
         self.assertEqual(actual, CENSUS_WIRING)
         evidence = json.loads((FIXTURES / "sghd_steam_evidence.json").read_text())
-        self.assertEqual(evidence["census_layouts"]["10 3A"]["layout"], "E")
+        self.assertEqual(evidence["census_layouts"]["10 3A"]["layout"],
+                         "E E E E E E")
 
 
 if __name__ == "__main__":

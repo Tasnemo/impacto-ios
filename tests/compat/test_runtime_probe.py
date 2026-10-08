@@ -792,7 +792,8 @@ class SghdPhoneProbe(unittest.TestCase):
     def test_no_desync_or_unknown_subtype(self):
         self.assertNotIn("unknown SGHD subtype", self.probe.log)
         self.assertNotIn("is not part of the SGHD instruction set", self.probe.log)
-        self.assertIn("STUB instruction Unk103A(arg1: 63)", self.probe.log)
+        self.assertIn("STUB instruction Unk103A(args: 63, 64, 65, 66, 67, 128)",
+                      self.probe.log)
 
 
 def main(argv: list[str]) -> int:

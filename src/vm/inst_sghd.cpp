@@ -364,7 +364,13 @@ VmInstruction(InstPhoneSGHD) {
 VmInstruction(InstUnk103ASGHD) {
   StartInstruction;
   PopExpression(arg1);
-  StubOnce("Unk103A", fmt::format("arg1: {:d}", arg1));
+  PopExpression(arg2);
+  PopExpression(arg3);
+  PopExpression(arg4);
+  PopExpression(arg5);
+  PopExpression(arg6);
+  StubOnce("Unk103A", fmt::format("args: {:d}, {:d}, {:d}, {:d}, {:d}, {:d}",
+                                  arg1, arg2, arg3, arg4, arg5, arg6));
 }
 
 }  // namespace Vm

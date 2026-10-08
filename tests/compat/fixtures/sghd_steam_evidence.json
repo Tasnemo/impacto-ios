@@ -277,7 +277,17 @@
   ],
   "cell": 48,
   "last_row_inked_cells": 15,
-  "charset_glyphs": 2895
+  "charset_glyphs": 2895,
+  "widths": {
+   "_note": "Game.exe glyph width table found by tools/sghd_inspect.py widths (owner report, Thread 07): one byte per glyph, 32-unit em, glyph 0 = 32 and glyphs 1-127 = 17; profiles/sghd/font.lua is generated from it (x1.5).",
+   "source": "Game.exe",
+   "offset": "0x12d7f0",
+   "count": 384,
+   "em": 32,
+   "correlation": 0.946,
+   "glyph0": 32,
+   "glyph1": 17
+  }
  },
  "lay": {
   "_note": "chara.mpk LAY (first three files): little-endian header (big-endian reading gives absurd state counts); texture coordinates are pixels (max x 2017 in a 2048-wide texture); file size = 8 + 12*states + 16*vertices + vertices, i.e. one trailing byte per vertex that impacto ignores.",
@@ -305,9 +315,9 @@
  "census_layouts": {
   "_note": "Layouts the first census proved or added (docs/sghd-decode-integrity.md).",
   "10 3A": {
-   "layout": "E",
+   "layout": "E E E E E E",
    "uses": 1,
-   "evidence": "label entry 10 3A 2D 0A A0 3F 14 00: one complete expression (TV[63]); the sgps3 handler read a type byte and desynced"
+   "evidence": "census v2: the only use (MACROSYS2) is followed by TV[63] TV[64] TV[65] TV[66] TV[67] and the immediate 128, then a decodable Sleep; v1 had stopped after the first expression"
   },
   "10 0D": {
    "layout": "type byte; 1: E L (impacto CHAmove)",
@@ -432,5 +442,247 @@
   "id": 31,
   "first_bytes": "b0380000",
   "count_le": 14512
+ },
+ "text_styles": {
+  "_note": "01 0E text-style data in _SYSTEM.SCX (census v2): 7 modes (ids 0,1,2,3,7,8,9). Coordinates are 720p (TextGlyph 32x32, MaxLineWidth <= 1280, WindowPos/WaitIconPos inside 1280x720), so impacto's DesignWidth/1280 scaling to the 1920x1080 design is correct and the profile must not override TextModesInfo.",
+  "mode0": {
+   "WindowPos": [
+    148,
+    506
+   ],
+   "MaxLineWidth": 1018,
+   "TextGlyph": [
+    32,
+    32
+   ],
+   "NameGlyph": [
+    20,
+    20
+   ],
+   "WaitIconPos": [
+    1152,
+    644
+   ]
+  },
+  "max_line_width": 1280,
+  "text_glyph_heights": [
+   24,
+   32
+  ]
+ },
+ "sheet_regions": {
+  "_note": "Opaque-region boxes [x, y, w, h] (alpha > 32, 4x4-block connectivity) from tools/sghd_inspect.py sprites on the owner's install (Thread 07). Data (149 regions) is kept private except the boxes used to check sprites below.",
+  "BACKLOG.DDS": [
+   [
+    95,
+    0,
+    1729,
+    1080
+   ],
+   [
+    1977,
+    8,
+    53,
+    49
+   ],
+   [
+    1940,
+    58,
+    12,
+    103
+   ]
+  ],
+  "TITLE_CHIP.DDS": [
+   [
+    0,
+    0,
+    1932,
+    1125
+   ],
+   [
+    1928,
+    0,
+    568,
+    470
+   ],
+   [
+    2533,
+    80,
+    280,
+    202
+   ],
+   [
+    0,
+    1244,
+    395,
+    107
+   ],
+   [
+    0,
+    1355,
+    340,
+    115
+   ],
+   [
+    0,
+    1131,
+    264,
+    107
+   ],
+   [
+    277,
+    1135,
+    229,
+    103
+   ],
+   [
+    1930,
+    511,
+    276,
+    76
+   ],
+   [
+    2245,
+    511,
+    249,
+    76
+   ],
+   [
+    2533,
+    511,
+    249,
+    76
+   ],
+   [
+    2341,
+    1,
+    179,
+    47
+   ],
+   [
+    2542,
+    1,
+    179,
+    47
+   ],
+   [
+    3,
+    1498,
+    489,
+    13
+   ],
+   [
+    2785,
+    308,
+    28,
+    102
+   ],
+   [
+    1800,
+    1105,
+    116,
+    19
+   ],
+   [
+    2785,
+    1,
+    28,
+    52
+   ],
+   [
+    1656,
+    1103,
+    42,
+    22
+   ],
+   [
+    353,
+    1361,
+    137,
+    6
+   ],
+   [
+    1761,
+    1104,
+    36,
+    19
+   ],
+   [
+    1701,
+    1106,
+    37,
+    17
+   ],
+   [
+    2525,
+    1,
+    10,
+    47
+   ],
+   [
+    1742,
+    1109,
+    13,
+    15
+   ]
+  ],
+  "DATA01.DDS_checked": {
+   "adv_box": [
+    1150,
+    1206,
+    1921,
+    539
+   ],
+   "nametag_left": [
+    1182,
+    1182,
+    263,
+    13
+   ],
+   "wait_icon_column": [
+    0,
+    144,
+    51,
+    155
+   ],
+   "merged_top_right": [
+    1452,
+    0,
+    1620,
+    1195
+   ]
+  }
+ },
+ "sprite_checks": {
+  "_note": "Profile sprite rectangles vs the Steam regions (Thread 07). consistent = rectangle matches/contains a region within a few px; inconclusive = inside a merged region; mismatch = no region there (needs sghd_inspect.py regions + owner naming).",
+  "consistent": [
+   "ADVBox",
+   "NametagLeftSprite",
+   "DialogueWaitIcon"
+  ],
+  "inconclusive": [
+   "NametagRightSprite",
+   "SaveIconBg",
+   "Date*",
+   "SysMesBoxBoxDecoration"
+  ],
+  "mismatch": [
+   "SelectionBackground",
+   "SelectionHighlight",
+   "PlainSelectionFrame*",
+   "SysMesBoxBox",
+   "SysMesBoxSelection*"
+  ],
+  "removed_inherited": [
+   "CHAOS;HEAD title sprites (Seira, CHLogo, LCCLogoUnder, Chu/Love/Star/ExclMark logos, DelusionADV*, TitleMenuEntry*, TitleMenuItem*, SpinningCircle, CopyrightText)",
+   "backlog sprites (BacklogBackground, VoiceIcon, EntryHighlight, ScrollbarThumb, ScrollbarTrack)",
+   "systemmenu.lua (never included)"
+  ]
+ },
+ "census_v2": {
+  "_note": "tools/sghd_census.py v2 on the owner's install (Thread 07): one decode error in reachable code (10 3A, fixed: six expressions); 101 'after-end' padding/data notes; the 4 overruns left open in Thread 06 are after-end padding.",
+  "errors_in_reachable_code": 1,
+  "after_end": 101,
+  "padding": 0
  }
 }

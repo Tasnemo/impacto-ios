@@ -46,6 +46,19 @@ class InspectDecoding(unittest.TestCase):
         boxes = inspect_tool.opaque_boxes(w, h, alpha)
         self.assertEqual(boxes, [(4, 4, 12, 8), (28, 0, 4, 4)])
 
+    def test_split_box_separates_sprites_one_pixel_apart(self):
+        # two opaque 5x3 rectangles separated by a 1-px transparent column:
+        # one region at 4x4-block level, two at pixel level
+        w, h = 16, 4
+        alpha = bytearray(w * h)
+        for y in range(3):
+            for x in list(range(0, 5)) + list(range(6, 11)):
+                alpha[y * w + x] = 255
+        boxes = inspect_tool.opaque_boxes(w, h, alpha)
+        self.assertEqual(boxes, [(0, 0, 11, 3)])
+        self.assertEqual(inspect_tool.split_box(w, alpha, boxes[0]),
+                         [(0, 0, 5, 3), (6, 0, 5, 3)])
+
     def test_png_roundtrip(self):
         rgba = bytes([10, 20, 30, 40, 50, 60, 70, 80])
         w, h, px = inspect_tool.png_decode(inspect_tool.png_encode(2, 1, rgba))
@@ -107,6 +120,14 @@ class InspectTool(unittest.TestCase):
         self.assertTrue((out / "index.html").exists())
         # DialogueWaitIcon (Data 1.5,145.5) lies outside the 64x32 stand-in
         self.assertIn("skip DialogueWaitIcon: rectangle outside Data", proc.stdout)
+
+    def test_regions(self):
+        out = self.root / "regions"
+        proc = self.run_tool("regions", str(self.root), str(out))
+        self.assertEqual(proc.returncode, 0, proc.stderr)
+        self.assertIn("DATA01.DDS: 1 crops", proc.stdout)
+        self.assertTrue((out / "6_0_0_16_8.png").exists())
+        self.assertIn("6_0_0_16_8.png", (out / "index.html").read_text())
 
     def test_usage(self):
         self.assertEqual(self.run_tool().returncode, 2)

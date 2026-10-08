@@ -25,7 +25,7 @@ with the real scripts except for the slots below.
 
 | Slot | Finding | Change |
 |---|---|---|
-| `10 3A` | Its only use is `10 3A 2D 0A A0 3F 14 00`: one complete expression (`TV[63]`). impacto's handler (copied from sgps3) read a type byte first and would desync. | New `InstUnk103ASGHD` (one expression, stub); pinned by `test_opcode_table_audit.SghdOpcodeTableAudit.test_census_wiring` and `SghdPhoneProbe` |
+| `10 3A` | Its only use starts `10 3A 2D 0A A0 3F 14 00`. Census v2 (Thread 07) showed the full instruction: six expressions (`TV[63]`..`TV[67]`, immediate 128) followed by a decodable `Sleep`. impacto's handler (copied from sgps3) read a type byte first and would desync. | `InstUnk103ASGHD` (six expressions, stub); pinned by `test_census_wiring`, `test_10_3a_six_expressions_census_v2_bytes` and `SghdPhoneProbe` |
 | `10 0D` | 18 labels of exactly 13 bytes start `10 0D 01 2D 0A A0 3F 14`: CHAmove type 1 (`E L`), then `Return`. Matches impacto's existing `InstCHAmove`. | none in impacto; census table gained the layout and treats its label as data |
 | `10 2E` | One label starts with it; `E` (impacto `InstSetSceneViewFlag`) fits. | census table only |
 | `10 37` type `1E` | One use, no arguments (next instruction 3 bytes later). impacto logged "unknown SGHD subtype". | added to `InstPhoneSGHD` |
@@ -49,10 +49,16 @@ conclusive:
 
 Unit tests: `tests/compat/test_sghd_census.py` (`CensusClassification`).
 
-## Unresolved
+## Census v2 result (Thread 07)
 
-Four overruns where the next label decodes as code: `_MAIL.SCX` labels 4
-and 27, `ANIME.SCX` label 11, `SG07_01.SCX` label 0 (1-8 bytes). They are
-most likely trailing bytes after a final jump, but the first census did not
-record the preceding instruction. A census v2 re-run classifies them
-automatically (they move to "after-end" or appear with full context).
+Re-run on the owner's install with the v2 classifier:
+
+- **1** decode error in reachable code (the `10 3A` layout above, fixed);
+- **101** "after-end" notes (padding/data after an unconditional end of
+  flow), which include the 4 overruns left open in Thread 06 and every
+  string-table padding case;
+- the rest are label entries that are data tables (`_ATCH`, `_MAIL`,
+  `_TIPS`, CHAmove sequence data, MACROSYS2 id lists).
+
+With the six-expression `10 3A`, every instruction stream reachable from a
+label decodes. Constants: fixture `census_v2`.

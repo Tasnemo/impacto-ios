@@ -105,10 +105,33 @@ class SghdCensusEvidence(unittest.TestCase):
         size = EVIDENCE["font"]["size"]
         self.assertEqual(size[0] // EVIDENCE["font"]["grid"][0], EVIDENCE["font"]["cell"])
         self.assertEqual(size[1] // EVIDENCE["font"]["grid"][1], EVIDENCE["font"]["cell"])
-        widths = [int(v) for v in re.findall(
-            r"\d+", text.split("AdvanceWidthsTable = {", 1)[1].split("}", 1)[0])]
+        widths = [float(v) for v in re.findall(
+            r"[\d.]+", text.split("AdvanceWidthsTable = {", 1)[1].split("}", 1)[0])]
         self.assertEqual(len(widths), 64 * 46)
         self.assertTrue(all(1 <= v <= EVIDENCE["font"]["cell"] for v in widths))
+        # Thread 07: generated from the Game.exe table (32-unit em -> 48 px cell)
+        fw = EVIDENCE["font"]["widths"]
+        scale = EVIDENCE["font"]["cell"] / fw["em"]
+        self.assertIn(fw["offset"], text)
+        self.assertEqual(widths[0], fw["glyph0"] * scale)
+        self.assertEqual(widths[1], fw["glyph1"] * scale)
+        self.assertTrue(all((v / scale).is_integer() for v in widths[:fw["count"]]))
+        self.assertEqual(set(widths[fw["count"]:]), {float(EVIDENCE["font"]["cell"])})
+
+    def test_exe_width_report_parser(self):
+        sys.path.insert(0, str(REPO / "tools"))
+        import gen_sghd_font_widths as gen
+        rows = ["32 " + " ".join(["17"] * 63)] + [" ".join(["20"] * 64)] * 5
+        report = ("# header\n  0.950 0x1000 1 : 32 17 17\n  0.700 0x1001 1 : 17\n"
+                  "## best candidate 0x1000, 2944 values\n"
+                  + "\n".join("  " + r for r in rows) + "\n  0 0 252 255\n")
+        widths, info = gen.widths_from_exe_report(report)
+        self.assertEqual(info, {"offset": "0x1000", "correlation": 0.95, "count": 384})
+        self.assertEqual(widths[:2], [48.0, 25.5])
+        self.assertEqual(widths[64], 30.0)
+        self.assertEqual(widths[384:], [48.0] * (2944 - 384))
+        with self.assertRaises(ValueError):
+            gen.widths_from_exe_report(report.replace("0.950", "0.850"))
         charset = (REPO / "tools/data/sghd_charset.utf8").read_text(encoding="utf-8")
         self.assertEqual(len(charset), EVIDENCE["font"]["charset_glyphs"])
         self.assertEqual(45 * 64 + EVIDENCE["font"]["last_row_inked_cells"], len(charset))
@@ -123,6 +146,50 @@ class SghdCensusEvidence(unittest.TestCase):
         for sample in EVIDENCE["lay"]["samples"]:
             # 8-byte header, 12-byte states, 16-byte vertices, 1 trailing byte each
             self.assertEqual(8 + 12 * sample["states"] + 17 * sample["vertices"], sample["bytes"])
+
+    def test_text_styles_are_720p(self):
+        ts = EVIDENCE["text_styles"]
+        self.assertLessEqual(ts["mode0"]["MaxLineWidth"], ts["max_line_width"])
+        self.assertLessEqual(ts["max_line_width"], 1280)
+        self.assertTrue(all(c < l for c, l in zip(ts["mode0"]["WaitIconPos"], (1280, 720))))
+        # impacto scales script text styles by DesignWidth/1280 unless the
+        # profile overrides them; the Steam profile must not override
+        self.assertNotIn("TextModesInfo", (SGHD / "dialogue.lua").read_text())
+        self.assertEqual(ts["mode0"]["TextGlyph"][1] * 1920 // 1280, 48)
+
+    def test_sprites_lie_inside_their_sheets(self):
+        sys.path.insert(0, str(REPO / "tools"))
+        import sghd_inspect as si
+        sizes = lua_sheet_sizes()
+        for name, sheet, x, y, w, h in si.profile_sprites(SGHD):
+            with self.subTest(sprite=name):
+                sw, sh = sizes[sheet]
+                self.assertTrue(0 <= x and 0 <= y and x + w <= sw and y + h <= sh,
+                                f"{name} outside {sheet} {sw}x{sh}")
+
+    def test_checked_sprites_match_steam_regions(self):
+        sys.path.insert(0, str(REPO / "tools"))
+        import sghd_inspect as si
+        sprites = {s[0]: s[2:] for s in si.profile_sprites(SGHD)}
+        regions = EVIDENCE["sheet_regions"]["DATA01.DDS_checked"]
+        x, y, w, h = sprites["ADVBox"]
+        rx, ry, rw, rh = regions["adv_box"]
+        self.assertLessEqual(abs(x - rx), 1)
+        self.assertLessEqual(abs((x + w) - (rx + rw)), 1)
+        self.assertLessEqual(abs(y - ry), 3)
+        x, y, w, h = sprites["NametagLeftSprite"]
+        rx, ry, rw, rh = regions["nametag_left"]
+        self.assertTrue(x <= rx and y <= ry and rx + rw <= x + w + 1 and ry + rh <= y + h)
+        x, y, w, h = sprites["DialogueWaitIcon"]
+        rx, ry, rw, rh = regions["wait_icon_column"]
+        self.assertTrue(rx <= x and ry <= y and x + w <= rx + rw and y + h <= ry + rh)
+
+    def test_no_inherited_chaos_head_title_or_backlog_sprites(self):
+        text = "".join(p.read_text() for p in SGHD.rglob("*.lua"))
+        for name in ("Seira", "CHLogo", "LCCLogo", "DelusionADV", "ChuLeftLogo",
+                     "ScrollbarTrack", "BacklogBackground"):
+            self.assertFalse(name in text, name)
+        self.assertFalse((SGHD / "hud" / "systemmenu.lua").exists())
 
     def test_voice_table_is_little_endian(self):
         vt = EVIDENCE["voice_table"]

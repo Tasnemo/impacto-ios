@@ -710,7 +710,8 @@ def sghd_phone_test_script() -> bytes:
     b.add_label(result(3))
     b.add_label(phone(0x02, 0, 645, 3)         # never set -> no jump
                 + phone(0x02, 1, 334, 3)       # still clear -> no jump
-                + ins(0x10, 0x3A, E(63))       # one expression (census)
+                + ins(0x10, 0x3A, E(63), E(64), E(65), E(66), E(67),
+                      E(128))                  # six expressions (census v2)
                 + ins(0x10, 0x37, u8(0x1E))    # no arguments
                 + sghd_jump(1))
     return b.build()

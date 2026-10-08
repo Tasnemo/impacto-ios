@@ -46,7 +46,6 @@ include(root.BasePaths.RootProfilesDir .. '/sghd/hud/saveicon.lua');
 include(root.BasePaths.RootProfilesDir .. '/sghd/hud/loadingdisplay.lua');
 include(root.BasePaths.RootProfilesDir .. '/sghd/hud/datedisplay.lua');
 include(root.BasePaths.RootProfilesDir .. '/sghd/hud/titlemenu.lua');
---include(root.BasePaths.RootProfilesDir .. '/sghd/hud/systemmenu.lua');
 include(root.BasePaths.RootProfilesDir .. '/sghd/hud/backlogmenu.lua');
 include(root.BasePaths.RootProfilesDir .. '/sghd/hud/sysmesboxdisplay.lua');
 include(root.BasePaths.RootProfilesDir .. '/sghd/hud/selectiondisplay.lua');

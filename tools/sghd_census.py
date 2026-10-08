@@ -235,13 +235,14 @@ LAYOUTS = {
 # Slots the Steam scripts use that the sc3ntist table above lacks (Thread 06,
 # first census: labels starting with these opcodes were undecodable).
 # Layouts follow impacto's handlers for the same slots (CHAmove, SetSceneView
-# Flag); 10 3A is "E" because its only use is a complete expression ending
-# exactly 8 bytes in (impacto's sgps3-era handler read a type byte instead).
+# Flag); 10 3A takes six expressions: census v2 showed its only use followed
+# by TV[63]..TV[67] and the immediate 128, then a valid Sleep (impacto's
+# sgps3-era handler read a type byte instead).
 EXTRA_LAYOUTS = {
     (0x10, 0x0D): ("CHAmove", "", {0: "", 1: "E L", 2: "E", 3: "", 4: "E E",
                                    5: "E E E E E E E"}),
     (0x10, 0x2E): ("SetSceneViewFlag", "E"),
-    (0x10, 0x3A): ("Unk103A", "E"),
+    (0x10, 0x3A): ("Unk103A", "E E E E E E"),
 }
 ALL_LAYOUTS = {**LAYOUTS, **EXTRA_LAYOUTS}
 # unconditional end of control flow: bytes after one of these and before the

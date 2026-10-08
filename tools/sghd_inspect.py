@@ -6,6 +6,7 @@ third-party packages), from a checkout of this repository:
 
     python tools\\sghd_inspect.py sheets "C:\\...\\STEINS;GATE" > sghd-sheets.txt
     python tools\\sghd_inspect.py crops  "C:\\...\\STEINS;GATE" crops-out
+    python tools\\sghd_inspect.py regions "C:\\...\\STEINS;GATE" regions-out
     python tools\\sghd_inspect.py widths "C:\\...\\STEINS;GATE" > sghd-widths.txt
 
 sheets  For every system.mpk image: bounding boxes (x y w h) of the opaque
@@ -16,6 +17,9 @@ sprites Same boxes, but only for the sheets the profile uses.
 crops   Crops every sprite rectangle defined in profiles/sghd/**/*.lua out of
         the Steam sheets into <out>/*.png plus <out>/index.html, for looking
         at locally. The PNGs are game artwork: do NOT share or commit them.
+regions Crops every opaque region (large ones also split per pixel) of the
+        Data/Title/Backlog sheets into <out>/*.png + index.html, named by box,
+        so the owner can name UI elements. Local only, like crops.
 widths  Searches Game.exe for the glyph advance-width table by correlating
         byte runs with the ink widths of FONT.PNG; prints the best candidates
         and, for the best one, the 2944 values (numbers only).
@@ -38,6 +42,7 @@ sys.path.insert(0, str(REPO / "tools"))
 import sghd_census as census  # noqa: E402
 
 ALPHA_THRESHOLD = 32
+SPLIT_AREA = 256 * 256  # block regions at least this large are split per pixel
 
 
 # --------------------------------------------------------------------------
@@ -228,6 +233,33 @@ def opaque_boxes(w: int, h: int, alpha: bytes, threshold: int = ALPHA_THRESHOLD)
     return boxes
 
 
+def split_box(w: int, alpha: bytes, box, threshold: int = ALPHA_THRESHOLD):
+    """Pixel-level (4-connected) opaque components inside one block-level
+    box; packed atlases often keep sprites only 1-3 px apart, which the 4x4
+    block pass merges. Largest first."""
+    bx, by, bw, bh = box
+    seen = bytearray(bw * bh)
+    out = []
+    for sy in range(bh):
+        row = (by + sy) * w + bx
+        for sx in range(bw):
+            if seen[sy * bw + sx] or alpha[row + sx] <= threshold:
+                continue
+            stack, seen[sy * bw + sx] = [(sx, sy)], 1
+            x0, y0, x1, y1 = sx, sy, sx, sy
+            while stack:
+                cx, cy = stack.pop()
+                x0, x1, y0, y1 = min(x0, cx), max(x1, cx), min(y0, cy), max(y1, cy)
+                for nx, ny in ((cx - 1, cy), (cx + 1, cy), (cx, cy - 1), (cx, cy + 1)):
+                    if 0 <= nx < bw and 0 <= ny < bh and not seen[ny * bw + nx] \
+                            and alpha[(by + ny) * w + bx + nx] > threshold:
+                        seen[ny * bw + nx] = 1
+                        stack.append((nx, ny))
+            out.append((bx + x0, by + y0, x1 - x0 + 1, y1 - y0 + 1))
+    out.sort(key=lambda b: (-b[2] * b[3], b[1], b[0]))
+    return out
+
+
 # --------------------------------------------------------------------------
 # profile sprites
 # --------------------------------------------------------------------------
@@ -281,8 +313,45 @@ def cmd_sheets(root: Path, only: set[int] | None = None, limit: int = 120) -> li
             continue
         boxes = opaque_boxes(w, h, alpha)
         out.append(f"## id {file_id} {name} {w}x{h}: {len(boxes)} regions")
-        out += [f"  {x} {y} {bw} {bh}" for x, y, bw, bh in boxes[:limit]]
+        for box in boxes[:limit]:
+            out.append("  %d %d %d %d" % box)
+            if box[2] * box[3] >= SPLIT_AREA:
+                parts = split_box(w, alpha, box)
+                if len(parts) > 1:
+                    out.append(f"    split into {len(parts)} pixel-connected parts:")
+                    out += ["    - %d %d %d %d" % p for p in parts[:limit] if p[2] * p[3] >= 16]
     return out
+
+
+def cmd_region_crops(root: Path, dest: Path, only: set[int] | None = None) -> list[str]:
+    """Crop every region (and split part) of the profile sheets to PNG with
+    its box in the file name, for naming UI elements locally."""
+    dest.mkdir(parents=True, exist_ok=True)
+    rows, log = [], []
+    for file_id, name, data in system_images(root):
+        if only is not None and file_id not in only:
+            continue
+        w, h, px = image_decode(data)
+        alpha = px[3::4]
+        boxes = opaque_boxes(w, h, alpha)
+        for box in list(boxes):
+            if box[2] * box[3] >= SPLIT_AREA:
+                boxes += [p for p in split_box(w, alpha, box) if p[2] * p[3] >= 16]
+        for x, y, bw, bh in boxes:
+            crop = b"".join(bytes(px[(yy * w + x) * 4:(yy * w + x + bw) * 4])
+                            for yy in range(y, y + bh))
+            fname = f"{file_id}_{x}_{y}_{bw}_{bh}.png"
+            (dest / fname).write_bytes(png_encode(bw, bh, crop))
+            rows.append(f"<tr><td>{name}</td><td>{x} {y} {bw} {bh}</td>"
+                        f"<td style='background:#808080'><img src='{fname}' "
+                        f"style='max-width:600px'></td></tr>")
+        log.append(f"{name}: {len(boxes)} crops")
+    (dest / "index.html").write_text(
+        "<html><body><p>Opaque regions of the Steam sheets. Local only: game "
+        "artwork, do not share. Reply with lines 'sprite name: sheet x y w h'.</p>"
+        "<table border=1><tr><th>sheet</th><th>x y w h</th><th>crop</th></tr>"
+        + "".join(rows) + "</table></body></html>", encoding="utf-8")
+    return log
 
 
 def cmd_crops(root: Path, dest: Path) -> list[str]:
@@ -409,7 +478,7 @@ def cmd_widths(root: Path) -> list[str]:
 
 
 def main(argv: list[str]) -> int:
-    if len(argv) < 2 or argv[0] not in ("sheets", "sprites", "crops", "widths"):
+    if len(argv) < 2 or argv[0] not in ("sheets", "sprites", "crops", "regions", "widths"):
         print(__doc__, file=sys.stderr)
         return 2
     root = Path(argv[1])
@@ -422,6 +491,13 @@ def main(argv: list[str]) -> int:
         used = {sid for sid, handled in profile_sheets(REPO / "profiles" / "sghd").values()
                 if not handled}
         lines = cmd_sheets(root, used)
+    elif argv[0] == "regions":
+        if len(argv) != 3:
+            print(__doc__, file=sys.stderr)
+            return 2
+        used = {sid for sid, handled in profile_sheets(REPO / "profiles" / "sghd").values()
+                if not handled and sid != 9}  # not the font
+        lines = cmd_region_crops(root, Path(argv[2]), used)
     elif argv[0] == "crops":
         if len(argv) != 3:
             print(__doc__, file=sys.stderr)

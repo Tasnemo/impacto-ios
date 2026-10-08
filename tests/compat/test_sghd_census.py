@@ -124,6 +124,17 @@ class CensusLayoutTable(unittest.TestCase):
         got = [p for label, p, *_ in insts if label == 0]
         self.assertEqual(got, ref)
 
+    def test_10_3a_six_expressions_census_v2_bytes(self):
+        # Thread 07: byte pattern of the only 10 3A in the Steam scripts
+        # (opcodes and thread-variable numbers only): TV[63..67], 128, Sleep 1
+        tv = b"".join(bytes([0x2D, 0x0A, 0xA0, n, 0x14, 0x00]) for n in range(0x3F, 0x44))
+        blob = b"\x10\x3a" + tv + bytes.fromhex("a0800000") + bytes.fromhex("0005810000")
+        slot, name, args, nxt = census.decode(blob, 0)
+        self.assertEqual(name, "Unk103A")
+        self.assertEqual([a[1] for a in args],
+                         [["TV", 63], ["TV", 64], ["TV", 65], ["TV", 66], ["TV", 67], [128]])
+        self.assertEqual(census.decode(blob, nxt)[1:3], ("Sleep", [("E", [1])]))
+
     def test_dds_loader_sanity_check_reported(self):
         good = census.dds_info(dds_dxt5(8, 8))
         self.assertIn("flags 0x1007 caps 0x1000", good)
@@ -152,7 +163,8 @@ class CensusClassification(unittest.TestCase):
         b.add_label(fx.sghd_assign(2) + bytes([0x00, 0x60]) + fx.sghd_return())
         # 2: slots missing from sc3ntist decode with impacto's layouts
         b.add_label(fx.ins(0x10, 0x0D, fx.u8(1), E(63), fx.u16(4))
-                    + fx.ins(0x10, 0x3A, E(63)) + fx.ins(0x10, 0x2E, E(4300))
+                    + fx.ins(0x10, 0x3A, *(E(v) for v in (63, 64, 65, 66, 67, 128)))
+                    + fx.ins(0x10, 0x2E, E(4300))
                     + fx.sghd_return())
         # 3: unreferenced u32 table; 4: CHAmove sequence data
         b.add_label(struct.pack("<3i", 297, 301, -1))
