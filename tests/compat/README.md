@@ -29,7 +29,7 @@ IMPACTO_BIN=release/ubuntu24/impacto python3 tests/compat/test_runtime_probe.py
 ```
 
 The probe exports `ALSOFT_DRIVERS=null` and `LIBGL_ALWAYS_SOFTWARE=1` itself
-and wraps the run in `xvfb-run -a` when `DISPLAY` is unset. Without a null
+and starts one private `Xvfb` for all probes when `DISPLAY` is unset. Without a null
 audio driver the engine segfaults in `Audio::AudioUpdate` on machines with no
 sound device. In the orb the binary only runs inside the
 `impacto-desktop:ubuntu24` container (see `docs/desktop-build.md`):
@@ -59,6 +59,10 @@ IMPACTO_BIN=release/ubuntu24/impacto python3 tests/compat/test_runtime_probe.py 
 
 `SghdHarnessRuntimeProbe` runs the 37-opcode fixture (exit 0, trace equals
 the reference) and a script that sets `ScrWork[4000] = 7` (exit 7).
+`SghdSaveRoundTripProbe` saves to full slot 79 in one process, parses the
+file ([docs/sghd-save-format.md](../../docs/sghd-save-format.md)), then loads
+it in a second process and checks the restored variables, IP and call stack
+(exit 142).
 
 ## When Thread 04 fixes a bug these tests assert
 

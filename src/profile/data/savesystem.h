@@ -18,6 +18,10 @@ inline Impacto::SaveSystem::SaveDataType Type =
 inline std::string SaveFilePath;
 inline std::optional<std::string> ThumbnailFilePath;
 inline std::vector<uint32_t> StoryScriptIDs;
+// Flattened (start, length) pairs of FlagWork bytes / ScrWork entries that a
+// save stores (SaveDataType::SGHD).
+inline std::vector<uint32_t> FlagWorkRanges;
+inline std::vector<uint32_t> ScrWorkRanges;
 inline std::vector<Impacto::SaveSystem::ScriptMessageDataPair>
     ScriptMessageData;
 inline uint16_t AlbumEvData[MaxAlbumEntries][MaxAlbumSubEntries];

@@ -165,6 +165,13 @@ remain valid there.
   sequences; manual run of chapter 1 first mail on Windows.
 
 ### H2 — No save/load
+- **Status (Thread 04 Task 4):** engine side implemented with a fork-native
+  format (`SaveDataType.SGHD`, `src/games/sghd/savesystem.cpp`,
+  [sghd-save-format.md](sghd-save-format.md)): 80 full + 48 quick slots,
+  configurable FlagWork/ScrWork ranges, main thread IP/buffer/call
+  stack/return ids, read-line bitmaps. `SghdSaveRoundTripProbe` saves in one
+  process and resumes in another. Not Steam-compatible; saved ranges, the
+  `00 2A`/`10 24` sub-type meanings and save/load UI are unverified/absent.
 - **Missing:** `SaveDataType.None` → `SaveSystem::Implementation = nullptr`
   (runtime log "Save data type is none"); `10 22` AutoSave/checkpoint ids not
   consumed (C4).

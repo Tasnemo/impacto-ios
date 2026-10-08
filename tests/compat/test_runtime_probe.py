@@ -6,7 +6,7 @@ executable (run from its own directory so ``resources/`` resolves).
 
 Environment the probes need:
 
-* a display: ``xvfb-run`` is used automatically when present;
+* a display: a private ``Xvfb`` is started when ``DISPLAY`` is unset;
 * an audio backend that never fails: ``ALSOFT_DRIVERS=null`` is exported
   because impacto segfaults in ``Audio::AudioUpdate`` when OpenAL has no
   device (observed under gdb, see docs/steins-gate-compatibility.md);
@@ -156,7 +156,8 @@ root.SysMesBoxDisplay.LoadingStarsFadeDuration = 0.533;
                                    "Type = TitleMenuType.None"))
 
 
-def write_config(root: Path, game: str = "sgps3") -> None:
+def write_config(root: Path, game: str = "sgps3",
+                 saves: Path | None = None) -> None:
     """basepaths + game definitions.
 
     sgps3 is not registered upstream, so the probe writes its own definition
@@ -164,14 +165,15 @@ def write_config(root: Path, game: str = "sgps3") -> None:
     unmodified: profiles/ and gamedefinitions.lua are used straight from the
     repository.
     """
-    (root / "saves").mkdir()
+    saves = saves or root / "saves"
+    saves.mkdir(exist_ok=True)
     profiles = PROFILES if game in UNPATCHED else root / "profiles"
     (root / "basepaths.lua").write_text(f"""root.BasePaths = {{
   RootInstallDir = "./",
   RootGamedataDir = "{root}/gamedata",
   RootProfilesDir = "{profiles}",
   RootPatchesDir = "./patches",
-  RootSavesDir = "{root}/saves",
+  RootSavesDir = "{saves}",
 }};
 """)
     if game in UNPATCHED:
@@ -191,6 +193,32 @@ def write_config(root: Path, game: str = "sgps3") -> None:
 # running impacto
 # --------------------------------------------------------------------------
 
+_XVFB: subprocess.Popen | None = None
+_XVFB_DISPLAY = ""
+
+
+def shared_xvfb_display() -> str:
+    """Start one Xvfb for all probes in this process.
+
+    One server per test process instead of xvfb-run per engine run: xvfb-run
+    sporadically failed its temp-dir cleanup and replaced the engine's exit
+    status with its own (5), and on timeout only xvfb-run, not the engine,
+    was killed."""
+    global _XVFB, _XVFB_DISPLAY
+    if _XVFB is None:
+        import atexit
+        r, w = os.pipe()
+        _XVFB = subprocess.Popen(
+            ["Xvfb", "-displayfd", str(w), "-screen", "0", "1280x1024x24",
+             "-nolisten", "tcp"], pass_fds=(w,),
+            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        os.close(w)
+        with os.fdopen(r) as f:
+            _XVFB_DISPLAY = ":" + f.readline().strip()
+        atexit.register(_XVFB.terminate)
+    return _XVFB_DISPLAY
+
+
 class ProbeResult:
     def __init__(self, returncode: int, log: str, stdout: str):
         self.returncode = returncode
@@ -205,23 +233,24 @@ class ProbeResult:
 
 
 def run_probe(use_return_ids: bool = False, seconds: float = 4.0,
-              game: str = "sgps3", script: bytes | None = None) -> ProbeResult:
+              game: str = "sgps3", script: bytes | None = None,
+              saves: Path | None = None) -> ProbeResult:
     binary = Path(os.environ["IMPACTO_BIN"]).resolve()
     root = Path(tempfile.mkdtemp(prefix="impacto-probe-"))
     try:
         write_gamedata(root, game, script)
         if game == "sgps3":
             write_profiles(root, use_return_ids)
-        write_config(root, game)
+        write_config(root, game, saves)
         log = root / "impacto.log"
         cmd = [str(binary), "-g", game,
                "-bp", str(root / "basepaths.lua"),
                "-gc", str(root / "gamedefs.lua"),
                "-uc", str(root / "user.toml"),
                "-ll", "Trace", "-lf", str(log)]
-        if shutil.which("xvfb-run") and not os.environ.get("DISPLAY"):
-            cmd = ["xvfb-run", "-a"] + cmd
         env = dict(os.environ, ALSOFT_DRIVERS="null", LIBGL_ALWAYS_SOFTWARE="1")
+        if not env.get("DISPLAY"):
+            env["DISPLAY"] = shared_xvfb_display()
         env.setdefault("SDL_VIDEO_DRIVER", "x11")
         try:
             proc = subprocess.run(cmd, cwd=binary.parent, env=env,
@@ -381,6 +410,129 @@ class SghdHarnessRuntimeProbe(unittest.TestCase):
         self.assertEqual(self.status.returncode, 7, self.status.log[-2000:])
         self.assertEqual([op for _, op in self.status.vm_trace()],
                          ["00:5f", "00:00"])
+
+
+def parse_sghd_save(blob: bytes) -> dict:
+    """Parse the fork-native save file (docs/sghd-save-format.md)."""
+    pos = 0
+
+    def take(fmt):
+        nonlocal pos
+        vals = struct.unpack_from("<" + fmt, blob, pos)
+        pos += struct.calcsize("<" + fmt)
+        return vals if len(vals) > 1 else vals[0]
+
+    out = {"magic": blob[:8]}
+    pos = 8
+    out["version"], out["full"], out["quick"] = take("III")
+    out["flag_ranges"] = list(take("I" * take("I")) or ())
+    out["scr_ranges"] = list(take("I" * take("I")) or ())
+    out["read_lines"] = {}
+    for _ in range(take("I")):
+        script_id, n = take("II")
+        out["read_lines"][script_id] = blob[pos:pos + n]
+        pos += n
+    pos += 48  # quick-save recency order
+    entries = []
+    for _ in range(out["full"] + out["quick"]):
+        status = take("B")
+        if not status:
+            entries.append(None)
+            continue
+        e = {}
+        e["play_time"], e["title"] = take("II")
+        e["flags"] = take("B")
+        e["save_type"] = take("I")
+        e["date"] = take("6i")
+        e["checkpoint"] = take("I")
+        (e["exec_priority"], e["group"], e["wait"], e["script_param"],
+         e["buffer"], e["ip"], e["loop_counter"], e["loop_label"],
+         e["depth"]) = take("9I")
+        e["returns"] = take("8I")
+        e["return_buffers"] = take("8I")
+        e["variables"] = take("16i")
+        e["dialogue_page"] = take("I")
+        n = take("I")
+        e["flag_data"] = blob[pos:pos + n]
+        pos += n
+        n = take("I")
+        e["scr_data"] = list(struct.unpack_from(f"<{n}i", blob, pos))
+        pos += 4 * n
+        entries.append(e)
+    assert pos == len(blob), (pos, len(blob))
+    out["entries"] = entries
+    return out
+
+
+SW_SAVEFILENO_SGHD = 2123  # profiles/sghd/scriptvars.lua
+
+
+@unittest.skipUnless(os.environ.get("IMPACTO_BIN"),
+                     "set IMPACTO_BIN=/path/to/impacto to run runtime probes")
+class SghdSaveRoundTripProbe(unittest.TestCase):
+    """Thread 04 Task 4: run to a save point, save to full slot 79, quit;
+    start a new process, load slot 79 and continue the main thread at the
+    saved address with the saved call stack (fork-native format)."""
+
+    @classmethod
+    def setUpClass(cls):
+        T = fx.SAVE_TEST
+        cls.saves = Path(tempfile.mkdtemp(prefix="impacto-saves-"))
+        save_blob, cls.resume = fx.sghd_save_test_script(False, SW_SAVEFILENO_SGHD)
+        load_blob, resume2 = fx.sghd_save_test_script(True, SW_SAVEFILENO_SGHD)
+        assert cls.resume == resume2 and len(save_blob) == len(load_blob)
+        cls.save_run = run_probe(game="sghd-harness", script=save_blob,
+                                 seconds=30.0, saves=cls.saves)
+        save_file = cls.saves / "sghd" / "impacto-sghd.sav"
+        cls.file = save_file.read_bytes() if save_file.exists() else b""
+        cls.load_run = run_probe(game="sghd-harness", script=load_blob,
+                                 seconds=30.0, saves=cls.saves)
+        cls.call_end = (fx.scx_label_address(save_blob, 1)
+                        + save_blob[fx.scx_label_address(save_blob, 1):]
+                        .index(fx.sghd_call(4, 0)) + 6)
+        # the Assign after the Call is not traced; the End that follows is
+        cls.end_after_call = cls.call_end + len(
+            fx.sghd_add_scrwork(T["exit_scr"], 100))
+
+    @classmethod
+    def tearDownClass(cls):
+        shutil.rmtree(cls.saves, ignore_errors=True)
+
+    def test_save_run_completes(self):
+        self.assertEqual(self.save_run.returncode, 110, self.save_run.stdout[-2000:] + self.save_run.log[-1500:])
+
+    def test_save_file_contents(self):
+        T = fx.SAVE_TEST
+        self.assertTrue(self.file, "save file was not written")
+        s = parse_sghd_save(self.file)
+        self.assertEqual((s["magic"], s["version"], s["full"], s["quick"]),
+                         (b"IMPSGHD\0", 1, 80, 48))
+        self.assertEqual(s["flag_ranges"], [50, 50, 300, 100])
+        self.assertEqual(s["scr_ranges"], [300, 300, 2300, 1300])
+        e = s["entries"][T["slot"]]
+        self.assertIsNotNone(e, "full slot 79 empty")
+        self.assertEqual(sum(x is not None for x in s["entries"][:80]), 1)
+        self.assertEqual(e["ip"], self.resume)
+        self.assertEqual((e["group"], e["buffer"], e["depth"]), (4, 0, 1))
+        self.assertEqual(e["returns"][0] & 0xFFFF, 0, "return id 0")
+        self.assertEqual(e["return_buffers"][0], 0)
+        self.assertEqual(e["scr_data"][300 + T["saved_scr"] - 2300], T["saved_value"])
+        self.assertEqual(len(e["scr_data"]), 1600)
+        byte, bit = divmod(T["saved_flag"], 8)
+        self.assertTrue(e["flag_data"][50 + byte - 300] & (1 << bit))
+        self.assertEqual(s["read_lines"].get(T["script_id"], b"")[:1], b"\x01")
+
+    def test_load_run_restores_state_and_call_stack(self):
+        # 42 = all three checks passed in the restored subroutine,
+        # +100 = the restored Return reached the instruction after the Call
+        self.assertEqual(self.load_run.returncode, 142, self.load_run.log[-3000:])
+
+    def test_load_run_resumes_at_saved_address(self):
+        addrs = [a for a, _ in self.load_run.vm_trace()]
+        self.assertIn(self.resume, addrs)
+        after = addrs[addrs.index(self.resume):]
+        self.assertEqual(after[-1], self.end_after_call,
+                         "restored Return continues right after the Call")
 
 
 def main(argv: list[str]) -> int:

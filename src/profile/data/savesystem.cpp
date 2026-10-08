@@ -6,6 +6,7 @@
 #include "../../games/cclcc/savesystem.h"
 #include "../../games/chlcc/savesystem.h"
 #include "../../games/mo6tw/savesystem.h"
+#include "../../games/sghd/savesystem.h"
 
 namespace Impacto {
 namespace Profile {
@@ -120,6 +121,11 @@ void Configure() {
       break;
     case SaveDataType::CCLCC:
       Implementation = new Impacto::CCLCC::SaveSystem();
+      break;
+    case SaveDataType::SGHD:
+      Implementation = new Impacto::SGHD::SaveSystem();
+      FlagWorkRanges = EnsureGetMember<std::vector<uint32_t>>("FlagWorkRanges");
+      ScrWorkRanges = EnsureGetMember<std::vector<uint32_t>>("ScrWorkRanges");
       break;
     case SaveDataType::None:
       ImpLog(LogLevel::Warning, LogChannel::Profile,

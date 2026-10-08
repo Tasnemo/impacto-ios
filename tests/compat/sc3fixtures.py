@@ -632,3 +632,121 @@ def sghd_task2_fixture() -> bytes:
     for off in returns:
         b.add_return(0, off)
     return b.build()
+
+
+# --------------------------------------------------------------------------
+# Thread 04 Task 4: save/load round trip through the sghd-harness
+# --------------------------------------------------------------------------
+
+PREC_FUNC, PREC_EQ, PREC_ASSIGN = 0x0A, 0x05, 0x01
+
+
+def _scr_ref(index: int) -> bytes:
+    """ScrWork[index] term (token 0x28 FuncGlobalVars)."""
+    return bytes([0x28, PREC_FUNC]) + encode_immediate(index) + bytes(
+        [EXPR_PRECEDENCE_IMM])
+
+
+def expr_scr_equals(index: int, value: int) -> bytes:
+    """Expression  ScrWork[index] == value  (token 0x0C Equal)."""
+    return (_scr_ref(index) + bytes([0x0C, PREC_EQ]) + encode_immediate(value)
+            + bytes([EXPR_PRECEDENCE_IMM, 0x00]))
+
+
+def expr_scr(index: int) -> bytes:
+    return _scr_ref(index) + b"\x00"
+
+
+def sghd_add_scrwork(index: int, value: int) -> bytes:
+    """FE  ScrWork[index] += value  (token 0x17 AddAssign)."""
+    return (bytes([0xFE]) + _scr_ref(index) + bytes([0x17, PREC_ASSIGN])
+            + encode_immediate(value) + bytes([EXPR_PRECEDENCE_IMM, 0x00]))
+
+
+SAVE_TEST = dict(
+    exit_scr=4000,          # profiles/sghd-harness ExitCodeScrWork
+    mark_scr=4001,          # 1 in the load run; outside the saved ranges
+    unsaved_scr=4002,       # outside ScrWorkRanges -> must not be restored
+    saved_scr=2400,         # inside ScrWorkRanges (2300 + 1300)
+    saved_value=1234,
+    saved_flag=2410,        # FlagWork byte 301, inside FlagWorkRanges
+    main_thread_ptr=1704,   # SW_MAINTHDP (profiles/sghd/scriptvars.lua)
+    save_slot_scr=None,     # SW_SAVEFILENO, filled from scriptvars by caller
+    slot=79,                # last of the 80 full slots
+    script_id=2,            # StartScript
+    read_line=0,
+)
+
+
+def sghd_save_test_script(load_run: bool, save_file_no_scr: int):
+    """Same layout for both runs; only the boot label jumped to differs.
+
+    Returns (blob, resume_offset) where resume_offset is the absolute script
+    address right after the AutoSave that calls SaveMemory (the main
+    thread's saved IP).
+
+    Save run exit status 110 (=10 + 100 after Return).  Load run: 142 when
+    restored state is correct (=42 + 100 after the restored Return), 1-3 for
+    the first failed check."""
+    T = SAVE_TEST
+    E = expr
+    b = ScxBuilder()
+    s_line = b.add_string(b"\xFF")
+    assert s_line == T["read_line"]
+
+    boot = 3 if load_run else 2
+    label0 = sghd_jump(boot)
+
+    story = bytearray()
+    story += sghd_assign_scrwork(T["saved_scr"], T["saved_value"])
+    story += sghd_set_flag(T["saved_flag"])
+    story += sghd_assign_scrwork(T["unsaved_scr"], 99)
+    story += ins(0x01, 0x25, u8(0), u16(s_line))         # SetRevMes: line read
+    story += sghd_call(4, 0)
+    ret0 = len(story)
+    story += sghd_add_scrwork(T["exit_scr"], 100)
+    story += sghd_end_of_script()
+
+    save_boot = (sghd_assign_scrwork(T["main_thread_ptr"], 1)
+                 + ins(0x00, 0x01, E(4), E(0), u16(1))   # CreateThread grp 4
+                 + sghd_end_of_script())
+    load_boot = (sghd_assign_scrwork(T["mark_scr"], 1)
+                 + ins(0x00, 0x2A, u8(32)) + ins(0x00, 0x2A, u8(33))  # mount
+                 + sghd_assign_scrwork(T["main_thread_ptr"], 1)
+                 + ins(0x00, 0x01, E(4), E(0), u16(10))  # placeholder thread
+                 + ins(0x10, 0x24, u8(0), E(0), E(T["slot"]))  # LoadEntry+Vars
+                 + ins(0x10, 0x24, u8(1))                        # Thread
+                 + sghd_end_of_script())
+
+    sub = bytearray()
+    sub += ins(0x10, 0x22, u8(0))                        # AutoSave: SaveMemory
+    resume = len(sub)
+    sub += ins(0x00, 0x0A, u8(1), expr_scr(T["mark_scr"]), u16(6))
+    sub += sghd_assign_scrwork(save_file_no_scr, T["slot"])
+    sub += ins(0x00, 0x2A, u8(16))                       # flush to full slot
+    sub += ins(0x00, 0x2A, u8(30)) + ins(0x00, 0x2A, u8(31))  # write + wait
+    sub += sghd_assign_scrwork(T["exit_scr"], 10)
+    sub += sghd_return()
+
+    verify = bytearray()
+    verify += sghd_assign_scrwork(T["exit_scr"], 0)
+    verify += ins(0x00, 0x0A, u8(0),
+                  expr_scr_equals(T["saved_scr"], T["saved_value"]), u16(7))
+    verify += ins(0x00, 0x10, u8(0), E(T["saved_flag"]), u16(8))
+    verify += ins(0x00, 0x0A, u8(0), expr_scr_equals(T["unsaved_scr"], 0),
+                  u16(9))
+    verify += sghd_assign_scrwork(T["exit_scr"], 42)
+    verify += sghd_return()
+
+    def fail(code):
+        return sghd_assign_scrwork(T["exit_scr"], code) + sghd_end_of_script()
+
+    idle = ins(0x00, 0x05, E(10000)) + sghd_jump(10)
+
+    labels = [label0, bytes(story), save_boot, load_boot, bytes(sub),
+              b"\x00\x00", bytes(verify), fail(1), fail(2), fail(3), idle]
+    for code in labels:
+        b.add_label(code)
+    b.add_return(1, ret0)
+    blob = b.build()
+    return blob, scx_label_address(blob, 4) + resume
