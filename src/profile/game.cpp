@@ -20,6 +20,8 @@ void Configure() {
   DesignHeight = EnsureGetMember<float>("DesignHeight");
 
   LayFileBigEndian = TryGetMember<bool>("LayFileBigEndian").value_or(false);
+  VoiceTableLittleEndian =
+      TryGetMember<bool>("VoiceTableLittleEndian").value_or(false);
   CharaIsMvl = TryGetMember<bool>("CharaIsMvl").value_or(false);
   LayFileTexXMultiplier =
       TryGetMember<float>("LayFileTexXMultiplier").value_or(1.0f);

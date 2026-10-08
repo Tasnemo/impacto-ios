@@ -124,6 +124,13 @@ class SghdCensusEvidence(unittest.TestCase):
             # 8-byte header, 12-byte states, 16-byte vertices, 1 trailing byte each
             self.assertEqual(8 + 12 * sample["states"] + 17 * sample["vertices"], sample["bytes"])
 
+    def test_voice_table_is_little_endian(self):
+        vt = EVIDENCE["voice_table"]
+        self.assertEqual(EVIDENCE["system_mpk"][str(vt["id"])], vt["entry"])
+        self.assertEqual(int.from_bytes(bytes.fromhex(vt["first_bytes"])[:2], "little"),
+                         EVIDENCE["audio"]["voice.mpk"]["ogg-vorbis"])
+        self.assertRegex((SGHD / "game.lua").read_text(), r"VoiceTableLittleEndian = true")
+
     def test_every_phone_subtype_is_parsed(self):
         body = (REPO / "src/vm/inst_sghd.cpp").read_text().split("VmInstruction(InstPhoneSGHD)")[1]
         body = body.split("VmInstruction(", 1)[0]

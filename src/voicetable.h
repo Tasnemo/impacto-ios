@@ -17,9 +17,8 @@ class VoiceTable : public Loadable<VoiceTable, bool, uint32_t> {
   friend class Loadable<VoiceTable, bool, uint32_t>;
 
  public:
-  uint8_t GetVoiceData(uint32_t id, size_t index) {
-    return LipSyncData[TableOfContents[id].DataIndex * 4 + index];
-  }
+  // 0 for unknown voice ids and positions past the table (bounds-checked)
+  uint8_t GetVoiceData(uint32_t id, size_t index) const;
 
  protected:
   bool LoadSync(uint32_t id);

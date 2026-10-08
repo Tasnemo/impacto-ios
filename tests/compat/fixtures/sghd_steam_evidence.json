@@ -425,5 +425,12 @@
    3000,
    3800
   ]
+ },
+ "voice_table": {
+  "_note": "system.mpk id 31 WAVTABLE.DAT (lip-sync table loaded by 00 31) starts b0 38 00 00: as little-endian u16 that is 14512, the voice.mpk entry count; read big-endian (impacto's console default) it is 45112 and overruns the file.",
+  "entry": "WAVTABLE.DAT",
+  "id": 31,
+  "first_bytes": "b0380000",
+  "count_le": 14512
  }
 }

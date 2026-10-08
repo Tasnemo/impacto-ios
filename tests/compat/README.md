@@ -79,6 +79,8 @@ it in a second process and checks the restored variables, IP and call stack
 global flag/ScrWork value. `SghdPhoneProbe` (Thread 06) checks the phone
 item bits (`10 37` types 0x00-0x03 set/clear/jump-if-set/jump-if-clear),
 `10 3A` as one expression and `10 37` type 0x1E without arguments (exit 42).
+`SghdVoiceTableProbe` (Thread 06) loads a little-endian `WAVTABLE.DAT` via
+`00 31` and checks that an oversized count is refused, not fatal.
 
 ## When Thread 04 fixes a bug these tests assert
 

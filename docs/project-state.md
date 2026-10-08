@@ -21,7 +21,7 @@ handoff: [handoff.md](handoff.md).
 | Phone/mail | Catalogued; item bits set/clear/branch implemented + saved; **phone UI not implemented** | [phone-protocol.md](phone-protocol.md), `SghdPhoneProbe` |
 | Save/load | Fork-native format 2: slots + phone bits + global system data | `SghdSaveRoundTripProbe` |
 | Movies | Bink 2 → skipped safely | `SghdMovieSkipProbe` |
-| Audio | Ogg Vorbis (all 14 794 entries confirmed by the census) | `SghdOggAudioProbe` |
+| Audio | Ogg Vorbis (all 14 794 entries confirmed by the census); lip-sync table little-endian | `SghdOggAudioProbe`, `SghdVoiceTableProbe` |
 | Real Steam boot | **Needs the owner** (Windows artifact) | [handoff.md](handoff.md) "Windows round 3" |
 | iOS | Not started (needs new authorization) | — |
 

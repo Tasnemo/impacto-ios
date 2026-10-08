@@ -30,13 +30,15 @@ Report: [threads/06-sghd-census.md](threads/06-sghd-census.md).
   (`10 37` 0x00-0x03) implemented (`src/games/sghd/phone.h`).
 - Saves: format 2 (phone block per slot, global system data
   FlagWork bytes 100-149/460-499 + ScrWork 600-999, `00 2A` types 0/2).
+- Voice/lip-sync table (`00 31`, `WAVTABLE.DAT`) read little-endian
+  (`VoiceTableLittleEndian`); oversized tables refused, lookups bounds-checked.
 - Tools: census v2; `tools/sghd_inspect.py` (`sheets`, `sprites`, `crops`,
   `widths`).
 
 ## Verification
 - Orb, `impacto-desktop:ubuntu24`, binary rebuilt from this branch
-  (`-Werror`): `python3 -m unittest discover -s tests/compat` **106/106**
-  with `IMPACTO_BIN` (80 + 26 probes); without a binary 80 pass, 26 skipped.
+  (`-Werror`): `python3 -m unittest discover -s tests/compat` **108/108**
+  with `IMPACTO_BIN` (80 + 28 probes); without a binary 80 pass, 28 skipped.
   Launcher smoke PASS. clang-format clean on changed C++.
 - GitHub Actions: see CI section.
 

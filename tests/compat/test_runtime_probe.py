@@ -172,8 +172,16 @@ GAMEDATA_DIR = {"sghd-harness": "sghd", "sghd-harness-media": "sghd"}
 UNPATCHED = ("sghd", "sghd-harness", "sghd-harness-media")
 
 
+def wavtable(count_le: int = 2) -> bytes:
+    """Synthetic Steam-style WAVTABLE.DAT: little-endian u16 count, u16 0,
+    count x (u16 data index, u16 length*6), then 4 lip-sync bytes per index."""
+    toc = b"".join(struct.pack("<HH", i, 6 * (i + 1)) for i in range(2))
+    return struct.pack("<HH", count_le, 0) + toc + bytes(range(8))
+
+
 def write_gamedata(root: Path, game: str = "sgps3",
-                   script: bytes | None = None) -> None:
+                   script: bytes | None = None,
+                   wavtable_data: bytes | None = None) -> None:
     gd = root / "gamedata" / GAMEDATA_DIR.get(game, game)
     gd.mkdir(parents=True)
     png = tiny_png()
@@ -181,6 +189,7 @@ def write_gamedata(root: Path, game: str = "sgps3",
         if mount == "SYSTEM_US" and game == "sghd":
             files = [fx.MpkFile(i, n, tiny_dds() if n.endswith(".DDS") else png)
                      for i, n in SGHD_SYSTEM_SHEETS.items()]
+            files.append(fx.MpkFile(31, "WAVTABLE.DAT", wavtable_data or wavtable()))
         elif mount == "SYSTEM_US":
             files = [fx.MpkFile(i, f"sheet{i}.png", png) for i in SYSTEM_SHEET_IDS]
         elif game == "sghd-harness-media" and mount in ("BGM", "SE", "VOICE"):
@@ -322,11 +331,12 @@ class ProbeResult:
 def run_probe(use_return_ids: bool = False, seconds: float = 4.0,
               game: str = "sgps3", script: bytes | None = None,
               saves: Path | None = None,
-              env_extra: dict | None = None) -> ProbeResult:
+              env_extra: dict | None = None,
+              wavtable_data: bytes | None = None) -> ProbeResult:
     binary = Path(os.environ["IMPACTO_BIN"]).resolve()
     root = Path(tempfile.mkdtemp(prefix="impacto-probe-"))
     try:
-        write_gamedata(root, game, script)
+        write_gamedata(root, game, script, wavtable_data)
         if game == "sgps3":
             write_profiles(root, use_return_ids)
         write_config(root, game, saves)
@@ -723,6 +733,45 @@ class SghdSaveRoundTripProbe(unittest.TestCase):
         after = addrs[addrs.index(self.resume):]
         self.assertEqual(after[-1], self.end_after_call,
                          "restored Return continues right after the Call")
+
+
+def voice_table_script() -> bytes:
+    """00 31 (voice/lip-sync table load) of system id 31, Nop, End."""
+    b = fx.ScxBuilder()
+    b.add_label(fx.ins(0x00, 0x31, fx.expr(31)) + fx.sghd_nop()
+                + fx.sghd_end_of_script())
+    return b.build()
+
+
+@unittest.skipUnless(os.environ.get("IMPACTO_BIN"),
+                     "set IMPACTO_BIN=/path/to/impacto to run runtime probes")
+class SghdVoiceTableProbe(unittest.TestCase):
+    """Thread 06: Steam WAVTABLE.DAT is little-endian (census: b0 38 00 00 =
+    14512 = voice.mpk entries). The sghd profile reads it as such; a table
+    whose count does not fit is refused instead of crashing."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.good = run_probe(game="sghd", script=voice_table_script())
+        # what the Steam file looks like to a big-endian reader: 0xb038 entries
+        cls.bad = run_probe(game="sghd", script=voice_table_script(),
+                            wavtable_data=struct.pack(">H", 0xB038) + bytes(14))
+
+    @staticmethod
+    def ops(probe):
+        # 00 31 re-executes while the table loads asynchronously
+        ops = [op for _, op in probe.vm_trace()]
+        return [op for i, op in enumerate(ops) if i == 0 or op != ops[i - 1]]
+
+    def test_little_endian_table_loads(self):
+        ops = self.ops(self.good)
+        self.assertEqual(ops[:3], ["00:31", "00:5f", "00:00"], self.good.log[-2000:])
+        self.assertNotIn("Voice table", self.good.log)
+
+    def test_oversized_count_is_refused_not_fatal(self):
+        self.assertIn("lip sync disabled", self.bad.log)
+        ops = self.ops(self.bad)
+        self.assertEqual(ops[:3], ["00:31", "00:5f", "00:00"], self.bad.log[-2000:])
 
 
 @unittest.skipUnless(os.environ.get("IMPACTO_BIN"),

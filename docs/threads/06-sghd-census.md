@@ -16,11 +16,12 @@ kept in `tests/compat/fixtures/sghd_steam_evidence.json` and the docs below.
 | 5 Phone catalogue | 611 phone/mail instructions catalogued by sub-type, layout, context and engine state | [../phone-protocol.md](../phone-protocol.md), fixture `phone_subtypes` |
 | 6 Phone state | `10 37` 0x00/0x01 set/clear item attribute bit, 0x02/0x03 jump if set/clear (`src/games/sghd/phone.h`); other sub-types stay logged stubs | `SghdPhoneProbe` (exit 42) |
 | 7 Saves | format 2: phone block per slot; global system data (`00 2A` type 0/2: FlagWork bytes 100-149, 460-499, ScrWork 600-999); v1 files still load | `SghdSaveRoundTripProbe` (phone bit + global flag/ScrWork survive) |
+| 7 Voice table | `WAVTABLE.DAT` header is little-endian on Steam (`b0 38` = 14512 = voice entries); profile flag `VoiceTableLittleEndian`; an oversized count is refused instead of over-reading, lookups are bounds-checked (real-data crash risk removed) | `SghdVoiceTableProbe`, `test_voice_table_is_little_endian` |
 | 8 Windows tools | census v2 (evidence vs padding/data, context for real errors, DDS loader checks, text styles); `tools/sghd_inspect.py` (`sheets`/`sprites` opaque-region boxes, `crops` local sprite check, `widths` Game.exe width-table search) | `test_sghd_census.py` (15), `test_sghd_inspect.py` (7) |
 
 Verification in `impacto-desktop:ubuntu24`, binary rebuilt from this
-branch: `python3 -m unittest discover -s tests/compat` → **106/106** with
-`IMPACTO_BIN` (80 + 26 probes); 80 pass and 26 skip without a binary.
+branch: `python3 -m unittest discover -s tests/compat` → **108/108** with
+`IMPACTO_BIN` (80 + 28 probes); 80 pass and 28 skip without a binary.
 Launcher smoke PASS. clang-format clean on changed C++.
 
 ## Not done / limits

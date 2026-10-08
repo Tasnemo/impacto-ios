@@ -23,6 +23,9 @@ root.CharaIsMvl = false;
 root.LayFileBigEndian = false;
 root.LayFileTexXMultiplier = 1;
 root.LayFileTexYMultiplier = 1;
+-- system.mpk WAVTABLE.DAT (lip sync, loaded by 00 31) starts b0 38 00 00:
+-- little-endian 14512 = the voice.mpk entry count (Thread 06 census).
+root.VoiceTableLittleEndian = true;
 
 include(root.BasePaths.RootProfilesDir .. '/sghd/vm.lua');
 

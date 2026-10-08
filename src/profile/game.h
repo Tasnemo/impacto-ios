@@ -18,6 +18,9 @@ inline std::optional<std::string> CursorArrowPath;
 inline std::optional<std::string> CursorPointerPath;
 
 inline bool LayFileBigEndian;
+// Voice lip-sync table (00 31): console builds store the header big-endian,
+// the STEINS;GATE Steam WAVTABLE.DAT little-endian (count = voice.mpk size).
+inline bool VoiceTableLittleEndian;
 inline bool CharaIsMvl;
 
 inline size_t ScreenCaptureCount = 0;
