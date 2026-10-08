@@ -1,0 +1,51 @@
+# Architecture Decision Records
+
+Format: ID, date, status, context, decision, consequences. Add new records at the bottom;
+never rewrite an accepted record — supersede it.
+
+## ADR-001 — Keep impacto as the engine foundation
+- **Date:** 2026-10-08 (Thread 01) — **Status:** Accepted
+- **Context:** `workme.md` asks Thread 01 to evaluate whether impacto remains a sensible
+  foundation. Findings: SC3 VM, VFS, texture/audio/video pipelines, Lua profile system and
+  SDL3-based platform layer are all in place; platform-specific code is confined to ~15
+  files; Android proves the shared-library + GLES3 mobile path.
+- **Decision:** Build on impacto. Do not rewrite subsystems. Add a `sghd` profile and an iOS
+  shell as additive layers.
+- **Consequences:** Project effort concentrates on game compatibility (VM, phone/mail,
+  saves, Bink 2) rather than engine construction. Upstream merges remain possible if
+  changes stay profile- and platform-scoped.
+
+## ADR-002 — Target the Steam release via a new `sghd` profile, not by extending `sgps3`
+- **Date:** 2026-10-08 — **Status:** Proposed (confirm in Thread 03)
+- **Context:** `sgps3` encodes PS3 specifics (CPK mounts, `LayFileBigEndian=true`, PS3
+  charset, 1280x720). The Steam build uses MPK, PC endianness, its own charset, up to
+  1920x1080.
+- **Decision:** Create `profiles/sghd/`, `resources/sghd/`, and if needed
+  `InstructionSet::SGHD` + `opcodetables_sghd.h`, following how `cc` vs `cclcc` coexist.
+- **Consequences:** Keeps upstream `sgps3` intact; duplicates some Lua until the two are
+  proven identical.
+
+## ADR-003 — Defer the iOS graphics backend choice until Thread 05
+- **Date:** 2026-10-08 — **Status:** Accepted
+- **Context:** `workme.md` forbids committing to a Metal rewrite up front. The OpenGL
+  backend already emits GLES 3.0 shaders and runs on Android; the Vulkan backend is
+  incomplete (12/27 shader pairs); GLES on iOS is deprecated but present.
+- **Decision:** Thread 05 must test (1) GLES3 via SDL3 on an iOS 26 simulator/device build
+  and (2) MoltenVK viability before any backend work. Prefer the smallest change that
+  renders correctly.
+- **Consequences:** No renderer code changes before Thread 05.
+
+## ADR-004 — Bink 2 handling decided after inspecting real files
+- **Date:** 2026-10-08 — **Status:** Proposed
+- **Context:** See `docs/blockers.md` B1.
+- **Decision:** Thread 03 hexdumps the shipped movies. If `KB2`, the default plan is a
+  Windows-side transcode step in the asset-packaging tool (to a format ffmpeg + iOS hw
+  decode handle, e.g. H.264/AAC in MP4) rather than implementing Bink 2 in the engine.
+- **Consequences:** Adds a user-side preparation step; keeps the engine free of a
+  proprietary codec reimplementation.
+
+## ADR-005 — Documentation and branch discipline
+- **Date:** 2026-10-08 — **Status:** Accepted
+- **Decision:** Each thread works on `phase-NN-<topic>` branches, writes
+  `docs/threads/NN-*.md`, and updates `docs/handoff.md` using the template in `workme.md`.
+  Claims are tagged Verified / Claimed / Source-level / Unknown.

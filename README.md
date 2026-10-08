@@ -1,3 +1,20 @@
+# impacto-ios
+
+This repository is a fork of [CommitteeOfZero/impacto](https://github.com/CommitteeOfZero/impacto)
+whose goal is an offline iOS port with the original English Steam release of STEINS;GATE as
+the first target. Project mission, thread plan and rules: [`workme.md`](workme.md).
+Current state and next step for any new Amp thread: [`docs/handoff.md`](docs/handoff.md).
+Supporting documents: [`docs/architecture.md`](docs/architecture.md),
+[`docs/compatibility-matrix.md`](docs/compatibility-matrix.md),
+[`docs/blockers.md`](docs/blockers.md), [`docs/decisions.md`](docs/decisions.md),
+[`docs/roadmap.md`](docs/roadmap.md), [`docs/test-results.md`](docs/test-results.md),
+[`docs/threads/`](docs/threads/).
+
+STEINS;GATE is **not** currently playable in this engine; see the compatibility matrix.
+The upstream README follows unchanged.
+
+---
+
 # impacto [![impacto](https://github.com/CommitteeOfZero/impacto/actions/workflows/impacto.yml/badge.svg)](https://github.com/CommitteeOfZero/impacto/actions/workflows/impacto.yml)
 
 **impacto** is an open-source **reimplementation** of the **"MAGES." visual novel engine** in C++ and OpenGL. Using the original data files, impacto can run any supported game on any supported platform.
