@@ -684,5 +684,43 @@
   "errors_in_reachable_code": 1,
   "after_end": 101,
   "padding": 0
+ },
+ "title_protocol": {
+  "_note": "Thread 07c, tools/sghd_census.py --context=10:34,00:44 on the owner's install (_STARTUP_WIN.SCX). Variable indices named by immediates around the title instructions; choice ids from the JumpIf chain after the main-menu loop. No script code.",
+  "title_menu_types_used": [
+   0,
+   1,
+   2,
+   3
+  ],
+  "scrwork": {
+   "SW_GAMESTATE": 2113,
+   "SW_TITLEMODE": 2115,
+   "SW_TITLEMOVIECT": 2116,
+   "SW_TITLEDISPCT": 2119,
+   "SW_TITLECUR": 2139,
+   "SW_SYSMENUCT": 2142,
+   "SW_SYSMENUALPHA": 2143,
+   "SW_SYSMENUCNO": 3338,
+   "SW_TITLE": 4300
+  },
+  "flags": {
+   "SF_TITLEMODE": 1240,
+   "SF_TITLEEND": 1241,
+   "SF_RETURNTITLE": 1805
+  },
+  "main_menu_mode": 3,
+  "main_menu_choice_ids": [
+   0,
+   10,
+   11,
+   20,
+   21,
+   22,
+   23,
+   24,
+   30,
+   40
+  ]
  }
 }

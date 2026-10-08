@@ -11,6 +11,9 @@
 #include "../profile/scriptvars.h"
 #include "../profile/vm.h"
 #include "../games/sghd/phone.h"
+#include "../games/sghd/titlemenu.h"
+#include "../profile/games/sghd/titlemenu.h"
+#include "../ui/ui.h"
 
 namespace Impacto {
 
@@ -104,16 +107,29 @@ VmInstruction(InstSystemMesSGHD) {
            fmt::format("arg: {:d}", arg));
 }
 
-// 00 50 "UselessJump": condition byte, then 0, 2 or 3 local labels. The
-// branch is not taken (sc3ntist and the Steam build treat it as inert).
+// 00 50 "UselessJump": condition byte, then 0, 2 or 3 local labels. When
+// all labels are the same the jump is taken: every outcome leads there.
+// Evidence (Thread 07c, _STARTUP_WIN press-start loop): "UselessJump 0
+// label47 label47; Jump label46" -- label47 plays the decision sound and
+// leaves the title; not jumping would loop back forever. With different
+// labels the condition is unknown and the jump is not taken (logged).
 VmInstruction(InstUselessJumpSGHD) {
   StartInstruction;
   PopUint8(condition);
   int labels = 0;
   if (condition == 0 || condition == 2) labels = 2;
   if (condition == 3) labels = 3;
-  thread->IpOffset += 2 * labels;
-  StubOnce(fmt::format("UselessJump(condition: {:d})", condition));
+  uint16_t ids[3] = {};
+  for (int i = 0; i < labels; i++) {
+    PopUint16(id);
+    ids[i] = id;
+  }
+  bool const same =
+      labels > 0 && ids[0] == ids[1] && (labels < 3 || ids[0] == ids[2]);
+  StubOnce(fmt::format("UselessJump(condition: {:d}, same labels: {:s})",
+                       condition, same ? "yes, taken" : "no, not taken"));
+  if (same)
+    thread->IpOffset = ScriptGetLabelAddress(thread->ScriptBufferId, ids[0]);
 }
 
 VmInstruction(InstUseless0053SGHD) {
@@ -361,21 +377,48 @@ VmInstruction(InstPhoneSGHD) {
   StubOnce(fmt::format("Phone(type: {:#x})", type), args);
 }
 
-// 10 34: one type byte in the Steam scripts (sc3ntist Unk1034, confirmed by
-// the census over all 190 scripts). The sgps3 table used the CHAOS;HEAD
-// handler InstTitleMenuOld, which reads no argument (desync) and blocks
-// until an engine title menu reports a choice; with no SGHD title menu that
-// wait can never end. The layout is RNE's TitleMenu(type), but the Steam
-// title protocol (which ScrWork receives the choice) is not established, so
-// this consumes the byte and never waits: the script continues with its own
-// menu variables untouched. It yields the rest of the frame, so a script
-// that polls the menu in a loop cannot freeze the engine inside one frame
-// (the stall report then shows the loop).
+// 10 34 TitleMenu(type), one type byte (sc3ntist Unk1034; census over all
+// 190 scripts). Protocol from the Steam _STARTUP_WIN.SCX (census --context,
+// docs/threads/07c-title-menu.md):
+//   0  title init (then the script sets SF_TITLEMODE, plays the title movie)
+//   1  once per frame while the script loops on SF_TITLEEND (1241). In the
+//      press-start phase any confirm ends the loop; in the main menu
+//      (SW_TITLEMODE == MainMenuMode) the script then switches on
+//      SW_TITLECUR (2139): 0, 10, 11, 20-24, 30, 40.
+//   2  before the main menu (the script then fades SW_TITLEMODE 4 -> 3)
+//   3  after a save-data system message; meaning unknown (logged only)
+// The engine side never waits: it reports a decision through SW_TITLECUR
+// and SF_TITLEEND and yields the frame, so a polling loop cannot freeze the
+// engine inside one frame.
 VmInstruction(InstTitleMenuSGHD) {
   StartInstruction;
   PopUint8(type);
   StubOnce(fmt::format("TitleMenu(type: {:d})", type));
   BlockThread;
+
+  auto* menu = dynamic_cast<UI::SGHD::TitleMenu*>(UI::TitleMenuPtr);
+  if (!menu) return;
+  switch (type) {
+    case 0:
+    case 2:
+      menu->ResetCursor();
+      break;
+    case 1: {
+      if (GetFlag(SF_TITLEEND)) break;  // decision not consumed yet
+      bool const mainMenu =
+          ScrWork[SW_TITLEMODE] == Profile::SGHD::TitleMenu::MainMenuMode;
+      std::optional<int> const choice = menu->Poll(mainMenu);
+      if (!choice) break;
+      if (mainMenu) ScrWork[SW_TITLECUR] = *choice;
+      SetFlag(SF_TITLEEND, true);
+      ImpLog(LogLevel::Info, LogChannel::VM,
+             "TitleMenu: {:s} (SW_TITLECUR = {:d})\n",
+             mainMenu ? "main menu choice" : "press start",
+             ScrWork[SW_TITLECUR]);
+    } break;
+    default:
+      break;
+  }
 }
 
 VmInstruction(InstUnk103ASGHD) {

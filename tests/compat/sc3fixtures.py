@@ -500,7 +500,8 @@ def sghd_reference_trace(blob: bytes, start_label: int = 0,
                          max_steps: int = 10000) -> list[tuple[int, str]]:
     """Execute control flow of a fixture script the way the SGHD engine is
     documented to: flags, Call/CallFar/CallIfFlag/CallFarIfFlag with return
-    ids, Return/ReturnIfFlag, Jump.  Everything else falls through.
+    ids, Return/ReturnIfFlag, Jump, UselessJump with identical labels.
+    Everything else falls through.
 
     Returns (address, 'gg:oo') for every non-Assign instruction, the same
     shape impacto logs at Trace level, ending with EndOfScript."""
@@ -520,6 +521,10 @@ def sghd_reference_trace(blob: bytes, start_label: int = 0,
             flags.discard(args[0])
         elif name == "Jump":
             nxt = scx_label_address(blob, args[0])
+        elif name == "UselessJump":
+            labels = args[1:]
+            if labels and len(set(labels)) == 1:  # Thread 07c: taken
+                nxt = scx_label_address(blob, labels[0])
         elif name in ("Call", "CallFar", "CallIfFlag", "CallFarIfFlag"):
             if name == "Call":
                 label, ret = args
@@ -588,7 +593,7 @@ def sghd_task2_fixture() -> bytes:
     main += ins(0x00, 0x4B)
     main += ins(0x00, 0x4C, u8(0), E(3))
     main += ins(0x00, 0x4C, u8(1))
-    main += ins(0x00, 0x50, u8(3), u16(0), u16(0), u16(0))
+    main += ins(0x00, 0x50, u8(3), u16(0), u16(1), u16(2))  # differing: not taken
     main += ins(0x00, 0x50, u8(1))
     main += ins(0x00, 0x53, u8(1), E(2), u16(0))
     main += ins(0x00, 0x58, u8(2), E(1), E(2), E(3), E(4), u16(0))
@@ -736,6 +741,66 @@ def sghd_title_startup_script(sleep_frames: int = 360) -> bytes:
                 + ins(0x00, 0x05, expr(sleep_frames))  # Sleep
                 + sghd_assign_scrwork(4000, 34) + sghd_end_of_script())
     return b.build()
+
+
+# Thread 07c: title protocol variables of the Steam scripts (common
+# profiles/common/scriptvars.lua indices, as used by _STARTUP_WIN.SCX)
+TITLE = dict(SF_TITLEMODE=1240, SF_TITLEEND=1241, SW_TITLEMODE=2115,
+             SW_TITLECUR=2139, MAIN_MENU_MODE=3, MAIN_SCRIPT_ID=9,
+             MAIN_SCRIPT_BUFFER=2)
+
+
+def sghd_title_protocol_scripts() -> tuple[bytes, bytes]:
+    """Startup + "MAIN00" scripts reproducing the Steam title control flow
+    (census --context around 10 34, Thread 07c):
+
+      init:  SetFlag SF_TITLEMODE; 10 34 0; ResetFlag SF_TITLEEND
+      press: Sleep 1; 10 34 1; JumpIfFlag 0 SF_TITLEEND press;
+             ResetFlag SF_TITLEEND; UselessJump 0 menu menu; Jump press
+      menu:  10 34 2; SW_TITLEMODE = 3
+      loop:  Sleep 1; 10 34 1; JumpIfFlag 0 SF_TITLEEND loop;
+             ResetFlag SF_TITLEEND; JumpIf SW_TITLECUR == 0 start;
+             JumpIf SW_TITLECUR == 10 load; exit 9
+      start: LoadScript buffer 2 <- script 9; JumpFar 2 label 0
+      load:  exit 10
+    The second script ("MAIN00") exits with 77. Exit status (ScrWork[4000])
+    therefore tells which path the title took; a missing decision hangs."""
+    T, E = TITLE, expr
+
+    def flag_wait(flag, label):
+        return ins(0x00, 0x10, u8(0), E(flag), u16(label))
+
+    def exit_with(code):
+        return sghd_assign_scrwork(4000, code) + sghd_end_of_script()
+
+    b = ScxBuilder()
+    b.add_label(sghd_set_flag(T["SF_TITLEMODE"]) + ins(0x10, 0x34, u8(0))
+                + ins(0x00, 0x13, E(T["SF_TITLEEND"]))
+                + sghd_assign_scrwork(T["SW_TITLEMODE"], 1)
+                + sghd_jump(1))                                       # 0
+    b.add_label(ins(0x00, 0x05, E(1)) + ins(0x10, 0x34, u8(1))
+                + flag_wait(T["SF_TITLEEND"], 1)
+                + ins(0x00, 0x13, E(T["SF_TITLEEND"]))
+                + ins(0x00, 0x50, u8(0), u16(2), u16(2))
+                + sghd_jump(1))                                       # 1 press
+    b.add_label(ins(0x10, 0x34, u8(2))
+                + sghd_assign_scrwork(T["SW_TITLEMODE"], T["MAIN_MENU_MODE"])
+                + sghd_jump(3))                                       # 2 menu
+    b.add_label(ins(0x00, 0x05, E(1)) + ins(0x10, 0x34, u8(1))
+                + flag_wait(T["SF_TITLEEND"], 3)
+                + ins(0x00, 0x13, E(T["SF_TITLEEND"]))
+                + bytes([0x00, 0x0A, 1]) + expr_scr_equals(T["SW_TITLECUR"], 0)
+                + u16(4)
+                + bytes([0x00, 0x0A, 1]) + expr_scr_equals(T["SW_TITLECUR"], 10)
+                + u16(5)
+                + exit_with(9))                                       # 3 loop
+    b.add_label(ins(0x00, 0x04, E(T["MAIN_SCRIPT_BUFFER"]),
+                    E(T["MAIN_SCRIPT_ID"]))
+                + ins(0x00, 0x0C, E(T["MAIN_SCRIPT_BUFFER"]), u16(0)))  # 4
+    b.add_label(exit_with(10))                                        # 5 load
+    main00 = ScxBuilder()
+    main00.add_label(exit_with(77))
+    return b.build(), main00.build()
 
 
 def sghd_save_test_script(load_run: bool, save_file_no_scr: int):

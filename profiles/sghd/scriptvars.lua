@@ -1,12 +1,17 @@
+-- Thread 07c: the Steam scripts use the common (profiles/common/
+-- scriptvars.lua) title/system-menu variables, not the PS3 values this file
+-- inherited from sgps3: _STARTUP_WIN counts SW_TITLEDISPCT in W2119, sets
+-- SW_TITLEMODE W2115, SW_GAMESTATE W2113, SW_SYSMENUCT/ALPHA W2142/W2143,
+-- reads SW_TITLECUR W2139, SW_SYSMENUCNO W3338 and tests W4300 == 65535
+-- (SW_TITLE). The PS3 overrides of those were removed; the remaining ones
+-- are unverified.
 local sv = root.ScriptVars;
 
-sv.SW_TITLEDISPCT = 1014;
 sv.SW_TITLEMASKALPHA = 1033;
 sv.SW_TITLEMASKCOLOR = 1034;
 sv.SW_SYSSEL = 1028;
 sv.SW_SYSTEMMENUCHG = 1040;
 sv.SW_SYSTEMMENUALPHA = 1041;
-sv.SW_SYSMENUCT = 1042;
 sv.SW_MASK1ALPHA_OFS = 1586;
 sv.SW_MASK2ALPHA_OFS = 1587;
 sv.SW_MASK3ALPHA_OFS = 1588;
@@ -22,7 +27,6 @@ sv.SW_SVSCRNO3 = 2008;
 sv.SW_SVSCRNO4 = 2009;
 sv.SW_SVBGNO1 = 2010;
 sv.SW_SVCHANO1 = 2018;
-sv.SW_TITLE = 2300;
 sv.SW_PLAYTIME = 2304;
 sv.SW_MESWINDOW_COLOR = 7777;
 sv.SW_BGMREQNO = 2310;

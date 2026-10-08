@@ -207,5 +207,44 @@ class SghdCensusEvidence(unittest.TestCase):
         self.assertEqual(used - handled, set())
 
 
+class SghdTitleProtocolEvidence(unittest.TestCase):
+    """Thread 07c: the title menu uses the Steam scripts' own variables."""
+
+    def effective_scriptvars(self) -> dict:
+        values = {}
+        for path in (REPO / "profiles/common/scriptvars.lua", SGHD / "scriptvars.lua"):
+            for name, value in re.findall(r"(S[WF]_\w+)\s*=\s*(\d+)", path.read_text()):
+                values[name] = int(value)  # sghd overrides common
+        return values
+
+    def test_title_variables_match_the_steam_scripts(self):
+        tp = EVIDENCE["title_protocol"]
+        values = self.effective_scriptvars()
+        for name, index in {**tp["scrwork"], **tp["flags"]}.items():
+            with self.subTest(var=name):
+                self.assertEqual(values[name], index)
+
+    def test_title_menu_profile(self):
+        tp = EVIDENCE["title_protocol"]
+        text = (SGHD / "hud" / "titlemenu.lua").read_text()
+        self.assertIn("Type = TitleMenuType.SGHD", text)
+        self.assertEqual(int(re.search(r"MainMenuMode = (\d+)", text).group(1)),
+                         tp["main_menu_mode"])
+        ids = [int(v) for v in re.search(r"ItemChoiceIds = \{([^}]*)\}", text)
+               .group(1).split(",")]
+        # START LOAD EXTRA CONFIG HELP: first id of each tens group
+        self.assertEqual(ids, sorted({c // 10 * 10 for c in tp["main_menu_choice_ids"]}))
+        enabled = [int(v) for v in re.search(r"ItemEnabled = \{([^}]*)\}", text)
+                   .group(1).split(",")]
+        self.assertEqual(enabled, [1, 0, 0, 0, 0])  # only START until sub-menus exist
+
+    def test_every_title_menu_type_is_handled(self):
+        body = (REPO / "src/vm/inst_sghd.cpp").read_text().split(
+            "VmInstruction(InstTitleMenuSGHD)")[1].split("VmInstruction(", 1)[0]
+        self.assertIn("PopUint8(type)", body)
+        self.assertNotIn("ResetInstruction", body)  # never waits
+        self.assertEqual(EVIDENCE["title_protocol"]["title_menu_types_used"], [0, 1, 2, 3])
+
+
 if __name__ == "__main__":
     unittest.main()

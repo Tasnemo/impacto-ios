@@ -166,10 +166,13 @@ ARCHIVES = {
     # sghd-harness plus a "movie" folder and Ogg audio archives (probe-only)
     "sghd-harness-media": {"SCRIPT": "script.mpk", "BGM": "bgm.mpk",
                            "SE": "se.mpk", "VOICE": "voice.mpk"},
+    # sghd-harness with every title menu item enabled (probe-only)
+    "sghd-harness-title": {"SCRIPT": "script.mpk"},
 }
-GAMEDATA_DIR = {"sghd-harness": "sghd", "sghd-harness-media": "sghd"}
+GAMEDATA_DIR = {"sghd-harness": "sghd", "sghd-harness-media": "sghd",
+                "sghd-harness-title": "sghd"}
 # games that run from the committed profiles/ and gamedefinitions.lua
-UNPATCHED = ("sghd", "sghd-harness", "sghd-harness-media")
+UNPATCHED = ("sghd", "sghd-harness", "sghd-harness-media", "sghd-harness-title")
 
 
 def wavtable(count_le: int = 2) -> bytes:
@@ -181,7 +184,8 @@ def wavtable(count_le: int = 2) -> bytes:
 
 def write_gamedata(root: Path, game: str = "sgps3",
                    script: bytes | None = None,
-                   wavtable_data: bytes | None = None) -> None:
+                   wavtable_data: bytes | None = None,
+                   extra_scripts: dict[int, bytes] | None = None) -> None:
     gd = root / "gamedata" / GAMEDATA_DIR.get(game, game)
     gd.mkdir(parents=True)
     png = tiny_png()
@@ -198,6 +202,8 @@ def write_gamedata(root: Path, game: str = "sgps3",
                      for i in (0, 1)]
         elif mount == "SCRIPT":
             files = [fx.MpkFile(2, "probe.scx", script or probe_script())]
+            files += [fx.MpkFile(i, f"extra{i}.scx", blob)
+                      for i, blob in (extra_scripts or {}).items()]
         else:
             files = [fx.MpkFile(0, "empty.bin", b"\0" * 16)]
         (gd / name).write_bytes(fx.build_mpk(files))
@@ -274,6 +280,17 @@ root.GameDefinitions["sghd-harness-media"] = {{
   GameProfile = "{root}/harness-movie.lua",
 }};
 """)
+        if game == "sghd-harness-title":
+            (root / "harness-title.lua").write_text(
+                "include(root.BasePaths.RootProfilesDir .. '/sghd-harness/game.lua');\n"
+                "root.TitleMenu.ItemEnabled = { 1, 1, 1, 1, 1 };\n")
+            with (root / "gamedefs.lua").open("a") as f:
+                f.write(f"""
+root.GameDefinitions["sghd-harness-title"] = {{
+  Hidden = true, Name = "sghd harness, all title items", LauncherOrderId = 98,
+  GameProfile = "{root}/harness-title.lua",
+}};
+""")
         return
     (root / "gamedefs.lua").write_text("""root.GameDefinitions = {
   sgps3 = {
@@ -332,11 +349,15 @@ def run_probe(use_return_ids: bool = False, seconds: float = 4.0,
               game: str = "sgps3", script: bytes | None = None,
               saves: Path | None = None,
               env_extra: dict | None = None,
-              wavtable_data: bytes | None = None) -> ProbeResult:
+              wavtable_data: bytes | None = None,
+              extra_scripts: dict[int, bytes] | None = None,
+              input_actions=None) -> ProbeResult:
+    """input_actions: optional callable(display) run in a thread while the
+    engine runs (synthetic X input, see XTestInput)."""
     binary = Path(os.environ["IMPACTO_BIN"]).resolve()
     root = Path(tempfile.mkdtemp(prefix="impacto-probe-"))
     try:
-        write_gamedata(root, game, script, wavtable_data)
+        write_gamedata(root, game, script, wavtable_data, extra_scripts)
         if game == "sgps3":
             write_profiles(root, use_return_ids)
         write_config(root, game, saves)
@@ -351,6 +372,10 @@ def run_probe(use_return_ids: bool = False, seconds: float = 4.0,
         if not env.get("DISPLAY"):
             env["DISPLAY"] = shared_xvfb_display()
         env.setdefault("SDL_VIDEO_DRIVER", "x11")
+        if input_actions is not None:
+            import threading
+            threading.Thread(target=input_actions, args=(env["DISPLAY"],),
+                             daemon=True).start()
         try:
             proc = subprocess.run(cmd, cwd=binary.parent, env=env,
                                   capture_output=True, text=True,
@@ -361,6 +386,108 @@ def run_probe(use_return_ids: bool = False, seconds: float = 4.0,
         return ProbeResult(rc, log.read_text(errors="replace") if log.exists() else "", out)
     finally:
         shutil.rmtree(root, ignore_errors=True)
+
+
+class XTestInput:
+    """Synthetic keyboard/mouse input for the engine window through the X
+    XTEST extension (libX11 + libXtst via ctypes; no extra packages)."""
+
+    def __init__(self, display: str):
+        import ctypes
+        self.c = ctypes
+        self.x = ctypes.CDLL("libX11.so.6")
+        self.t = ctypes.CDLL("libXtst.so.6")
+        vp, ul = ctypes.c_void_p, ctypes.c_ulong
+        self.x.XOpenDisplay.restype = vp
+        self.x.XOpenDisplay.argtypes = [ctypes.c_char_p]
+        self.x.XDefaultRootWindow.restype = ul
+        self.x.XDefaultRootWindow.argtypes = [vp]
+        self.x.XQueryTree.argtypes = [vp, ul, ctypes.POINTER(ul), ctypes.POINTER(ul),
+                                      ctypes.POINTER(ctypes.POINTER(ul)),
+                                      ctypes.POINTER(ctypes.c_uint)]
+        self.x.XGetGeometry.argtypes = [vp, ul, ctypes.POINTER(ul)] + \
+            [ctypes.POINTER(ctypes.c_int)] * 2 + [ctypes.POINTER(ctypes.c_uint)] * 4
+        self.x.XStringToKeysym.restype = ul
+        self.x.XStringToKeysym.argtypes = [ctypes.c_char_p]
+        self.x.XKeysymToKeycode.argtypes = [vp, ul]
+        self.x.XFlush.argtypes = [vp]
+        self.t.XTestFakeKeyEvent.argtypes = [vp, ctypes.c_uint, ctypes.c_int, ul]
+        self.t.XTestFakeButtonEvent.argtypes = [vp, ctypes.c_uint, ctypes.c_int, ul]
+        self.t.XTestFakeMotionEvent.argtypes = [vp, ctypes.c_int, ctypes.c_int,
+                                                ctypes.c_int, ul]
+        self.d = self.x.XOpenDisplay(display.encode())
+        if not self.d:
+            raise RuntimeError(f"cannot open X display {display}")
+
+    def window(self, timeout: float = 15.0):
+        """(x, y, w, h) of the largest top-level window, once one exists."""
+        import time
+        c = self.c
+        end = time.time() + timeout
+        while time.time() < end:
+            root, parent = c.c_ulong(), c.c_ulong()
+            kids, n = c.POINTER(c.c_ulong)(), c.c_uint()
+            self.x.XQueryTree(self.d, self.x.XDefaultRootWindow(self.d),
+                              c.byref(root), c.byref(parent), c.byref(kids),
+                              c.byref(n))
+            best = None
+            for i in range(n.value):
+                x, y = c.c_int(), c.c_int()
+                w, h, bw, depth = c.c_uint(), c.c_uint(), c.c_uint(), c.c_uint()
+                self.x.XGetGeometry(self.d, kids[i], c.byref(root), c.byref(x),
+                                    c.byref(y), c.byref(w), c.byref(h),
+                                    c.byref(bw), c.byref(depth))
+                if w.value > 200 and (best is None or w.value * h.value > best[2] * best[3]):
+                    best = (x.value, y.value, w.value, h.value)
+            if best:
+                return best
+            time.sleep(0.2)
+        raise RuntimeError("engine window did not appear")
+
+    def move_design(self, win, x: float, y: float, design=(1920, 1080)):
+        """Pointer to design coordinates (the window shows the 16:9 design
+        scaled to its size)."""
+        wx, wy, ww, wh = win
+        self.t.XTestFakeMotionEvent(self.d, -1, int(wx + x * ww / design[0]),
+                                    int(wy + y * wh / design[1]), 0)
+        self.x.XFlush(self.d)
+
+    def key(self, name: str):
+        import time
+        code = self.x.XKeysymToKeycode(self.d, self.x.XStringToKeysym(name.encode()))
+        self.t.XTestFakeKeyEvent(self.d, code, 1, 0)
+        self.x.XFlush(self.d)
+        time.sleep(0.1)
+        self.t.XTestFakeKeyEvent(self.d, code, 0, 0)
+        self.x.XFlush(self.d)
+
+    def click(self):
+        import time
+        self.t.XTestFakeButtonEvent(self.d, 1, 1, 0)
+        self.x.XFlush(self.d)
+        time.sleep(0.1)
+        self.t.XTestFakeButtonEvent(self.d, 1, 0, 0)
+        self.x.XFlush(self.d)
+
+
+def title_input(steps):
+    """input_actions for run_probe: wait for the window, put the pointer in
+    it, then run (delay, action, arg) steps; action is "key", "move" (design
+    coordinates) or "click"."""
+    def run(display):
+        import time
+        xi = XTestInput(display)
+        win = xi.window()
+        xi.move_design(win, 960, 900)  # inside the window, away from items
+        for delay, action, arg in steps:
+            time.sleep(delay)
+            if action == "key":
+                xi.key(arg)
+            elif action == "move":
+                xi.move_design(win, *arg)
+            else:
+                xi.click()
+    return run
 
 
 # --------------------------------------------------------------------------
@@ -839,6 +966,68 @@ class SghdTitleStartupProbe(unittest.TestCase):
     def test_script_load_is_logged_at_info(self):
         self.assertRegex(self.probe.log,
                          r"INFO: .*Loading script \"[^\"]*\" \(id 2\) into buffer 0")
+
+
+@unittest.skipUnless(os.environ.get("IMPACTO_BIN"),
+                     "set IMPACTO_BIN=/path/to/impacto to run runtime probes")
+class SghdTitleMenuProbe(unittest.TestCase):
+    """Thread 07c: the Steam title protocol end to end (synthetic copy of
+    the _STARTUP_WIN control flow, sc3fixtures.sghd_title_protocol_scripts)
+    with real X keyboard/mouse input: press start, then a main-menu choice
+    reported through SW_TITLECUR + SF_TITLEEND, then START loads the next
+    script. Exit 77 = START reached "MAIN00"; 10 = LOAD; a hang (124) = no
+    decision reached the script."""
+
+    START_CENTER = (1656, 137)   # middle of the START item box (titlemenu.lua)
+
+    @classmethod
+    def setUpClass(cls):
+        cls.startup, cls.main00 = fx.sghd_title_protocol_scripts()
+        extra = {fx.TITLE["MAIN_SCRIPT_ID"]: cls.main00}
+        run = lambda game, steps, wait=None: run_probe(  # noqa: E731
+            game=game, script=cls.startup, extra_scripts=extra, seconds=45.0,
+            input_actions=title_input(steps) if steps else None)
+        cls.keyboard = run("sghd-harness",
+                           [(3.0, "key", "Return"), (2.0, "key", "Return")])
+        cls.mouse = run("sghd-harness",
+                        [(3.0, "move", cls.START_CENTER), (0.3, "click", None),
+                         (2.0, "move", (cls.START_CENTER[0] + 2, cls.START_CENTER[1])),
+                         (0.3, "click", None)])
+        cls.navigate = run("sghd-harness-title",
+                           [(3.0, "key", "Return"), (2.0, "key", "Down"),
+                            (1.0, "key", "Return")])
+        cls.disabled = run("sghd-harness",
+                           [(3.0, "key", "Return"), (2.0, "key", "Down"),
+                            (1.0, "key", "Return")])
+        cls.idle = run_probe(game="sghd-harness", script=cls.startup,
+                             extra_scripts=extra, seconds=12.0)
+
+    def check(self, probe, status):
+        self.assertEqual(probe.returncode, status,
+                         probe.stdout[-1500:] + probe.log[-3000:])
+
+    def test_keyboard_start_reaches_main_script(self):
+        self.check(self.keyboard, 77)
+        self.assertIn("TitleMenu: press start", self.keyboard.log)
+        self.assertIn("TitleMenu: main menu choice (SW_TITLECUR = 0)", self.keyboard.log)
+        self.assertRegex(self.keyboard.log, r'Loading script "extra9.scx" \(id 9\) into buffer 2')
+        self.assertIn("UselessJump(condition: 0, same labels: yes, taken)", self.keyboard.log)
+
+    def test_mouse_click_on_start(self):
+        self.check(self.mouse, 77)
+
+    def test_arrow_keys_select_next_item_and_its_choice_id(self):
+        self.check(self.navigate, 10)
+        self.assertIn("SW_TITLECUR = 10", self.navigate.log)
+
+    def test_disabled_items_are_skipped(self):
+        # committed profile: only START is enabled, Down stays on START
+        self.check(self.disabled, 77)
+
+    def test_no_input_keeps_waiting_without_freezing(self):
+        self.check(self.idle, 124)
+        self.assertNotIn("TitleMenu: press start", self.idle.log)
+        self.assertGreater(self.idle.log.count("Opcode: 10:34"), 100)
 
 
 def main(argv: list[str]) -> int:

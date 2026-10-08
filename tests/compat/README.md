@@ -85,6 +85,13 @@ item bits (`10 37` types 0x00-0x03 set/clear/jump-if-set/jump-if-clear),
 wait) and `10 36` (one byte), then a 6 s Sleep: exit 34, one stall report
 naming the Sleep's address and opcode, script load logged at Info. With the
 old table the engine hangs at `10 34` and the stall report names it.
+`SghdTitleMenuProbe` (Thread 07c) runs a synthetic copy of the Steam title
+flow (`sc3fixtures.sghd_title_protocol_scripts`) and drives the window with
+real X keyboard/mouse events (`XTestInput`: libX11 + libXtst through
+ctypes, both installed by `install-desktop-deps.sh`): press start and START
+by Enter or by mouse load the next script (exit 77), arrow keys pick the
+next item's choice id when all items are enabled (exit 10), disabled items
+are skipped, and without input the script keeps polling (timeout).
 
 ## When Thread 04 fixes a bug these tests assert
 
