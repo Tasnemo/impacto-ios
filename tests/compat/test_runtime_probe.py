@@ -321,7 +321,8 @@ class ProbeResult:
 
 def run_probe(use_return_ids: bool = False, seconds: float = 4.0,
               game: str = "sgps3", script: bytes | None = None,
-              saves: Path | None = None) -> ProbeResult:
+              saves: Path | None = None,
+              env_extra: dict | None = None) -> ProbeResult:
     binary = Path(os.environ["IMPACTO_BIN"]).resolve()
     root = Path(tempfile.mkdtemp(prefix="impacto-probe-"))
     try:
@@ -336,6 +337,7 @@ def run_probe(use_return_ids: bool = False, seconds: float = 4.0,
                "-uc", str(root / "user.toml"),
                "-ll", "Trace", "-lf", str(log)]
         env = dict(os.environ, ALSOFT_DRIVERS="null", LIBGL_ALWAYS_SOFTWARE="1")
+        env.update(env_extra or {})
         if not env.get("DISPLAY"):
             env["DISPLAY"] = shared_xvfb_display()
         env.setdefault("SDL_VIDEO_DRIVER", "x11")
@@ -552,6 +554,16 @@ class SghdOggAudioProbe(unittest.TestCase):
     def setUpClass(cls):
         cls.audio = run_probe(game="sghd-harness-media", script=audio_script(33),
                             seconds=30.0)
+        cls.no_device = run_probe(game="sghd-harness-media", script=audio_script(34),
+                                  seconds=30.0, env_extra={"ALSOFT_DRIVERS": "no-such-driver"})
+
+    def test_no_audio_device_continues_silently(self):
+        # L4: an OpenAL driver list with no usable device (as on a machine
+        # without sound hardware) used to segfault in Audio::AudioUpdate
+        self.assertEqual(self.no_device.returncode, 34,
+                         self.no_device.stdout[-1500:] + self.no_device.log[-2000:])
+        self.assertIn("Could not create OpenAL device", self.no_device.log)
+        self.assertIn("continuing without sound", self.no_device.log)
 
     def test_three_vorbis_streams_and_clean_exit(self):
         self.assertEqual(self.audio.returncode, 33, self.audio.log[-2500:])

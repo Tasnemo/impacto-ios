@@ -68,7 +68,8 @@ the reference) and a script that sets `ScrWork[4000] = 7` (exit 7).
 `SghdMovieSkipProbe` (Thread 05) checks that `PlayMovie` skips an
 unmounted movie and a synthetic Bink 2 (`KB2j`) movie without hanging or
 crashing; `SghdOggAudioProbe` plays BGM/SE/voice Ogg Vorbis entries from MPK
-archives. Both use the probe-only game id `sghd-harness-media` (harness +
+archives and, with `ALSOFT_DRIVERS=no-such-driver`, checks that a machine
+without an audio device continues silently (it used to segfault). Both use the probe-only game id `sghd-harness-media` (harness +
 `movie` folder and bgm/se/voice mounts, defined by the probe itself).
 `SghdSaveRoundTripProbe` saves to full slot 79 in one process, parses the
 file ([docs/sghd-save-format.md](../../docs/sghd-save-format.md)), then loads

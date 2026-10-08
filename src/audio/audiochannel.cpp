@@ -1,5 +1,6 @@
 #include "audiochannel.h"
 #include "audiostream.h"
+#include "audiobackend.h"
 
 #ifndef IMPACTO_DISABLE_OPENAL
 #include "openal/openalaudiochannel.h"
@@ -16,6 +17,8 @@ namespace Audio {
 
 std::unique_ptr<AudioChannel> AudioChannel::Create(
     AudioChannelId channelId, AudioChannelGroup channelGroup) {
+  if (BackendUnavailable)
+    return std::make_unique<EmptyAudioChannel>(channelId, channelGroup);
   switch (UserConfig::AdvancedSettings.ActiveAudioBackend) {
 #ifndef IMPACTO_DISABLE_OPENAL
     case AudioBackendType::OpenAL: {

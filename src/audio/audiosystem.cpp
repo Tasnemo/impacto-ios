@@ -175,7 +175,15 @@ void AudioInit() {
     }
   }
 
-  if (!Backend->Init()) return;
+  if (!Backend->Init()) {
+    // Without channels every audio call would dereference null (segfault in
+    // AudioUpdate on machines with no sound device): continue silently.
+    ImpLog(LogLevel::Error, LogChannel::Audio,
+           "Audio backend failed to initialise; continuing without sound\n");
+    delete Backend;
+    Backend = new AudioBackend();
+    BackendUnavailable = true;
+  }
   for (int i = AC_SE0; i <= AC_SE2; i++)
     Channels[i] = AudioChannel::Create((AudioChannelId)i, ACG_SE);
   for (int i = AC_VOICE0; i <= AC_REV; i++)
