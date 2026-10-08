@@ -13,7 +13,8 @@ round 3 below) or High-mode reverse engineering.** No iOS work.
   04–06 on `phase-03-sghd-implementation`.
 - Thread 06 commits: `e8192a1d` (census v2 + `sghd_inspect.py`),
   `8af7a807` (profile 1080p/font/sheets/LAY, `10 3A`, phone bits, save
-  format 2), then dialogue-box + docs commits (see `git log`).
+  format 2), `24f2154d` (plain dialogue box), `86566526` (voice table),
+  plus docs commits.
 - No commercial assets, script dumps, private reports or secrets are
   committed. Evidence constants only:
   `tests/compat/fixtures/sghd_steam_evidence.json`.
@@ -37,8 +38,8 @@ Report: [threads/06-sghd-census.md](threads/06-sghd-census.md).
 
 ## Verification
 - Orb, `impacto-desktop:ubuntu24`, binary rebuilt from this branch
-  (`-Werror`): `python3 -m unittest discover -s tests/compat` **108/108**
-  with `IMPACTO_BIN` (80 + 28 probes); without a binary 80 pass, 28 skipped.
+  (`-Werror`): `python3 -m unittest discover -s tests/compat` **109/109**
+  with `IMPACTO_BIN` (81 + 28 probes); without a binary 81 pass, 28 skipped.
   Launcher smoke PASS. clang-format clean on changed C++.
 - GitHub Actions: see CI section.
 
@@ -112,4 +113,11 @@ build `ci-build/ubuntu24`, install `release/ubuntu24`, helpers
 `docs/desktop-build.md` (cold build ≈ 30 min incl. Docker daemon start).
 
 ## CI
-See the end of this file for the run results of the final Thread 06 commit.
+Final code commit `86566526` (voice table; includes all Thread 06 code):
+- Desktop Linux [run 37815758671](https://github.com/Tasnemo/impacto-ios/actions/runs/37815758671):
+  **success** — 109 unit tests (81 + 28 skipped), build, launcher smoke 2/2,
+  28 runtime probes OK.
+- Desktop Windows [run 37815758791](https://github.com/Tasnemo/impacto-ios/actions/runs/37815758791):
+  **success** — artifact `impacto-windows-x64-86566526c69fd1090c78bee914101d586f89f3b8`
+  (≈99 MB, 30-day retention). Built only; not run on Windows here.
+Earlier Thread 06 push/dispatch runs were cancelled in favour of this one.

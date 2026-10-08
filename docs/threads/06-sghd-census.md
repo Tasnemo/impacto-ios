@@ -20,8 +20,8 @@ kept in `tests/compat/fixtures/sghd_steam_evidence.json` and the docs below.
 | 8 Windows tools | census v2 (evidence vs padding/data, context for real errors, DDS loader checks, text styles); `tools/sghd_inspect.py` (`sheets`/`sprites` opaque-region boxes, `crops` local sprite check, `widths` Game.exe width-table search) | `test_sghd_census.py` (15), `test_sghd_inspect.py` (7) |
 
 Verification in `impacto-desktop:ubuntu24`, binary rebuilt from this
-branch: `python3 -m unittest discover -s tests/compat` → **108/108** with
-`IMPACTO_BIN` (80 + 28 probes); 80 pass and 28 skip without a binary.
+branch: `python3 -m unittest discover -s tests/compat` → **109/109** with
+`IMPACTO_BIN` (81 + 28 probes); 81 pass and 28 skip without a binary.
 Launcher smoke PASS. clang-format clean on changed C++.
 
 ## Not done / limits

@@ -55,8 +55,8 @@ of this file. Full narrative:
 | Linux build (Ubuntu 24.04 / GCC 13) | Verified Working | Thread 02 + rebuilt in Thread 03 (`docs/desktop-test-results.md`) |
 | Asset-free launcher | Verified Working | Thread 02 smoke, re-run in Thread 03 |
 | Upstream CTest suite | Not Implemented | `ctest`: "No tests were found" |
-| Compatibility unit tests (no assets) | Verified Working | `python3 -m unittest discover -s tests/compat` → 80 pass + 28 skipped probes (Thread 06) |
-| Runtime probes (need built binary) | Verified Working | 28 probes: sgps3 probes still assert the frozen PS3 profile's bugs; sghd/harness/save/movie/audio/phone probes assert the fixes (Thread 06, 108/108 with `IMPACTO_BIN`) |
+| Compatibility unit tests (no assets) | Verified Working | `python3 -m unittest discover -s tests/compat` → 81 pass + 28 skipped probes (Thread 06) |
+| Runtime probes (need built binary) | Verified Working | 28 probes: sgps3 probes still assert the frozen PS3 profile's bugs; sghd/harness/save/movie/audio/phone probes assert the fixes (Thread 06, 109/109 with `IMPACTO_BIN`) |
 | Asset-free VM harness | Verified Working | `-g sghd-harness` exits by itself with `ScrWork[4000]` as status (Thread 04) |
 | Upstream tracker (CoZ impacto issue #1) | external | lists PS3 SG only: 2D graphics, sound, video; no Steam support claimed |
 
