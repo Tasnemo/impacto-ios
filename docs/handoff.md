@@ -130,12 +130,11 @@ build `ci-build/ubuntu24`, install `release/ubuntu24`, helpers
 `docs/desktop-build.md` (cold build ≈ 30 min incl. Docker daemon start).
 
 ## CI
-Final code commit `86acccac`:
-- Desktop Linux [run 37822540927](https://github.com/Tasnemo/impacto-ios/actions/runs/37822540927):
-  **success** — 117 unit tests (89 + 28 skipped), build, launcher smoke 2/2,
-  28 runtime probes OK.
-- Desktop Windows [run 37822541335](https://github.com/Tasnemo/impacto-ios/actions/runs/37822541335):
-  **success** — unit tests, build, artifact `impacto-windows-x64-86acccac6255eb77fb722ae189cae945f57b6480` (30-day retention).
-  Built only; not run on Windows here.
-- The previous push (`f2d4f729`) failed on Windows only: a new test read Lua
-  with the cp1252 default encoding; fixed by reading UTF-8.
+Code commit `71ea47b4`, pushed with docs commit `bd1a2264`:
+- Desktop Linux [run 37832137704](https://github.com/Tasnemo/impacto-ios/actions/runs/37832137704):
+  **success** — 125 unit tests (93 + 32 skipped), build, launcher smoke 2/2,
+  32 runtime probes OK (incl. `SghdTitleStartupProbe`).
+- Desktop Windows [run 37832137685](https://github.com/Tasnemo/impacto-ios/actions/runs/37832137685):
+  **success** — unit tests, build, artifact
+  `impacto-windows-x64-bd1a226437c4c9800da24dc31289255772571dd8`
+  (expires 2026-11-07). Built only; the owner runs it (round 5).
