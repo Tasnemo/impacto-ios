@@ -1,0 +1,48 @@
+{
+ "_source": "Minimal constants from the owner's tools/sghd_evidence.py report on the English Steam STEINS;GATE install (Thread 05, 2026-10-08). The private report itself is not committed. Only facts the sghd profile depends on are recorded here.",
+ "archives": {
+  "_note": "USRDIR/<name>, all MPK v2.0, uncompressed entries (compression 0). Entry counts identify the build.",
+  "bg.mpk": 507, "bgm.mpk": 83, "chara.mpk": 330, "manual.mpk": 2,
+  "mask.mpk": 20, "mgsshader.mpk": 102, "script.mpk": 190, "se.mpk": 199,
+  "shader.mpk": 119, "system.mpk": 32, "voice.mpk": 14512
+ },
+ "mpk_version": [2, 0],
+ "script_mpk": {
+  "_note": "Startup script and system scripts (ids and names).",
+  "0": "_ATCH.SCX", "1": "_MAIL.SCX", "2": "_STARTUP_WIN.SCX", "3": "_SYSTEM.SCX",
+  "4": "_TIPS.SCX", "7": "MACROSYS.SCX", "8": "MACROSYS2.SCX", "9": "MAIN00.SCX"
+ },
+ "system_mpk": {
+  "_note": "Complete system.mpk table of contents (id -> entry name).",
+  "0": "ALBUM.DDS", "1": "ALBUM_THUM.DDS", "2": "BACKLOG.DDS", "3": "BLOGMASK.DDS",
+  "4": "CLEARLIST.DDS", "5": "CONFIG.DDS", "6": "DATA01.DDS", "7": "DATA03.DDS",
+  "8": "EFF_LENZFLARE.DDS", "9": "FONT.PNG", "10": "FONT2.PNG", "11": "GSYSMES.DDS",
+  "12": "LOADMENU.DDS", "13": "MOVMENU.DDS", "14": "MUSIC.DDS", "15": "PACG.DDS",
+  "16": "PHONE.DDS", "17": "PHONE_B.DDS", "18": "PHONE_C.DDS", "19": "PHONE_D.DDS",
+  "20": "PHONE_E.DDS", "21": "PHONE2.DDS", "22": "PHONE3.DDS", "23": "PWCG.DDS",
+  "24": "PWCGTHUM.DDS", "25": "QLOADMENU.DDS", "26": "SAVEMENU.DDS",
+  "27": "SYSMESSWINDOW.DDS", "28": "TIPSCHIPS.DDS", "29": "TIPSMASK.DDS",
+  "30": "TITLE_CHIP.DDS", "31": "WAVTABLE.DAT"
+ },
+ "audio": {
+  "_note": "Entry name suffixes per audio archive (Ogg files; codec not yet probed).",
+  "bgm.mpk": ".ogg", "se.mpk": ".OGG", "voice.mpk": ".OGG"
+ },
+ "movies": {
+  "_note": "Loose files, not in an archive. Every file starts with 4b 42 32 6a ('KB2j', Bink 2), which FFmpeg/impacto cannot decode.",
+  "dirs": ["USRDIR/movie/1280x720", "USRDIR/movie/1920x1080"],
+  "files_per_dir": 38,
+  "extension": ".bk2",
+  "signature": "4b42326a"
+ },
+ "sprite_sheets": {
+  "_note": "profiles/sghd/sprites.lua sheet -> system.mpk entry, chosen by name only. Sheet dimensions and sprite rectangles are NOT verified (need tools/sghd_census.py --assets). null = no Steam counterpart in system.mpk; the sheet is ScriptHandled (never loaded from an archive).",
+  "Backlog": "BACKLOG.DDS",
+  "Data": "DATA01.DDS",
+  "Font": "FONT.PNG",
+  "Title": "TITLE_CHIP.DDS",
+  "Menu": null,
+  "TitleBg1": null,
+  "TitleBg2": null
+ }
+}

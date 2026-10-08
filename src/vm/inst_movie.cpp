@@ -85,6 +85,15 @@ VmInstruction(InstPlayMovie) {
 
     if (Video::Players[channel]->IsPlaying) Video::Players[channel]->Stop();
     Video::Players[channel]->Play(stream, flags & 8, flags & 4);
+    if (!Video::Players[channel]->IsPlaying) {
+      // Undecodable stream (e.g. Bink 2): nothing would ever clear
+      // SF_MOVIEPLAY, so MovieMain would wait forever. Skip the movie like a
+      // failed open does.
+      ImpLog(LogLevel::Error, LogChannel::Video,
+             "Movie {:d} could not be played; skipping it\n", playNo);
+      ScrWork[SW_MOVIE_PLAYNO + 20 * channel] = 0xffff;
+      return;
+    }
 
     SetFlag(SF_MOVIE_DRAWWAIT + channel, true);
     SetFlag(SF_MOVIEPLAY + channel, true);

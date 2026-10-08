@@ -53,9 +53,15 @@ import sc3fixtures as fx  # noqa: E402
 
 REPO = Path(__file__).resolve().parents[2]
 PROFILES = REPO / "profiles"
+# 0.3 s 440 Hz mono Ogg Vorbis, generated with ffmpeg (no game audio)
+SYNTHETIC_OGG = Path(__file__).resolve().parent / "fixtures" / "synthetic_tone.ogg"
 
 # SYSTEM_US sprite sheet ids referenced by profiles/sgps3/sprites.lua
 SYSTEM_SHEET_IDS = (6, 7, 8, 10, 19, 20, 21)
+# system.mpk entries profiles/sghd/sprites.lua loads, with their Steam names
+# (fixtures/sghd_steam_evidence.json); ScriptHandled sheets are not loaded
+SGHD_SYSTEM_SHEETS = {2: "BACKLOG.DDS", 6: "DATA01.DDS", 9: "FONT.PNG",
+                      30: "TITLE_CHIP.DDS"}
 MOUNTS = ("SCRIPT", "SYSTEM_US", "BGM", "SE", "VOICE", "BG", "CHARA",
           "MASK", "MOVIE")
 
@@ -76,6 +82,60 @@ def tiny_png(width: int = 64, height: int = 64) -> bytes:
             + chunk(b"IHDR", struct.pack(">IIBBBBB", width, height, 8, 6, 0, 0, 0))
             + chunk(b"IDAT", zlib.compress(raw))
             + chunk(b"IEND", b""))
+
+
+def tiny_dds(width: int = 64, height: int = 64) -> bytes:
+    """DXT5 DDS (all-zero blocks), the format family src/texture/ddsloader.cpp reads."""
+    header = bytearray(128)
+    header[:4] = b"DDS "
+    struct.pack_into("<7I", header, 4, 124, 0x1007, height, width, width * height, 0, 1)
+    struct.pack_into("<II4s", header, 76, 32, 0x4, b"DXT5")
+    struct.pack_into("<I", header, 108, 0x1000)  # DDSCAPS_TEXTURE (required by the loader)
+    return bytes(header) + bytes(width * height)
+
+
+def bink2_movie(frames: int = 1) -> bytes:
+    """Smallest file FFmpeg's bink demuxer accepts as Bink 2 ('KB2j'): one
+    64x64 video stream, no audio. FFmpeg reports its codec as "none" ("Bink 2
+    video is not implemented"), exactly like the Steam .bk2 files."""
+    header_len = 48 + 4 * frames
+    frame = b"\0" * 16
+    size = header_len + len(frame) * frames
+    out = bytearray(b"KB2j")
+    out += struct.pack("<IIII", size - 8, frames, len(frame), 0)
+    out += struct.pack("<IIII", 64, 64, 30, 1)    # width, height, fps num/den
+    out += struct.pack("<III", 0, 0, 0)           # flags, audio tracks, rev-j field
+    for i in range(frames):                       # frame index, keyframe bit on #0
+        out += struct.pack("<I", (header_len + i * len(frame)) | (1 if i == 0 else 0))
+    out += frame * frames
+    assert len(out) == size
+    return bytes(out)
+
+
+def movie_script(status: int) -> bytes:
+    """PlayMovie (01 22: playMode 0, playView 0, playNo 0, cancel 0), then
+    MovieMain type 0 (waits while SF_MOVIEPLAY is set), then exit status."""
+    b = fx.ScxBuilder()
+    b.add_label(fx.ins(0x01, 0x22, fx.u8(0), fx.u8(0), fx.expr(0), fx.expr(0))
+                + fx.ins(0x01, 0x23, fx.u8(0))
+                + fx.sghd_assign_scrwork(HARNESS_EXIT_CODE_SCRWORK, status)
+                + fx.sghd_end_of_script())
+    return b.build()
+
+
+def audio_script(status: int) -> bytes:
+    """PlayBgm (00 21 loop 0, track 1; track 0 equals the initial
+    SW_BGMREQNO and is skipped by InstBGMplay), PlaySoundEffect (00 23
+    channel 0, type 0, effect 0, loop 0), PlayVoice (00 37 channel 0, file 0,
+    loop 0)."""
+    E = fx.expr
+    b = fx.ScxBuilder()
+    b.add_label(fx.ins(0x00, 0x21, fx.u8(0), E(1))
+                + fx.ins(0x00, 0x23, fx.u8(0), fx.u8(0), E(0), E(0))
+                + fx.ins(0x00, 0x37, fx.u8(0), E(0), E(0))
+                + fx.sghd_assign_scrwork(HARNESS_EXIT_CODE_SCRWORK, status)
+                + fx.sghd_end_of_script())
+    return b.build()
 
 
 def probe_script() -> bytes:
@@ -103,10 +163,13 @@ ARCHIVES = {
              "BG": "bg.mpk", "CHARA": "chara.mpk", "MASK": "mask.mpk"},
     # profiles/sghd-harness: asset-free, only the script archive
     "sghd-harness": {"SCRIPT": "script.mpk"},
+    # sghd-harness plus a "movie" folder and Ogg audio archives (probe-only)
+    "sghd-harness-media": {"SCRIPT": "script.mpk", "BGM": "bgm.mpk",
+                           "SE": "se.mpk", "VOICE": "voice.mpk"},
 }
-GAMEDATA_DIR = {"sghd-harness": "sghd"}
+GAMEDATA_DIR = {"sghd-harness": "sghd", "sghd-harness-media": "sghd"}
 # games that run from the committed profiles/ and gamedefinitions.lua
-UNPATCHED = ("sghd", "sghd-harness")
+UNPATCHED = ("sghd", "sghd-harness", "sghd-harness-media")
 
 
 def write_gamedata(root: Path, game: str = "sgps3",
@@ -115,13 +178,23 @@ def write_gamedata(root: Path, game: str = "sgps3",
     gd.mkdir(parents=True)
     png = tiny_png()
     for mount, name in ARCHIVES[game].items():
-        if mount == "SYSTEM_US":
+        if mount == "SYSTEM_US" and game == "sghd":
+            files = [fx.MpkFile(i, n, tiny_dds() if n.endswith(".DDS") else png)
+                     for i, n in SGHD_SYSTEM_SHEETS.items()]
+        elif mount == "SYSTEM_US":
             files = [fx.MpkFile(i, f"sheet{i}.png", png) for i in SYSTEM_SHEET_IDS]
+        elif game == "sghd-harness-media" and mount in ("BGM", "SE", "VOICE"):
+            # Steam audio archives hold .ogg entries; a generated Vorbis tone
+            files = [fx.MpkFile(i, f"{mount}00{i}.ogg", SYNTHETIC_OGG.read_bytes())
+                     for i in (0, 1)]
         elif mount == "SCRIPT":
             files = [fx.MpkFile(2, "probe.scx", script or probe_script())]
         else:
             files = [fx.MpkFile(0, "empty.bin", b"\0" * 16)]
         (gd / name).write_bytes(fx.build_mpk(files))
+    if game == "sghd-harness-media":
+        (gd / "movie").mkdir()
+        (gd / "movie" / "op.bk2").write_bytes(bink2_movie())
 
 
 def write_profiles(root: Path, use_return_ids: bool) -> None:
@@ -178,6 +251,20 @@ def write_config(root: Path, game: str = "sgps3",
 """)
     if game in UNPATCHED:
         shutil.copy(REPO / "gamedefinitions.lua", root / "gamedefs.lua")
+        if game == "sghd-harness-media":
+            (root / "harness-movie.lua").write_text(
+                "include(root.BasePaths.RootProfilesDir .. '/sghd-harness/game.lua');\n"
+                'for _, m in ipairs({"bgm", "se", "voice"}) do\n'
+                '  root.Vfs.Mounts[m] = {root.BasePaths.RootGamedataDir .. "/sghd/" .. m .. ".mpk"};\n'
+                'end\n'
+                'root.Vfs.Mounts["movie"] = {root.BasePaths.RootGamedataDir .. "/sghd/movie"};\n')
+            with (root / "gamedefs.lua").open("a") as f:
+                f.write(f"""
+root.GameDefinitions["sghd-harness-media"] = {{
+  Hidden = true, Name = "sghd harness + media mounts", LauncherOrderId = 99,
+  GameProfile = "{root}/harness-movie.lua",
+}};
+""")
         return
     (root / "gamedefs.lua").write_text("""root.GameDefinitions = {
   sgps3 = {
@@ -323,6 +410,15 @@ class SghdRuntimeProbe(unittest.TestCase):
             self.assertIn(f'{name}" as MPK', self.probe.log, name)
         self.assertNotIn("Could not open spritesheet", self.probe.log)
 
+    def test_steam_sheet_ids_load_as_png_and_dds(self):
+        # sprites.lua points at the Steam system.mpk ids; DDS (DXT5) and PNG
+        # sheets both decode, ScriptHandled sheets are never opened
+        # (the fixture's other archives hold zero-filled dummies, so a later
+        # non-sheet texture load logs "No loader"; only sheets matter here)
+        self.assertNotIn("texture could not be imported", self.probe.log)
+        self.assertNotIn("Could not open spritesheet", self.probe.log)
+        self.assertNotIn("magic 0x44445320", self.probe.log)  # 'DDS ' rejected
+
     def test_vm_starts_without_profile_patches(self):
         self.assertIn("Initializing SC3 virtual machine", self.probe.log)
         self.assertNotIn("Expected member", self.probe.log)
@@ -410,6 +506,59 @@ class SghdHarnessRuntimeProbe(unittest.TestCase):
         self.assertEqual(self.status.returncode, 7, self.status.log[-2000:])
         self.assertEqual([op for _, op in self.status.vm_trace()],
                          ["00:5f", "00:00"])
+
+
+@unittest.skipUnless(os.environ.get("IMPACTO_BIN"),
+                     "set IMPACTO_BIN=/path/to/impacto to run runtime probes")
+class SghdMovieSkipProbe(unittest.TestCase):
+    """Thread 05 (Task 8, M2): the Steam movies are Bink 2, which FFmpeg
+    cannot decode. A movie that cannot be opened or decoded must be skipped:
+    the script continues past MovieMain and the engine does not crash.
+    Before the fix the Bink 2 case started playback without a video stream
+    and the reader thread dereferenced it."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.unmounted = run_probe(game="sghd-harness", script=movie_script(31),
+                                  seconds=30.0)
+        cls.bink2 = run_probe(game="sghd-harness-media", script=movie_script(32),
+                              seconds=30.0)
+
+    def test_unmounted_movie_is_skipped(self):
+        self.assertEqual(self.unmounted.returncode, 31, self.unmounted.log[-2000:])
+        self.assertIn("Failed to open movie for playback", self.unmounted.log)
+
+    def test_bink2_movie_is_skipped_without_crash(self):
+        self.assertEqual(self.bink2.returncode, 32,
+                         self.bink2.stdout[-1500:] + self.bink2.log[-2500:])
+        self.assertIn("as filesystem folder archive", self.bink2.log)
+        self.assertIn("Unsupported codec: FFmpeg codec id 0", self.bink2.log)
+        self.assertIn("No decodable video stream", self.bink2.log)
+        self.assertIn("Movie 0 could not be played; skipping it", self.bink2.log)
+        self.assertEqual([op for _, op in self.bink2.vm_trace()],
+                         ["01:22", "01:23", "00:00"])
+
+
+@unittest.skipUnless(os.environ.get("IMPACTO_BIN"),
+                     "set IMPACTO_BIN=/path/to/impacto to run runtime probes")
+class SghdOggAudioProbe(unittest.TestCase):
+    """Thread 05 (Task 8, M3 groundwork): the Steam bgm/se/voice archives
+    contain .ogg entries. BGM, SE and voice instructions decode Ogg Vorbis
+    from MPK archives through impacto's Vorbis stream. Only proves the
+    container/codec path with a synthetic tone; the real files' codec is
+    confirmed by tools/sghd_census.py --assets."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.audio = run_probe(game="sghd-harness-media", script=audio_script(33),
+                            seconds=30.0)
+
+    def test_three_vorbis_streams_and_clean_exit(self):
+        self.assertEqual(self.audio.returncode, 33, self.audio.log[-2500:])
+        self.assertEqual(self.audio.log.count("Creating Vorbis stream"), 3, self.audio.log[-2500:])
+        self.assertNotIn("No audio decoder found", self.audio.log)
+        for name in ("bgm.mpk", "se.mpk", "voice.mpk"):
+            self.assertIn(f'{name}" as MPK', self.audio.log)
 
 
 def parse_sghd_save(blob: bytes) -> dict:

@@ -187,6 +187,14 @@ std::optional<av::Codec> findDecoderCodec(av::Stream const& avStream) {
 
   if constexpr (MediaType == AVMEDIA_TYPE_VIDEO) {
     const AVCodecDescriptor* desc = avcodec_descriptor_get(codecId);
+    // No descriptor for AV_CODEC_ID_NONE, which FFmpeg's demuxer reports for
+    // streams it has no decoder for (e.g. Bink 2)
+    if (desc == nullptr) {
+      ImpLog(LogLevel::Error, LogChannel::Video,
+             "Unsupported codec: FFmpeg codec id {}!\n",
+             static_cast<int>(codecId));
+      return std::nullopt;
+    }
 #ifdef __ANDROID__
     const std::string decoderName = fmt::format("{}_mediacodec", desc->name);
 #else
@@ -213,6 +221,7 @@ void FFmpegPlayer::OpenCodec(std::optional<FFmpegStream<MediaType>>& streamOpt,
   std::optional<av::Codec> codec = findDecoderCodec<MediaType>(avStream);
   if (!codec) {
     avStream.reset();
+    return;  // leave streamOpt empty; *codec below would be invalid
   }
 
   DecodingContext_t<MediaType> decoderContext{avStream, *codec};
@@ -353,13 +362,24 @@ void FFmpegPlayer::Play(Io::Stream* stream, bool looping, bool alpha) {
   if (videoStream.isVideo() && videoStream.isValid()) {
     OpenCodec<AVMEDIA_TYPE_VIDEO>(VideoStream, std::move(videoStream),
                                   videoStreamId);
-    ScrWork[SW_MOVIEFRAME] = 0;
-    ScrWork[SW_MOVIETOTALFRAME] = VideoStream->Duration;
   }
+  if (!VideoStream) {
+    // Read() requires a video stream (e.g. FFmpeg has no Bink 2 decoder and
+    // reports codec "none"); starting playback here would dereference it.
+    ImpLog(LogLevel::Error, LogChannel::Video,
+           "No decodable video stream in {:s}; not playing it\n",
+           stream->Meta.FileName);
+    FormatContext.close();
+    StreamPtr.reset();
+    return;
+  }
+  ScrWork[SW_MOVIEFRAME] = 0;
+  ScrWork[SW_MOVIETOTALFRAME] = VideoStream->Duration;
   if (audioStream.isAudio() && audioStream.isValid()) {
     OpenCodec<AVMEDIA_TYPE_AUDIO>(AudioStream, std::move(audioStream),
                                   audioStreamId);
-    AudioPlayer->InitConvertContext(AudioStream->CodecContext.raw());
+    if (AudioStream)  // unsupported audio codec: play the video silently
+      AudioPlayer->InitConvertContext(AudioStream->CodecContext.raw());
   }
   VideoClock = Clock();
   MasterClock = &VideoClock;

@@ -1,6 +1,11 @@
--- Steam release archive names (lowercase .mpk under USRDIR, unverified against
--- a real installation; see tests/compat/README.md "Local validation").
--- Movies are not mounted: their location/format (Bink 2?) is unknown (M2).
+-- Steam release archives: USRDIR/*.mpk (lowercase names, MPK v2.0), verified
+-- against the owner's install (tests/compat/fixtures/sghd_steam_evidence.json).
+-- Copy them flat into <gamedata>/sghd/.
+-- Movies are not mounted: the Steam files are loose Bink 2 (.bk2) files that
+-- FFmpeg cannot decode, and the playNo -> file mapping (inside Game.exe) is
+-- unknown. With no "movie" mount, PlayMovie logs an error and the script
+-- continues (docs/sghd-steam-evidence.md). manual.mpk, shader.mpk and mgsshader.mpk
+-- are not used by impacto.
 root.Vfs = {
     Mounts = {
         ["script"] = {root.BasePaths.RootGamedataDir .. "/sghd/script.mpk"},
