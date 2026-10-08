@@ -62,3 +62,10 @@ committed). No game data was used in this orb.
 - **Needs the owner's Windows machine:** whether the real script passes the
   title and reaches `MAIN00.SCX` and the first dialogue line; where it waits
   if not; the title protocol around `10 34`.
+
+## Outcome (Windows round 5)
+
+Confirmed on real data: with these fixes the startup reaches
+`TitleMenu(type: 0)` and `(type: 1)` without desync; the stall report and
+script-load lines worked. The title itself could not be passed; continued
+in [07c-title-menu.md](07c-title-menu.md).

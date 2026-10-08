@@ -50,7 +50,7 @@ branch is chosen at the start of each thread and recorded in
 | 04 | Phase A: profile, opcodes, harness, save foundation (04A–04D) | Medium | **Done** (synthetic) | `sghd` VM runs synthetic SGHD scripts; save round trip |
 | 05 | Phase B: Steam evidence, profile ids, movie skip, Ogg audio (05A partial) | Medium | **Done** (synthetic + install listing) | profile matches the real install layout |
 | 06 | Phase B: census, font/LAY/1080p, plain dialogue box, phone catalogue + item bits, save format 2 (05B, 06A, 06B partial) | Medium | **Done** (synthetic + census) | real scripts decode; presentation constants from the install |
-| 07 | Phase B: representative Steam gameplay validation (07A–07C) | Medium | **Done** (round-3 evidence applied); 07b: first real boot ran, title wait fixed; **title pass / first dialogue still owner-side** | real boot → title → dialogue → BG/sprites → voice/BGM on Windows, no desync or hang |
+| 07 | Phase B: representative Steam gameplay validation (07A–07C) | Medium | **Done** (round-3 evidence applied); 07b: first real boot ran, title wait fixed; 07c: title protocol + engine menu; **title pass / first dialogue still owner-side** | real boot → title → dialogue → BG/sprites → voice/BGM on Windows, no desync or hang |
 | 08 | Phase C: native iOS ARM64 build and app shell (08A–08C) | Medium | **Next** | iOS ARM64 build of impacto in GitHub Actions macOS; minimal SDL3 app artifact; signing documented |
 | 09 | Phase C: iOS rendering (09A–09B) | Medium | Pending | existing GLES3 renderer (or decided fallback) draws a synthetic scene on device |
 | 10 | Phase C: iOS platform integration (10A–10C) | Medium | Pending | audio, touch/phone controls, Files import, saves, suspend/resume |
@@ -89,3 +89,6 @@ Details: [ios-transition.md](ios-transition.md).
   `10 3A` six expressions, Steam sprite checks.
 - Thread 07b: first owner boot on real data; `10 34` (title) waited forever
   and misread its byte; fixed with a stall report for the next run.
+- Thread 07c: round 5 reached the title instructions; title protocol
+  reconstructed from the script context (SF_TITLEEND / SW_TITLECUR, common
+  variable layout); engine title menu with keyboard/mouse, artwork pending.
