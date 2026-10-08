@@ -35,7 +35,7 @@ the second-round census from the owner's install.** No iOS work.
   `python3 -m unittest discover -s tests/compat` **86/86** with
   `IMPACTO_BIN` (63 + 23 probes); without a binary 63 pass, 23 skipped.
   Launcher smoke 2/2 PASS. clang-format clean on changed C++.
-- GitHub Actions: see the CI section at the end of this file.
+- GitHub Actions: Linux and Windows both green on `884146f2` (CI section below).
 
 ## Known Failures / Limitations
 - **No real game data has been executed.** Everything runtime is synthetic.
@@ -95,3 +95,11 @@ This orb had Docker image `impacto-desktop:ubuntu24`, vcpkg at
 `docs/desktop-build.md` (cold build ≈ 25 min).
 
 ## CI
+Final code commit `884146f2`:
+- Desktop Linux [run 37805385510](https://github.com/Tasnemo/impacto-ios/actions/runs/37805385510):
+  **success** — 86 unit tests (63 + 23 skipped), build, launcher smoke 2/2,
+  23 runtime probes OK.
+- Desktop Windows [run 37805385451](https://github.com/Tasnemo/impacto-ios/actions/runs/37805385451):
+  **success** — artifact `impacto-windows-x64-884146f25dc52f9de548c6608d1eab5edb23b40e`
+  (≈99 MB, 30-day retention; `impacto.exe`, DLLs, `profiles/`, `resources/`).
+  Built only; not run on Windows here. Warm-cache run ≈ 20 min, cold ≈ 38 min.
