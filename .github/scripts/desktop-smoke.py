@@ -14,11 +14,13 @@ def main():
     env = dict(os.environ, SDL_VIDEO_DRIVER="x11", LIBGL_ALWAYS_SOFTWARE="1")
     with tempfile.TemporaryDirectory(prefix="impacto-smoke-") as temporary:
         config = str(Path(temporary) / "userconfig.toml")
+        engine_log = Path(temporary) / "engine.log"
         result = subprocess.run(
-            [str(executable), "-g"], env=env, capture_output=True,
+            [str(executable), "-lf", str(engine_log), "-g"],
+            env=env, capture_output=True,
             text=True, timeout=15,
         )
-        output = result.stdout + result.stderr
+        output = result.stdout + result.stderr + engine_log.read_text()
         print(output, end="")
         assert result.returncode == 1, f"CLI exit: {result.returncode}"
         assert "Invalid number of arguments" in output
@@ -28,7 +30,8 @@ def main():
         # all upstream game/viewer profiles need commercial assets.
         with tempfile.TemporaryFile(mode="w+") as log:
             process = subprocess.Popen(
-                [str(executable), "-ll", "Debug", "-uc", config],
+                [str(executable), "-lf", str(engine_log),
+                 "-ll", "Debug", "-uc", config],
                 env=env, stdout=log, stderr=subprocess.STDOUT,
             )
             try:
@@ -42,12 +45,12 @@ def main():
                     process.kill()
                     process.wait()
                 log.seek(0)
-                output = log.read()
+                output = log.read() + engine_log.read_text()
                 print(output, end="")
         for marker in ("Lua profile execute success", "Creating window",
                        "Window size (screen coords):", "Bye!"):
             assert marker in output, f"Missing startup/shutdown marker: {marker}"
-        assert "[Fatal]" not in output and "[Error]" not in output
+        assert "CRITICAL:" not in output and "ERROR:" not in output
         print("PASS: asset-free launcher stayed alive for 5s and quit cleanly (exit 0)")
 
 
