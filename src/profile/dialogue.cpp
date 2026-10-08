@@ -202,6 +202,9 @@ void Configure() {
     case DialogueBoxType::CC:
       Profile::CC::DialogueBox::Configure();
       break;
+    case DialogueBoxType::Plain:
+      // PlainDialogueBox only needs the common ADVBox/nametag members above
+      break;
     default:
       ImpLog(LogLevel::Warning, LogChannel::General,
              "Dialogue box is not implemented for the current profile yet!\n");

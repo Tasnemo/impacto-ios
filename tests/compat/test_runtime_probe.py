@@ -425,6 +425,12 @@ class SghdRuntimeProbe(unittest.TestCase):
         self.assertIn("Initializing SC3 virtual machine", self.probe.log)
         self.assertNotIn("Expected member", self.probe.log)
 
+    def test_plain_dialogue_box_configured(self):
+        # Thread 06: the Steam profile uses the generic PlainDialogueBox
+        # (ADVBox sprite + two-piece nametag); no per-game box is needed
+        self.assertNotIn("Dialogue box is not implemented", self.probe.log)
+        self.assertNotIn("defaulting to Void", self.probe.log)
+
     def test_return_resumes_right_after_call(self):
         trace = self.probe.vm_trace()
         ops = [op for _, op in trace]
