@@ -17,9 +17,11 @@ defaults:
   run:
     shell: bash
 
+# queue instead of cancelling: a cold vcpkg build takes long and every
+# finished run refreshes the binary cache
 concurrency:
   group: desktop-windows-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   build:
