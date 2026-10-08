@@ -1,57 +1,69 @@
 # STEINS;GATE Compatibility Matrix
 
-Target: original English **Steam** release of STEINS;GATE (Steam app 412830, MAGES. engine
-port, internal id `sghd`), not STEINS;GATE ELITE and not the PS3 release.
+Target: original English **Steam** release of STEINS;GATE (Steam app 412830,
+sc3tools id `sghd`). Not ELITE, not PS3.
 
-Legend: **Verified** = observed by running the engine in this project; **Claimed** =
-stated by upstream/external docs, not reproduced here; **Source-level** = conclusion drawn
-from reading impacto source; **Unknown** = no evidence either way.
+Statuses (only these five are used): **Verified Working**, **Partially
+Working**, **Broken**, **Not Implemented**, **Not Tested**. A status changes
+from the Thread 03 initial value only on evidence; source inspection alone
+never produces "Verified Working".
 
-Thread 02 verified the Linux build and asset-free launcher, not any game.
-Every game-support row below remains Claimed, Source-level, or Unknown.
+Evidence classes: *runtime* = executed the Thread 02 binary in this project
+(synthetic fixtures unless stated); *source* = read in this repo; *external* =
+tool sources or community docs, not checked against real files here. Real
+Steam assets were **not available**; rows that need them say so.
 
-## Engine-side support for the Steam release
+Last updated: Thread 03 (2026-10-08). Full narrative:
+[steins-gate-compatibility.md](steins-gate-compatibility.md); backlog:
+[steins-gate-blockers.md](steins-gate-blockers.md).
 
-| Area | Status | Evidence |
+## Subsystem matrix
+
+| Subsystem | Status | Evidence | Source files | Assets needed | Known failures | Missing | Difficulty |
+|---|---|---|---|---|---|---|---|
+| Game initialization | **Broken** | runtime: `-g sgps3` → `std::out_of_range` (no gamedef); registered → `Expected member LoadingStar`, then `DelusionADVPosition` | `gamedefinitions.lua`, `src/profile/profile.cpp:268-289`, `profiles/sgps3/game.lua`, `profiles/sgps3/hud/*.lua`, `src/profile/games/chlcc/{sysmesbox,titlemenu}.cpp` | none to reproduce | abort 134 at two stages | `sghd` game definition + profile that matches current HUD member lists | Low–Medium |
+| Steam archive loading | **Partially Working** | runtime: 9 synthetic MPK v2.0 archives mount and serve PNG/SCX; external: Steam `.mpk` are v2.0 | `src/io/mpkarchive.cpp`, `profiles/sgps3/vfs.lua` | real `*.mpk` for the untested half | none on synthetic data | lowercase Steam file names in a `sghd` vfs; MPK v1 unsupported (not needed if v2.0 confirmed) | Low |
+| Script parsing | **Partially Working** | runtime: SCX header/label/return tables resolved on synthetic script; unit: immediates identical to sc3ntist | `src/vm/vm.cpp:551-600`, `src/vm/expression.cpp` | real `script.mpk` to confirm start-script id and opcode usage | none | nothing in the container layer | — |
+| Script execution | **Broken** | runtime: `UseReturnIds=false` → Return hits return-id bytes, executes `End`; `UseReturnIds=true` → `00 5F` Dummy re-executed >1.2 M times in 4 s | `src/vm/opcodetables_sgps3.h`, `src/vm/inst_system.cpp:39`, `src/vm/inst_controlflow.cpp:54-120`, `src/vm/vm.cpp:443-530` | none to reproduce | desync, infinite spin | `opcodetables_sghd.h`: 16 Dummy slots, 21 layout fixes, `UseReturnIds=true` (list: `tests/compat/fixtures/sgps3_known_gaps.json`) | Medium |
+| English dialogue | **Not Implemented** | runtime: "Dialogue box is not implemented for the current profile yet!"; source: sgps3 charset 2368 vs Steam 2895 glyphs | `src/profile/dialogue.cpp:207`, `profiles/sgps3/{charset,font,dialogue}.lua`, `src/text/*` | `system.mpk` (font sheet), charset from sc3tools | no box, wrong glyph map | `sghd` charset/font/dialogue box profile; SG ADV/NVL box type | Medium |
+| Background rendering | **Not Tested** | generic `InstBGload`/mask code exists (source) | `src/vm/inst_graphics2d.cpp`, `src/background2d.cpp` | `bg.mpk`, `mask.mpk` | — | Steam ids/`.lay` endianness unverified | Low (if formats match) |
+| Character sprites | **Not Tested** | `.lay` loader exists; `LayFileBigEndian=true` is PS3 (source) | `src/character2d.cpp`, `profiles/sgps3/game.lua` | `chara.mpk` | — | `10 05` CHAload layout fix (u16 for type 0) | Low–Medium |
+| Voice playback | **Not Tested** | Vorbis stream exists; `00 37/00 38` layouts differ from SGHD (source) | `src/audio/vorbisaudiostream.cpp`, `src/vm/inst_sound.cpp` | `voice.mpk` | audio device required (no device → segfault in `Audio::AudioUpdate`, runtime) | PlayVoice/StopVoice layout fix | Low |
+| Background music | **Not Tested** | Vorbis stream exists; `00 21/00 22` layouts match (source) | same | `bgm.mpk` | same audio-device note | — | Low |
+| Video playback | **Not Implemented** | external: Steam movies are Bink 2; ffmpeg has no Bink 2 decoder (source: vcpkg ffmpeg features, `src/video/ffmpegplayer.cpp`) | `src/video/ffmpegplayer.cpp`, `vcpkg.json` | movie files (location unverified) | — | Bink 2 support or owner-side transcode | High (decoder) / Low (transcode) |
+| Phone triggers | **Not Implemented** | source: `InstPhoneSG` all subtypes `VMStub`; subtypes 10/14/15/1A not decoded; no phone UI in `src/` | `src/vm/inst_gamespecific.cpp:688-764`, `src/ui/`, `profiles/sgps3/sprites.lua` | `system.mpk` phone sprites, scripts | — | whole phone UI + state + subtype semantics | High |
+| Message responses | **Not Implemented** | source: `InstMail` stub; mail link tokens parsed as ruby | `src/vm/inst_gamespecific.cpp:765`, `src/text/textparser.cpp` | same | — | mail list, reply selection, link tokens | High |
+| Story branching | **Not Tested** | source: `If/Jump/Switch` exist; `CallIfFlag` layout wrong, `CallFarIfFlag`/`ReturnIfFlag` Dummy | `src/vm/inst_controlflow.cpp`, `src/mem.h` | scripts | — | flag-conditional call family | Medium (depends on script execution + phone) |
+| Save/load | **Not Implemented** | runtime: "Save data type is none, not setting implementation"; source: `Implementation=nullptr` | `profiles/sgps3/savedata.lua`, `src/profile/data/savesystem.cpp:124`, `src/games/chlcc/savesystem.cpp` (template) | scripts (to choose flag/ScrWork ranges) | — | SG save adapter, `10 22` AutoSave/checkpoint ids | Medium–High |
+| Chapter transitions | **Not Tested** | source: `ScriptLoad`/`JumpFar` exist; `01 09` GroupCheckpoint is Dummy | `src/vm/inst_controlflow.cpp`, `src/vm/vm.cpp:178` | scripts | — | checkpoint handler | Low–Medium |
+| Complete routes | **Not Tested** | nothing above executes real scripts | — | full install | — | everything above | — |
+| All endings | **Not Tested** | same | — | full install | — | same | — |
+
+## Supporting rows
+
+| Item | Status | Evidence |
 |---|---|---|
-| Game profile for Steam SG (`sghd`) | **Missing** (source-level) | `profiles/` has `sgps3` only; `gamedefinitions.lua` does not list any SG profile |
-| Game profile for PS3 SG (`sgps3`) | Exists, minimal | `profiles/sgps3/game.lua`; `SaveDataType.None`; system menu include commented out |
-| Archive format: Steam `.mpk` | Probably supported, **unverified** | `MpkArchive` accepts only MPK v2.0 (`src/io/mpkarchive.cpp:64-67`). Chaos;Child Steam `.mpk` loads via `profiles/cc/vfs.lua`; Steam SG MPK version field not yet inspected |
-| Script format: `.scx` SC3 | Container readable; **opcode set unknown** | sc3tools treats `sghd` as its own game id with its own charset; impacto has no `sghd` opcode tables |
-| Instruction set | **Unknown** | `opcodetables_sgps3.h` differs from `opcodetables_darling.h` in ~4 entries and still carries Darling-only ops (`InstTwipo` 10 39, `InstUnk103A`); it appears cloned, not reverse-engineered. Whether Steam SG shares PS3 SG's tables is unknown |
-| Charset / text | **Missing** | sc3tools ships `resources/sghd/charset.utf8`; impacto has `resources/sgps3` only |
-| Textures | Likely OK | Steam SG uses PNG (+`.lay`) / DDS; impacto has stbi, DDS and `.lay` loaders. `LayFileBigEndian=true` in sgps3 must be `false` for PC (unverified) |
-| Audio (Ogg Vorbis BGM/SE/voice) | Likely OK | `src/audio/vorbisaudiostream.cpp` |
-| Video (Bink 2) | **Blocked** | Steam SG movies are Bink 2 (nipkownix FMV project write-up); ffmpeg decodes Bink 1 (`BIK`) only |
-| Phone triggers (`InstPhoneSG`) | **Stub** | `src/vm/inst_gamespecific.cpp:688` logs `VMStub` and does nothing |
-| Mail (`InstMail`) | **Stub** | `src/vm/inst_gamespecific.cpp:765` |
-| Save / load | **Missing** | `sgps3/savedata.lua` → `SaveDataType.None`; save implementations exist for CHLCC, CCLCC, MO6TW only. Steam SG format: `SAVEDATA.DAT` (80 slots + 48 quick), location `Documents\My Games\mages_steam\STEINS;GATE\eng\` (PCGamingWiki) |
-| System menu / title / backlog / tips UI | Partial (PS3 layouts) | `profiles/sgps3/hud/*.lua`; no `src/games/sgps3` C++ |
-| Branching / endings | **Unknown** | depends on VM completeness |
-| Achievements | Unknown | |
-
-## Upstream compatibility tracker (CommitteeOfZero/impacto issue #1, read 2026-10-08)
-
-> Steins;Gate (English PS3 version only): 2D graphics display, Sound playback, Video playback
-
-No story progression, saves, menus, or Steam-release support is claimed upstream.
+| Linux build (Ubuntu 24.04 / GCC 13) | Verified Working | Thread 02 + rebuilt in Thread 03 (`docs/desktop-test-results.md`) |
+| Asset-free launcher | Verified Working | Thread 02 smoke, re-run in Thread 03 |
+| Upstream CTest suite | Not Implemented | `ctest`: "No tests were found" |
+| Compatibility unit tests (no assets) | Verified Working | `python3 -m unittest discover -s tests/compat` → 27 pass + 4 skipped probes |
+| Runtime probes (need built binary) | Verified Working (they assert the *bugs*) | `IMPACTO_BIN=… python3 -m unittest tests.compat.test_runtime_probe` → 4 pass |
+| Upstream tracker (CoZ impacto issue #1) | external | lists PS3 SG only: 2D graphics, sound, video; no Steam support claimed |
 
 ## Platform matrix
 
 | Platform | Upstream status | Project status |
 |---|---|---|
 | Windows (x64, GL/DX9/Vulkan) | Built in CI | Not built here |
-| Linux (x64, GL/Vulkan) | Built in CI (`ubuntu-24.04`) | Thread 02: Ubuntu/GCC 13 build and software-GL launcher verified; Vulkan runtime and games untested |
+| Linux (x64, GL/Vulkan) | Built in CI (`ubuntu-24.04`) | Thread 02: build + software-GL launcher verified; Thread 03: synthetic game-profile probes executed |
 | macOS (arm64 + intel, GL) | Built in CI (`macos-15`) | Not built here |
 | Android (arm64, GLES3, minSdk 28) | Built in CI | Not built here |
 | Nintendo Switch | Built in CI (docker) | Out of scope |
-| iOS | **No support** | Feasibility only — see `docs/threads/01-upstream-investigation.md` §6 |
+| iOS | No support | Feasibility only — `docs/threads/01-upstream-investigation.md` §6 |
 
-## Next verification steps (Thread 03)
+## Rows that need the owner's Steam files
 
-1. Obtain a legitimate Steam install; record `USRDIR/` listing with sizes and the first 16
-   bytes of each `.mpk` (version field) and of each movie file (`BIK`/`KB2` signature).
-2. Dump `script.mpk` with sc3tools/sg-unpack; diff opcode usage against
-   `opcodetables_sgps3.h`.
-3. Create `profiles/sghd` and attempt title-screen boot under `-lc VM -ll Debug`; record
-   every `VMStub` hit.
+Archive loading (real `.mpk`), script parsing (real `script.mpk`),
+backgrounds, sprites, voice, BGM, video signatures, and every row below
+"Phone triggers". Procedure: `tests/compat/README.md` §"Local validation with
+real Steam files".

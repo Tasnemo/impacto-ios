@@ -7,8 +7,8 @@ after each thread. Modes: Ultra / High / Medium / Low (see `workme.md`).
 |---|---|---|---|---|---|
 | 01 | Upstream architecture & feasibility | Ultra | `phase-00-upstream-analysis` | **Done** (docs only) | Architecture + blockers understood |
 | 02 | Reproducible desktop build | High | `phase-01-desktop-baseline` | **Done**, integrated into `master` | Ubuntu build + asset-free launcher and CI verified; no game tested |
-| 03 | SG desktop compatibility (RE with real Steam files) | Ultra | `phase-02-steins-compatibility` | Next; needs legitimate game evidence | MPK version, movie signature, opcode set, phone/mail semantics documented |
-| 04 | SG desktop implementation | High | `phase-02-steins-compatibility` | Pending | Title → prologue → first phone trigger → save/load on desktop |
+| 03 | SG desktop compatibility | Ultra | `phase-02-steins-compatibility` | **Done** (investigation, tests, plan); real-file checks still owner-gated | Runtime evidence of launch/VM failures, opcode gap list, backlog C1–L4, Thread 04 plan |
+| 04 | SG desktop implementation | High | `phase-02-steins-compatibility` (continue) or new branch | Next — start with Task 1 of `docs/thread-04-implementation-plan.md` | Title → prologue → first phone trigger → save/load on desktop |
 | 05 | iOS architecture & build feasibility | Ultra | `phase-03-ios-feasibility` | Pending | vcpkg `arm64-ios` deps + GL/Metal decision |
 | 06 | Minimal iOS build & sideloading | High | `phase-03-ios-feasibility` | Pending | App launches on iPhone from a Windows-driven workflow |
 | 07 | iOS rendering backend | High | `phase-04-ios-rendering` | Pending | Scenes render correctly on device |
@@ -38,3 +38,14 @@ after each thread. Modes: Ultra / High / Medium / Low (see `workme.md`).
   require original data. Do not interpret the green desktop CI as game compatibility.
 - Thread 02 was shipped to `origin/master` at the user's request. Branch Thread 03
   from the latest `origin/master`; read the updated handoff first.
+
+## Adjustments after Thread 03
+
+- Real Steam files were not needed to prove the engine fails: synthetic MPK/SCX
+  fixtures reproduce the gamedef abort, profile rot, `Call` desync and `InstDummy`
+  freeze against the real binary (`tests/compat/test_runtime_probe.py`).
+- Thread 04 adds a new `sghd` game id instead of editing `sgps3`; see the plan.
+- The owner's evidence pack (listing, mpk/movie headers, script opcode counts,
+  `system.mpk` ids) is still required for Tasks 5+; procedure in
+  `tests/compat/README.md`.
+- The engine segfaults without an audio device; CI/probes use `ALSOFT_DRIVERS=null`.

@@ -1,0 +1,47 @@
+{
+ "_note": "Documented gaps between impacto's sgps3 opcode tables (src/vm/opcodetables_sgps3.h) and the SGHD (Steam) instruction set. test_opcode_table_audit.py checks that this list matches the source, so fixing a slot in Thread 04 requires updating this file and docs/steins-gate-blockers.md together.",
+ "dummy_slots_used_by_sghd": {
+  "00 4B": "WaitForSomething004B",
+  "00 4C": "Unk004C",
+  "00 56": "CallFarIfFlag",
+  "00 57": "ReturnIfFlag",
+  "00 58": "Unk0058",
+  "00 59": "Unk0059",
+  "00 5F": "Nop",
+  "01 05": "GroupCalc",
+  "01 06": "Unk0106",
+  "01 07": "Unk0107",
+  "01 08": "Unk0108",
+  "01 09": "GroupCheckpoint",
+  "10 1A": "Unk101A",
+  "10 3F": "Unk103F",
+  "10 40": "Win32_SetResolution",
+  "10 41": "Win32_DestroyWindow"
+ },
+ "argument_layout_mismatches": {
+  "00 23": "SEplay: SGHD byte,byte,[expr,expr] vs InstSEplayMO6 byte,expr,expr",
+  "00 35": "SGHD byte vs InstSignIn (no args)",
+  "00 37": "PlayVoice: SGHD byte,expr,expr vs InstVoicePlay byte,expr",
+  "00 38": "StopVoice: SGHD byte,expr vs InstVoiceStop byte",
+  "00 41": "SGHD byte vs no args",
+  "00 43": "SystemMessage: SGHD subtypes 0C (expr) / 0D,0E (string) vs InstSystemMes modes",
+  "00 50": "SGHD cond byte + 2 local labels vs InstPressStart",
+  "00 52": "SGHD no args vs expr",
+  "00 53": "SGHD byte,expr,label vs expr,expr",
+  "00 54": "CallIfFlag: SGHD byte,flag,label,returnId vs InstUnk0054 expr,expr",
+  "01 0A": "SGHD byte vs InstCalc (GroupCalc belongs at 01 05)",
+  "01 12": "Sel type 0: SGHD string u16 + expr; impacto skips the u16 for SGPS3",
+  "01 25": "SetRevMes type 3: SGHD string,expr,expr,expr vs 3 expr + u16 (verify)",
+  "10 05": "CHAload: SGHD byte,expr,expr,[u16 if type 0] vs no u16",
+  "10 12": "SGHD no args vs byte",
+  "10 22": "AutoSave type 0A: u16 checkpoint id not consumed",
+  "10 23": "type 0A: byte not consumed",
+  "10 24": "type 0A: impacto consumes 2 expr, SGHD none",
+  "10 27": "SGHD byte type, expr, [flag] vs InstEncyclopedia expr",
+  "10 33": "Tips type 0: two local labels vs one for SGPS3",
+  "10 37": "PhoneSG: subtypes 10, 14, 15, 1A not handled; all subtypes are stubs"
+ },
+ "profile_settings": {
+  "UseReturnIds": "sgps3 profile says false; SGHD Call/CallFar/CallIfFlag/CallFarIfFlag carry a u16 return-address id, so a Steam profile must set true"
+ }
+}

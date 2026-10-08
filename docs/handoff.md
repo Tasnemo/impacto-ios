@@ -1,105 +1,100 @@
 # Project Handoff
 
 ## Current Milestone
-Thread 02 — Reproducible Desktop Build is complete. Linux compilation and
-asset-free launcher startup/shutdown are verified locally and in
-[GitHub CI run 37733016683](https://github.com/Tasnemo/impacto-ios/actions/runs/37733016683).
-See [desktop-test-results.md](desktop-test-results.md) for actual results.
-Thread 03 has **not** started. This is not proof of game compatibility.
+Thread 03 — STEINS;GATE Desktop Compatibility Investigation is complete on
+branch `phase-02-steins-compatibility`. It established, by executing the
+engine, that STEINS;GATE does not launch and that the English Steam release
+is not supported; it produced the opcode gap list, a prioritised backlog, an
+asset-free test suite and a bounded Thread 04 plan. **No implementation of
+Steam support and no iOS work has started.**
 
 ## Repository State
-- Repository: `Tasnemo/impacto-ios`; default integration branch is **master**, not
-  `main`. GitHub reports it is **public** despite `workme.md` proposing private.
-  No commercial assets or secrets were added; visibility was not changed.
-- Thread 01 reports are committed in
-  [b468d4fb](https://github.com/Tasnemo/impacto-ios/commit/b468d4fb60314344a1c3b66096b263427b87d4c6)
-  and were already on `origin/master` at startup. The prior “not merged” note was stale.
-- Thread 02 branch: `phase-01-desktop-baseline`, based on that commit.
-- Build/workflow commit:
-  [51478a26](https://github.com/Tasnemo/impacto-ios/commit/51478a26).
-  Smoke logging fix and Ubuntu Docker recipe:
-  [a97fb46c](https://github.com/Tasnemo/impacto-ios/commit/a97fb46c).
-  Both are pushed; CI passed on `a97fb46c`. The subsequent documentation-only
-  checkpoints record the reports and shipping state (CI skipped because no build
-  inputs changed); obtain the exact handoff commit with
-  `git log -1 --format=%H -- docs/handoff.md`.
-- Thread 02 is integrated into **origin/master** by the user-authorized Ship
-  request. Start the next branch from the latest `origin/master`.
-- `src/`, profiles, resources and game behavior are unchanged. CMake only pins
-  LibAtrac9 instead of fetching moving `master`.
+- Repository: `Tasnemo/impacto-ios`; integration branch **master** (public).
+  No commercial assets, derived script dumps or secrets were added.
+- Thread 01: `phase-00-upstream-analysis`, merged. Thread 02:
+  `phase-01-desktop-baseline`, merged (`master` = `208cc56a` at Thread 03 start).
+- Thread 03: branch `phase-02-steins-compatibility` from `208cc56a`.
+  Obtain the Thread 03 commit with
+  `git log -1 --format=%H -- docs/threads/03-desktop-compatibility.md`.
+  Push status is recorded in that thread report's final section and in the
+  Thread 03 chat summary; verify with `git branch -r`.
+- Engine sources (`src/`), profiles and resources are **unchanged** since
+  Thread 02. Thread 03 added `tests/compat/`, docs, and two CI steps in
+  `.github/workflows/desktop.yml`.
 
-## Completed Work
-- Pinned upstream CMake/Ninja/vcpkg Linux build; native Ubuntu 24.04 CI and an
-  Ubuntu container recipe for Debian-based orbs. No CoZ cache access required.
-- Dependency installer, CLI/launcher smoke harness and GitHub desktop workflow.
-- Full build, toolchain and runtime logs under `docs/threads/02-logs/`.
-- Reproduction: [desktop-build.md](desktop-build.md).
-  Results: [desktop-test-results.md](desktop-test-results.md).
-  Milestone report: [threads/02-desktop-baseline.md](threads/02-desktop-baseline.md).
+## What Thread 03 established (read these, in order)
+1. [steins-gate-compatibility.md](steins-gate-compatibility.md) — full
+   investigation with runtime evidence (§6) and feasibility (§8).
+2. [compatibility-matrix.md](compatibility-matrix.md) — status per subsystem.
+3. [steins-gate-blockers.md](steins-gate-blockers.md) — C1–C5, H1–H4, M1–M5,
+   L1–L4.
+4. [thread-04-implementation-plan.md](thread-04-implementation-plan.md) —
+   Tasks 1–8.
+5. [threads/03-desktop-compatibility.md](threads/03-desktop-compatibility.md)
+   — report, tests run, decisions.
+6. `tests/compat/README.md` — how to run tests; Windows validation procedure.
 
-## Verification
-- Ubuntu 24.04.5/GCC 13.3, CMake 3.31.10, upstream `ci-release`, target/host
-  `x64-linux-ci`: built all 67 dependencies from source and compiled/installed impacto.
-- Executable loaded Lua config, created 1280×720 software OpenGL window,
-  compiled shaders, ran the launcher for five seconds and exited 0 through SDL quit.
-- CLI missing parameter rejected with exit 1. Relocated install passed both checks.
-- CTest executed: **No tests were found**. There is no upstream engine test suite.
-- Workflow syntax checked with actionlint. Engine warnings-as-errors retained.
-- GitHub Ubuntu 24.04 job passed configure, build/install, CTest discovery and
-  both smoke checks in 23m32s; diagnostic upload and cache save also passed.
+Key runtime facts (synthetic fixtures, real binary):
+- `impacto -g sgps3` → `std::out_of_range` (no game definition).
+- Registered + fixtures → `Expected member LoadingStar` /
+  `DelusionADVPosition` aborts (sgps3 HUD profile out of date).
+- VM with `UseReturnIds=false` → `Return` executes return-id bytes as `End`;
+  with `true` → `00 5F` (`InstDummy`) spins forever.
+- Engine segfaults in `Audio::AudioUpdate` with no audio device; use
+  `ALSOFT_DRIVERS=null` headless.
+
+## Verification performed in Thread 03
+- Rebuilt Thread 02 binary in `impacto-desktop:ubuntu24`; ctest "No tests
+  were found"; smoke 2/2 PASS.
+- `python3 -m unittest discover -s tests/compat -v`: 27 OK, 4 skipped.
+- `IMPACTO_BIN=release/ubuntu24/impacto python3 -m unittest tests.compat.test_runtime_probe -v`
+  (in container): 4/4 OK — these assert the **bugs** listed above.
+- GitHub Actions for this branch was not observed in-thread.
 
 ## Known Failures / Limitations
-- Native Debian 12/GCC 12 fails OpenAL Soft 1.25.1 on missing `<format>`.
-  Use Ubuntu 24.04/GCC 13; do not downgrade dependencies to work around it.
-- First CI build passed compilation but its test harness wrongly expected console
-  logging. Fixed by explicit `-lf` logs; see results for both CI runs.
-- Upstream ImGui compiler and LibAtrac9 CMake install warnings remain nonfatal.
-- Legacy `impacto.yml` still uses the CoZ NuGet feed. `desktop.yml` is the fork's
-  independent Linux baseline; other platform jobs are not verified here.
-- No game data: no game-profile initialization, audio/video playback, script
-  execution, saves or SG behavior verified. `characterviewer` is **not asset-free**;
-  it inherits CHLCC. Use no `-g` for the launcher. SDL dummy cannot supply OpenGL.
-- Steam SG blockers B1–B5 are unchanged: movie format unverified locally,
-  missing Steam profile/opcode mapping, phone/mail stubs and absent saves.
+- No Steam installation, Windows host, GPU or audio device in the orb. All
+  "external" facts (Steam `.mpk` names/version, Bink 2 movies, save
+  location, PNG textures, 2895-glyph charset) are unverified against real
+  files. Procedure to verify: `tests/compat/README.md`.
+- Game profiles are not asset-free: `-g <any>` aborts without spritesheets
+  (`src/profile/sprites.cpp:48`). Thread 04 Task 3 proposes a harness profile.
+- Upstream `impacto.yml` still depends on CoZ infrastructure (unchanged).
+- Native Debian 12/GCC 12 cannot build; use the Ubuntu container/CI.
 
-## Architectural Decisions
-- Preserve the upstream architecture, default Linux features and dependency pins.
-  Solve the compiler mismatch with a supported environment, not source rewrites.
-- Pin LibAtrac9's current revision. Keep the upstream vcpkg baseline and overlays.
-- Headless Xvfb/Mesa launcher testing needs no game assets and changes no engine API.
-- Treat successful compilation, launcher startup and game compatibility as separate
-  claims. No iOS or missing STEINS;GATE implementation was attempted.
-- Prior ADRs remain in [decisions.md](decisions.md); SG profile/transcoding proposals
-  are still proposals, not verified implementations.
+## Architectural Decisions (Thread 03)
+- Add a new game id `sghd` for the Steam release; keep `sgps3` frozen (the
+  audit test pins its opcode table).
+- All engine changes behind `InstructionSet::SGHD` or in `src/games/sghd/`,
+  `profiles/sghd/` — upstream-compatible, no risk to other games.
+- Runtime probes assert current bugs; flip assertions in the fixing commit.
+- sc3ntist (unlicensed) used only as a reference for opcode names/layouts
+  stored as data; sc3tools (MIT) cited for charset/game ids.
+- Bink 2: prefer owner-side transcode or movie skip over writing a decoder.
 
-## Open Questions
-1. Steam SG MPK version and movie signatures (`BIK` versus `KB2`).
-2. Steam SC3 opcode numbering/argument layouts versus SGPS3; phone/mail semantics.
-3. Full game-profile runtime behavior, including real audio/video, saves and routes.
-4. iOS renderer/SDK and Windows-driven signing questions remain deferred.
+## Open Questions (owner input needed)
+1. MPK header bytes of the Steam archives (expect `MPK\0 00 00 02 00`).
+2. Movie file locations and signatures (`BIK` vs `KB2`).
+3. Startup script archive id and opcode usage counts from a script dump.
+4. `system.mpk` entry ids for title/dialogue/phone sprites.
 
 ## Next Thread
-Thread 03 — STEINS;GATE Desktop Compatibility.
-
-## Recommended Mode
-**Ultra**, as specified by `workme.md`, for compatibility investigation and opcode
-analysis. Do not begin iOS work. Use High later for bounded implementation fixes.
+Thread 04 — STEINS;GATE Desktop Implementation. **Mode: High** (bounded,
+test-driven engine/profile work). Use Ultra only for Task 7a (phone protocol
+reverse engineering) if the owner's script dump is available.
 
 ## Next Objective
-Read `workme.md` (lowercase filename), this handoff, the desktop reports and all
-Thread 01 architecture/compatibility reports. Start from the latest `origin/master`,
-reproduce the build/smoke check, then investigate original English Steam SG using
-legally obtained local evidence. Request the Windows install listing, first 64
-bytes of archive/movie headers and selected sc3tools output before drawing runtime
-conclusions. Keep commercial assets and derivative script dumps out of git.
-Prioritize missing-profile/opcode, phone/mail, save and movie blockers; update the
-compatibility matrix from evidence. If no game evidence is available, record the
-limitation rather than inventing gameplay success.
+Start with **Task 1** of `docs/thread-04-implementation-plan.md`: create
+`profiles/sghd/`, register it in `gamedefinitions.lua`, add
+`InstructionSet::SGHD` + `opcodetables_sghd.h` (initially a copy of sgps3),
+set `UseReturnIds = true`, and make `tests/compat/test_runtime_probe.py`
+pass for `sghd` with "VM reached, no `Expected member`, Return resumes at
+Call+6". Then Task 2 (Dummy slots + 21 layouts) with the audit test's
+`sghd` gap lists empty. Do not touch `sgps3`. Do not start iOS.
 
 ## Orb state is disposable
-This orb has `impacto-desktop:ubuntu24`, a supervised `desktop-docker` daemon,
-vcpkg at `/home/user/.local/share/impacto-tools/vcpkg`, build output at
-`ci-build/ubuntu24`, and installed files at `release/ubuntu24`. These are **not**
-committed and are not assumed to exist in another thread. Follow the documented
-container commands; keep the vcpkg mount when rebuilding. No paid/private cache,
-local game installation or conversation transcript is required for the baseline.
+This orb has the `impacto-desktop:ubuntu24` image, build output in
+`ci-build/ubuntu24`, binary in `release/ubuntu24/impacto`, reference clones
+in `/tmp/ref/{sc3ntist,sc3tools,LanguageBarrier}`, probe scratch in
+`/tmp/sgtest`, and evidence logs in `.amp/in/artifacts/`. None of it is
+committed or required: rebuild per `docs/desktop-build.md`; the probes
+regenerate their fixtures.

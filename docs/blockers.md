@@ -1,5 +1,10 @@
 # Technical Blockers
 
+> **Thread 03 update:** STEINS;GATE items B1–B5 are superseded by the
+> prioritised backlog in [steins-gate-blockers.md](steins-gate-blockers.md)
+> (C1–C5, H1–H4, M1–M5, L1–L4), which adds runtime evidence. B2 and B4 are
+> confirmed and expanded; B1/B5 remain owner-verifiable only. B6–B9 are unchanged.
+
 Ordered by severity. Each entry records what is known, how it was established, and which
 thread owns resolution. "Verified" means observed in this project; otherwise the source is
 named.
