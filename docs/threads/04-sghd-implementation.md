@@ -64,9 +64,9 @@ The documentation checkpoint follows these; find it with
 - Negative control: loading without a prior save never resumes (timeout 124).
 - clang-format 18 clean on new files; touched upstream files have no new
   violations.
-- GitHub Actions on this branch: see the handoff for the run that covers the
-  final code commit (earlier runs were cancelled by newer pushes, by design
-  of the workflow's concurrency group).
+- GitHub Actions [run 37749270249](https://github.com/Tasnemo/impacto-ios/actions/runs/37749270249)
+  on `1ca03b9f`: success (65 unit tests, build, smoke 2/2, 18 runtime
+  probes). Earlier runs were cancelled by newer pushes (concurrency group).
 
 Key runtime facts:
 - `SghdRuntimeProbe`: unmodified `sghd` profile mounts 8 `.mpk`, starts the

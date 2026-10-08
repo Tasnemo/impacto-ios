@@ -42,9 +42,11 @@ work has started (needs a new authorization).
   probes skipped without a binary).
 - In `impacto-desktop:ubuntu24` with `IMPACTO_BIN`: **65/65 pass** (3
   consecutive full runs). Launcher smoke 2/2 PASS.
-- GitHub Actions: `desktop.yml` now runs on this branch; check the latest
-  run with `gh run list --branch phase-03-sghd-implementation`. Runs for
-  earlier commits were cancelled by newer pushes (concurrency group).
+- GitHub Actions: [run 37749270249](https://github.com/Tasnemo/impacto-ios/actions/runs/37749270249)
+  on `1ca03b9f` (final code commit) **passed** every step: 65 unit tests,
+  full source build, CTest discovery, launcher smoke 2/2, 18 runtime probes
+  incl. harness and save round trip. Earlier runs on this branch were
+  cancelled by newer pushes (workflow concurrency group).
 
 ## Known Failures / Limitations
 - **No real Steam data was used.** All runtime evidence is synthetic.
