@@ -51,12 +51,18 @@ named.
   `nuget.pkg.github.com/committeeofzero`. This fork cannot authenticate; cold vcpkg builds
   of ffmpeg + harfbuzz + others on a GitHub runner are slow (upstream caches for a reason).
 - **Owner:** Thread 02 (switch to GitHub Actions cache or `x-gha` binary caching).
+- **Thread 02 resolution (Linux):** added independent `desktop.yml`, pinned
+  vcpkg and a files cache backed by `actions/cache`. Cold local build used no
+  binary cache. Legacy multi-platform `impacto.yml` remains unchanged.
 
 ## B7 — No upstream automated tests
 - **Evidence:** no `add_test`/`ctest` in `CMakeLists.txt` or workflows. "Run upstream
   tests" in Thread 02 reduces to build + headless/`--help` style smoke execution unless
   tests are added.
 - **Owner:** Thread 02.
+- **Thread 02 update:** CTest confirmed no tests. Added CLI rejection and real
+  Xvfb/Mesa launcher startup/shutdown smoke checks. `--help` is not implemented
+  upstream and is not a valid test. Gameplay regression coverage is still absent.
 
 ## B8 — iOS graphics API choice (deferred, not yet blocking)
 - OpenGL ES is deprecated on iOS since 13 but still ships; whether it remains on iOS 26.x

@@ -7,7 +7,8 @@ Legend: **Verified** = observed by running the engine in this project; **Claimed
 stated by upstream/external docs, not reproduced here; **Source-level** = conclusion drawn
 from reading impacto source; **Unknown** = no evidence either way.
 
-As of Thread 01 nothing has been run. Every row below is Claimed, Source-level, or Unknown.
+Thread 02 verified the Linux build and asset-free launcher, not any game.
+Every game-support row below remains Claimed, Source-level, or Unknown.
 
 ## Engine-side support for the Steam release
 
@@ -40,7 +41,7 @@ No story progression, saves, menus, or Steam-release support is claimed upstream
 | Platform | Upstream status | Project status |
 |---|---|---|
 | Windows (x64, GL/DX9/Vulkan) | Built in CI | Not built here |
-| Linux (x64, GL/Vulkan) | Built in CI (`ubuntu-24.04`) | Not built here — Thread 02 |
+| Linux (x64, GL/Vulkan) | Built in CI (`ubuntu-24.04`) | Thread 02: Ubuntu/GCC 13 build and software-GL launcher verified; Vulkan runtime and games untested |
 | macOS (arm64 + intel, GL) | Built in CI (`macos-15`) | Not built here |
 | Android (arm64, GLES3, minSdk 28) | Built in CI | Not built here |
 | Nintendo Switch | Built in CI (docker) | Out of scope |

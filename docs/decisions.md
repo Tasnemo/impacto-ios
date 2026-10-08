@@ -49,3 +49,16 @@ never rewrite an accepted record — supersede it.
 - **Decision:** Each thread works on `phase-NN-<topic>` branches, writes
   `docs/threads/NN-*.md`, and updates `docs/handoff.md` using the template in `workme.md`.
   Claims are tagged Verified / Claimed / Source-level / Unknown.
+
+## ADR-006 — Match upstream Linux toolchain; test launcher separately from games
+- **Date:** 2026-10-08 (Thread 02) — **Status:** Accepted
+- **Context:** Debian 12/GCC 12 fails pinned OpenAL Soft's `<format>` include.
+  Ubuntu 24.04/GCC 13 compiles the unchanged engine. All viewer profiles require
+  game data, while the launcher runs asset-free.
+- **Decision:** Preserve `ci-release`, `x64-linux-ci` and dependency versions;
+  document Ubuntu native/container builds. Pin LibAtrac9's formerly moving branch.
+  Use independent GitHub file caching and Xvfb/Mesa launcher smoke checks with
+  explicit engine file logs. Leave legacy multi-platform CI unchanged.
+- **Consequences:** No engine redesign or compatibility work. The desktop baseline
+  does not establish game playability. Native GCC 12 is not a supported recipe;
+  future real-game regressions need separate tests and legitimate data.

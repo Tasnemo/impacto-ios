@@ -1,0 +1,926 @@
+[1/403] Building C object CMakeFiles/clHCA.dir/vendor/clHCA/clHCA.c.o
+[2/403] Linking C static library libclHCA.a
+[3/403] Building C object CMakeFiles/pcg.dir/vendor/pcg/src/pcg_basic.c.o
+[4/403] Linking C static library libpcg.a
+[5/403] Building CXX object CMakeFiles/squish.dir/vendor/squish/alpha.cpp.o
+[6/403] Building CXX object CMakeFiles/squish.dir/vendor/squish/clusterfit.cpp.o
+[7/403] Building CXX object CMakeFiles/squish.dir/vendor/squish/colourblock.cpp.o
+[8/403] Building CXX object CMakeFiles/squish.dir/vendor/squish/colourfit.cpp.o
+[9/403] Building CXX object CMakeFiles/squish.dir/vendor/squish/colourset.cpp.o
+[10/403] Building CXX object CMakeFiles/squish.dir/vendor/squish/maths.cpp.o
+[11/403] Building CXX object CMakeFiles/squish.dir/vendor/squish/rangefit.cpp.o
+[12/403] Building CXX object CMakeFiles/squish.dir/vendor/squish/singlecolourfit.cpp.o
+[13/403] Building CXX object CMakeFiles/squish.dir/vendor/squish/squish.cpp.o
+[14/403] Linking CXX static library libsquish.a
+[15/403] Building C object CMakeFiles/minilua.dir/vendor/minilua/minilua_impl.c.o
+[16/403] Linking C static library libminilua.a
+[17/403] Building CXX object CMakeFiles/imgui.dir/_deps/imgui-src/imgui_demo.cpp.o
+[18/403] Building CXX object CMakeFiles/imgui.dir/_deps/imgui-src/imgui.cpp.o
+[19/403] Building CXX object CMakeFiles/imgui.dir/_deps/imgui-src/imgui_draw.cpp.o
+[20/403] Building CXX object CMakeFiles/imgui.dir/_deps/imgui-src/imgui_tables.cpp.o
+[21/403] Building CXX object CMakeFiles/imgui.dir/_deps/imgui-src/misc/cpp/imgui_stdlib.cpp.o
+[22/403] Building CXX object CMakeFiles/imgui.dir/_deps/imgui-src/backends/imgui_impl_sdl3.cpp.o
+[23/403] Building CXX object CMakeFiles/imgui.dir/vendor/imgui_custom/imgui_scroll_drag.cpp.o
+[24/403] Building CXX object CMakeFiles/imgui.dir/vendor/imgui_custom/backends/imgui_impl_opengl3.cpp.o
+[25/403] Building CXX object CMakeFiles/imgui.dir/_deps/imgui-src/backends/imgui_impl_vulkan.cpp.o
+In file included from /home/user/workspace/repo/ci-build/ubuntu24/_deps/imgui-src/backends/imgui_impl_vulkan.cpp:121:
+/home/user/workspace/repo/ci-build/ubuntu24/_deps/imgui-src/imgui.h: In function ‘VkPipeline_T* ImGui_ImplVulkan_CreatePipeline(VkDevice, const VkAllocationCallbacks*, VkPipelineCache, const ImGui_ImplVulkan_PipelineInfo*)’:
+/home/user/workspace/repo/ci-build/ubuntu24/_deps/imgui-src/imgui.h:2369:126: warning: writing 4 bytes into a region of size 0 [-Wstringop-overflow=]
+ 2369 |     inline void         push_back(const T& v)               { if (Size == Capacity) reserve(_grow_capacity(Size + 1)); memcpy(&Data[Size], &v, sizeof(v)); Size++; }
+      |                                                                                                                              ^
+[26/403] Building C object CMakeFiles/mspack.dir/vendor/mspack/lzxd.c.o
+[27/403] Building C object CMakeFiles/mspack.dir/vendor/mspack/system.c.o
+[28/403] Linking C static library libmspack.a
+[29/403] Building CXX object CMakeFiles/imgui.dir/_deps/imgui-src/imgui_widgets.cpp.o
+[30/403] Linking CXX static library libimgui.a
+[31/403] Building C object CMakeFiles/impacto.dir/src/stbi_impl.c.o
+[32/403] Building CXX object CMakeFiles/impacto.dir/cmake_pch.hxx.gch
+[33/403] Building C object CMakeFiles/impacto.dir/vendor/glad/src/glad.c.o
+[34/403] Building CXX object CMakeFiles/impacto.dir/src/main.cpp.o
+[35/403] Building CXX object CMakeFiles/impacto.dir/src/log.cpp.o
+[36/403] Building CXX object CMakeFiles/impacto.dir/src/workqueue.cpp.o
+[37/403] Building CXX object CMakeFiles/impacto.dir/src/util.cpp.o
+[38/403] Building CXX object CMakeFiles/impacto.dir/src/mem.cpp.o
+[39/403] Building CXX object CMakeFiles/impacto.dir/src/game.cpp.o
+[40/403] Building CXX object CMakeFiles/impacto.dir/src/modelviewer.cpp.o
+[41/403] Building CXX object CMakeFiles/impacto.dir/src/characterviewer.cpp.o
+[42/403] Building CXX object CMakeFiles/impacto.dir/src/spritesheet.cpp.o
+[43/403] Building CXX object CMakeFiles/impacto.dir/src/spriteanimation.cpp.o
+[44/403] Building CXX object CMakeFiles/impacto.dir/src/sequencedanimation.cpp.o
+[45/403] Building CXX object CMakeFiles/impacto.dir/src/mask2d.cpp.o
+[46/403] Building CXX object CMakeFiles/impacto.dir/src/background2d.cpp.o
+[47/403] Building CXX object CMakeFiles/impacto.dir/src/character2d.cpp.o
+[48/403] Building CXX object CMakeFiles/impacto.dir/src/inputsystem.cpp.o
+[49/403] Building CXX object CMakeFiles/impacto.dir/src/voicetable.cpp.o
+[50/403] Building CXX object CMakeFiles/impacto.dir/src/animation.cpp.o
+[51/403] Building CXX object CMakeFiles/impacto.dir/src/text/backlogpage.cpp.o
+[52/403] Building CXX object CMakeFiles/impacto.dir/src/text/text.cpp.o
+[53/403] Building CXX object CMakeFiles/impacto.dir/src/text/textpage.cpp.o
+[54/403] Building CXX object CMakeFiles/impacto.dir/src/text/tipspage.cpp.o
+[55/403] Building CXX object CMakeFiles/impacto.dir/src/text/textparser.cpp.o
+[56/403] Building CXX object CMakeFiles/impacto.dir/src/text/typewritereffect.cpp.o
+[57/403] Building CXX object CMakeFiles/impacto.dir/src/text/dialoguepage.cpp.o
+[58/403] Building CXX object CMakeFiles/impacto.dir/src/text/fonts/edgedetectedsinglevariablewidthsheetfont.cpp.o
+[59/403] Building CXX object CMakeFiles/impacto.dir/src/text/fonts/externalfont.cpp.o
+[60/403] Building CXX object CMakeFiles/impacto.dir/src/text/fonts/font.cpp.o
+[61/403] Building CXX object CMakeFiles/impacto.dir/src/effects/wave.cpp.o
+[62/403] Building CXX object CMakeFiles/impacto.dir/src/effects/blur.cpp.o
+[63/403] Building CXX object CMakeFiles/impacto.dir/src/effects/mosaic.cpp.o
+[64/403] Building CXX object CMakeFiles/impacto.dir/src/effects/chlcc/butterflyeffect.cpp.o
+[65/403] Building CXX object CMakeFiles/impacto.dir/src/effects/chlcc/bubbleseffect.cpp.o
+[66/403] Building CXX object CMakeFiles/impacto.dir/src/effects/chlcc/eyecatch.cpp.o
+[67/403] Building CXX object CMakeFiles/impacto.dir/src/renderer/renderer.cpp.o
+[68/403] Building CXX object CMakeFiles/impacto.dir/src/data/savesystem.cpp.o
+[69/403] Building CXX object CMakeFiles/impacto.dir/src/renderer/window.cpp.o
+[70/403] Building CXX object CMakeFiles/impacto.dir/src/data/tipssystem.cpp.o
+[71/403] Building CXX object CMakeFiles/impacto.dir/src/data/achievementsystem.cpp.o
+[72/403] Building CXX object CMakeFiles/impacto.dir/src/data/achievementsystemcommon.cpp.o
+[73/403] Building CXX object CMakeFiles/impacto.dir/src/profile/profile_internal.cpp.o
+[74/403] Building CXX object CMakeFiles/impacto.dir/src/profile/basepaths.cpp.o
+[75/403] Building CXX object CMakeFiles/impacto.dir/src/profile/gamedefinitions.cpp.o
+[76/403] Building CXX object CMakeFiles/impacto.dir/src/profile/profile.cpp.o
+[77/403] Building CXX object CMakeFiles/impacto.dir/src/profile/game.cpp.o
+[78/403] Building CXX object CMakeFiles/impacto.dir/src/profile/patch.cpp.o
+[79/403] Building CXX object CMakeFiles/impacto.dir/src/profile/vfs.cpp.o
+[80/403] Building CXX object CMakeFiles/impacto.dir/src/profile/scene3d.cpp.o
+[81/403] Building CXX object CMakeFiles/impacto.dir/src/profile/sprites.cpp.o
+[82/403] Building CXX object CMakeFiles/impacto.dir/src/userconfig.cpp.o
+[83/403] Building CXX object CMakeFiles/impacto.dir/src/profile/animations.cpp.o
+[84/403] Building CXX object CMakeFiles/impacto.dir/src/profile/charset.cpp.o
+[85/403] Building CXX object CMakeFiles/impacto.dir/src/profile/fonts.cpp.o
+[86/403] Building CXX object CMakeFiles/impacto.dir/src/profile/vm.cpp.o
+[87/403] Building CXX object CMakeFiles/impacto.dir/src/profile/dialogue.cpp.o
+[88/403] Building CXX object CMakeFiles/impacto.dir/src/profile/scriptvars.cpp.o
+[89/403] Building CXX object CMakeFiles/impacto.dir/src/profile/scriptinput.cpp.o
+[90/403] Building CXX object CMakeFiles/impacto.dir/src/profile/configsystem.cpp.o
+[91/403] Building CXX object CMakeFiles/impacto.dir/src/profile/data/bgeff.cpp.o
+[92/403] Building CXX object CMakeFiles/impacto.dir/src/profile/subtitle.cpp.o
+[93/403] Building CXX object CMakeFiles/impacto.dir/src/profile/data/tipssystem.cpp.o
+[94/403] Building CXX object CMakeFiles/impacto.dir/src/profile/data/savesystem.cpp.o
+[95/403] Building CXX object CMakeFiles/impacto.dir/src/profile/data/waveeffects.cpp.o
+[96/403] Building CXX object CMakeFiles/impacto.dir/src/profile/data/achievementsystem.cpp.o
+[97/403] Building CXX object CMakeFiles/impacto.dir/src/profile/hud/loadingdisplay.cpp.o
+[98/403] Building CXX object CMakeFiles/impacto.dir/src/profile/hud/saveicon.cpp.o
+[99/403] Building CXX object CMakeFiles/impacto.dir/src/profile/hud/datedisplay.cpp.o
+[100/403] Building CXX object CMakeFiles/impacto.dir/src/profile/hud/tipsnotification.cpp.o
+[101/403] Building CXX object CMakeFiles/impacto.dir/src/profile/hud/achievementnotification.cpp.o
+[102/403] Building CXX object CMakeFiles/impacto.dir/src/profile/ui/commonmenu.cpp.o
+[103/403] Building CXX object CMakeFiles/impacto.dir/src/profile/ui/systemmenu.cpp.o
+[104/403] Building CXX object CMakeFiles/impacto.dir/src/profile/ui/titlemenu.cpp.o
+[105/403] Building CXX object CMakeFiles/impacto.dir/src/profile/ui/savemenu.cpp.o
+[106/403] Building CXX object CMakeFiles/impacto.dir/src/profile/ui/sysmesbox.cpp.o
+[107/403] Building CXX object CMakeFiles/impacto.dir/src/profile/ui/selectionmenu.cpp.o
+[108/403] Building CXX object CMakeFiles/impacto.dir/src/profile/ui/backlogmenu.cpp.o
+[109/403] Building CXX object CMakeFiles/impacto.dir/src/profile/ui/optionsmenu.cpp.o
+[110/403] Building CXX object CMakeFiles/impacto.dir/src/profile/ui/tipsmenu.cpp.o
+[111/403] Building CXX object CMakeFiles/impacto.dir/src/profile/ui/trophymenu.cpp.o
+[112/403] Building CXX object CMakeFiles/impacto.dir/src/profile/ui/extramenus.cpp.o
+[113/403] Building CXX object CMakeFiles/impacto.dir/src/profile/ui/helpmenu.cpp.o
+[114/403] Building CXX object CMakeFiles/impacto.dir/src/profile/ui/gamespecific.cpp.o
+[115/403] Building CXX object CMakeFiles/impacto.dir/src/profile/games/rne/tilebackground.cpp.o
+[116/403] Building CXX object CMakeFiles/impacto.dir/src/profile/games/rne/systemmenu.cpp.o
+[117/403] Building CXX object CMakeFiles/impacto.dir/src/profile/games/rne/titlemenu.cpp.o
+[118/403] Building CXX object CMakeFiles/impacto.dir/src/profile/games/rne/sysmesbox.cpp.o
+[119/403] Building CXX object CMakeFiles/impacto.dir/src/profile/games/dash/titlemenu.cpp.o
+[120/403] Building CXX object CMakeFiles/impacto.dir/src/profile/games/chlcc/commonmenu.cpp.o
+[121/403] Building CXX object CMakeFiles/impacto.dir/src/profile/games/chlcc/dialoguebox.cpp.o
+[122/403] Building CXX object CMakeFiles/impacto.dir/src/profile/games/chlcc/titlemenu.cpp.o
+[123/403] Building CXX object CMakeFiles/impacto.dir/src/profile/games/chlcc/savemenu.cpp.o
+[124/403] Building CXX object CMakeFiles/impacto.dir/src/profile/games/chlcc/sysmesbox.cpp.o
+[125/403] Building CXX object CMakeFiles/impacto.dir/src/profile/games/chlcc/clearlistmenu.cpp.o
+[126/403] Building CXX object CMakeFiles/impacto.dir/src/profile/games/chlcc/moviemenu.cpp.o
+[127/403] Building CXX object CMakeFiles/impacto.dir/src/profile/games/chlcc/albummenu.cpp.o
+[128/403] Building CXX object CMakeFiles/impacto.dir/src/profile/games/chlcc/musicmenu.cpp.o
+[129/403] Building CXX object CMakeFiles/impacto.dir/src/profile/games/chlcc/tipsmenu.cpp.o
+[130/403] Building CXX object CMakeFiles/impacto.dir/src/profile/games/chlcc/optionsmenu.cpp.o
+[131/403] Building CXX object CMakeFiles/impacto.dir/src/profile/games/chlcc/backlogmenu.cpp.o
+[132/403] Building CXX object CMakeFiles/impacto.dir/src/profile/games/chlcc/systemmenu.cpp.o
+[133/403] Building CXX object CMakeFiles/impacto.dir/src/profile/games/chlcc/trophymenu.cpp.o
+[134/403] Building CXX object CMakeFiles/impacto.dir/src/profile/games/chlcc/delusiontrigger.cpp.o
+[135/403] Building CXX object CMakeFiles/impacto.dir/src/profile/games/chlcc/tipsnotification.cpp.o
+[136/403] Building CXX object CMakeFiles/impacto.dir/src/profile/games/cc/dialoguebox.cpp.o
+[137/403] Building CXX object CMakeFiles/impacto.dir/src/profile/games/cc/backlogmenu.cpp.o
+[138/403] Building CXX object CMakeFiles/impacto.dir/src/profile/games/cc/sysmesbox.cpp.o
+[139/403] Building CXX object CMakeFiles/impacto.dir/src/profile/games/cc/titlemenu.cpp.o
+[140/403] Building CXX object CMakeFiles/impacto.dir/src/profile/games/cclcc/systemmenu.cpp.o
+[141/403] Building CXX object CMakeFiles/impacto.dir/src/profile/games/cclcc/titlemenu.cpp.o
+[142/403] Building CXX object CMakeFiles/impacto.dir/src/profile/games/cclcc/savemenu.cpp.o
+[143/403] Building CXX object CMakeFiles/impacto.dir/src/profile/games/cclcc/optionsmenu.cpp.o
+[144/403] Building CXX object CMakeFiles/impacto.dir/src/profile/games/cclcc/clearlistmenu.cpp.o
+[145/403] Building CXX object CMakeFiles/impacto.dir/src/profile/games/cclcc/tipsmenu.cpp.o
+[146/403] Building CXX object CMakeFiles/impacto.dir/src/profile/games/cclcc/tipsnotification.cpp.o
+[147/403] Building CXX object CMakeFiles/impacto.dir/src/profile/games/cclcc/librarymenu.cpp.o
+[148/403] Building CXX object CMakeFiles/impacto.dir/src/profile/games/cclcc/mapsystem.cpp.o
+[149/403] Building CXX object CMakeFiles/impacto.dir/src/profile/games/cclcc/delusiontrigger.cpp.o
+[150/403] Building CXX object CMakeFiles/impacto.dir/src/profile/games/cclcc/yesnotrigger.cpp.o
+[151/403] Building CXX object CMakeFiles/impacto.dir/src/profile/games/cclcc/helpmenu.cpp.o
+[152/403] Building CXX object CMakeFiles/impacto.dir/src/profile/games/mo6tw/backlogmenu.cpp.o
+[153/403] Building CXX object CMakeFiles/impacto.dir/src/profile/games/mo6tw/dialoguebox.cpp.o
+[154/403] Building CXX object CMakeFiles/impacto.dir/src/profile/games/mo6tw/sysmesbox.cpp.o
+[155/403] Building CXX object CMakeFiles/impacto.dir/src/profile/games/mo6tw/systemmenu.cpp.o
+[156/403] Building CXX object CMakeFiles/impacto.dir/src/profile/games/mo6tw/titlemenu.cpp.o
+[157/403] Building CXX object CMakeFiles/impacto.dir/src/profile/games/mo6tw/savemenu.cpp.o
+[158/403] Building CXX object CMakeFiles/impacto.dir/src/profile/games/mo6tw/optionsmenu.cpp.o
+[159/403] Building CXX object CMakeFiles/impacto.dir/src/profile/games/mo6tw/tipsmenu.cpp.o
+[160/403] Building CXX object CMakeFiles/impacto.dir/src/profile/games/mo6tw/clearlistmenu.cpp.o
+[161/403] Building CXX object CMakeFiles/impacto.dir/src/profile/games/mo6tw/moviemenu.cpp.o
+[162/403] Building CXX object CMakeFiles/impacto.dir/src/profile/games/mo6tw/actorsvoicemenu.cpp.o
+[163/403] Building CXX object CMakeFiles/impacto.dir/src/profile/games/mo6tw/musicmenu.cpp.o
+[164/403] Building CXX object CMakeFiles/impacto.dir/src/profile/games/mo6tw/albummenu.cpp.o
+[165/403] Building CXX object CMakeFiles/impacto.dir/src/profile/games/mo6tw/tipsnotification.cpp.o
+[166/403] Building CXX object CMakeFiles/impacto.dir/src/profile/games/mo8/titlemenu.cpp.o
+[167/403] Building CXX object CMakeFiles/impacto.dir/src/profile/games/mo8/systemmenu.cpp.o
+[168/403] Building CXX object CMakeFiles/impacto.dir/src/profile/games/mo8/optionsmenu.cpp.o
+[169/403] Building CXX object CMakeFiles/impacto.dir/src/profile/games/mo8/savemenu.cpp.o
+[170/403] Building CXX object CMakeFiles/impacto.dir/src/games/rne/tilebackground.cpp.o
+[171/403] Building CXX object CMakeFiles/impacto.dir/src/profile/games/darling/sysmesbox.cpp.o
+[172/403] Building CXX object CMakeFiles/impacto.dir/src/games/rne/systemmenu.cpp.o
+[173/403] Building CXX object CMakeFiles/impacto.dir/src/games/rne/titlemenu.cpp.o
+[174/403] Building CXX object CMakeFiles/impacto.dir/src/games/rne/sysmesbox.cpp.o
+[175/403] Building CXX object CMakeFiles/impacto.dir/src/games/dash/titlemenu.cpp.o
+[176/403] Building CXX object CMakeFiles/impacto.dir/src/games/chlcc/commonmenu.cpp.o
+[177/403] Building CXX object CMakeFiles/impacto.dir/src/games/chlcc/titlemenu.cpp.o
+[178/403] Building CXX object CMakeFiles/impacto.dir/src/games/chlcc/savemenu.cpp.o
+[179/403] Building CXX object CMakeFiles/impacto.dir/src/games/chlcc/sysmesbox.cpp.o
+[180/403] Building CXX object CMakeFiles/impacto.dir/src/games/chlcc/animations/selectprompt.cpp.o
+[181/403] Building CXX object CMakeFiles/impacto.dir/src/games/chlcc/animations/saveicon.cpp.o
+[182/403] Building CXX object CMakeFiles/impacto.dir/src/games/chlcc/animations/menutransition.cpp.o
+[183/403] Building CXX object CMakeFiles/impacto.dir/src/games/chlcc/tipssystem.cpp.o
+[184/403] Building CXX object CMakeFiles/impacto.dir/src/games/chlcc/savesystem.cpp.o
+[185/403] Building CXX object CMakeFiles/impacto.dir/src/games/chlcc/clearlistmenu.cpp.o
+[186/403] Building CXX object CMakeFiles/impacto.dir/src/games/chlcc/moviemenu.cpp.o
+[187/403] Building CXX object CMakeFiles/impacto.dir/src/games/chlcc/albummenu.cpp.o
+[188/403] Building CXX object CMakeFiles/impacto.dir/src/games/chlcc/musicmenu.cpp.o
+[189/403] Building CXX object CMakeFiles/impacto.dir/src/games/chlcc/tipsmenu.cpp.o
+[190/403] Building CXX object CMakeFiles/impacto.dir/src/games/chlcc/optionsmenu.cpp.o
+[191/403] Building CXX object CMakeFiles/impacto.dir/src/games/chlcc/backlogmenu.cpp.o
+[192/403] Building CXX object CMakeFiles/impacto.dir/src/games/chlcc/systemmenu.cpp.o
+[193/403] Building CXX object CMakeFiles/impacto.dir/src/games/chlcc/trophymenu.cpp.o
+[194/403] Building CXX object CMakeFiles/impacto.dir/src/games/chlcc/delusiontrigger.cpp.o
+[195/403] Building CXX object CMakeFiles/impacto.dir/src/games/chlcc/introsequence.cpp.o
+[196/403] Building CXX object CMakeFiles/impacto.dir/src/games/cc/backlogmenu.cpp.o
+[197/403] Building CXX object CMakeFiles/impacto.dir/src/games/cc/titlemenu.cpp.o
+[198/403] Building CXX object CMakeFiles/impacto.dir/src/games/cc/sysmesbox.cpp.o
+[199/403] Building CXX object CMakeFiles/impacto.dir/src/games/cclcc/commonmenu.cpp.o
+[200/403] Building CXX object CMakeFiles/impacto.dir/src/games/cclcc/titlemenu.cpp.o
+[201/403] Building CXX object CMakeFiles/impacto.dir/src/games/cclcc/savemenu.cpp.o
+[202/403] Building CXX object CMakeFiles/impacto.dir/src/games/cclcc/optionsmenu.cpp.o
+[203/403] Building CXX object CMakeFiles/impacto.dir/src/games/cclcc/tipsmenu.cpp.o
+[204/403] Building CXX object CMakeFiles/impacto.dir/src/games/cclcc/tipssystem.cpp.o
+[205/403] Building CXX object CMakeFiles/impacto.dir/src/games/cclcc/clearlistmenu.cpp.o
+[206/403] Building CXX object CMakeFiles/impacto.dir/src/games/cclcc/librarymenu.cpp.o
+[207/403] Building CXX object CMakeFiles/impacto.dir/src/games/cclcc/librarysubmenus.cpp.o
+[208/403] Building CXX object CMakeFiles/impacto.dir/src/games/cclcc/albummenu.cpp.o
+[209/403] Building CXX object CMakeFiles/impacto.dir/src/games/cclcc/musicmenu.cpp.o
+[210/403] Building CXX object CMakeFiles/impacto.dir/src/games/cclcc/moviemenu.cpp.o
+[211/403] Building CXX object CMakeFiles/impacto.dir/src/games/cclcc/mapsystem.cpp.o
+[212/403] Building CXX object CMakeFiles/impacto.dir/src/games/cclcc/delusiontrigger.cpp.o
+[213/403] Building CXX object CMakeFiles/impacto.dir/src/games/cclcc/yesnotrigger.cpp.o
+[214/403] Building CXX object CMakeFiles/impacto.dir/src/games/cclcc/systemmenu.cpp.o
+[215/403] Building CXX object CMakeFiles/impacto.dir/src/games/cclcc/savesystem.cpp.o
+[216/403] Building CXX object CMakeFiles/impacto.dir/src/games/mo6tw/backlogmenu.cpp.o
+[217/403] Building CXX object CMakeFiles/impacto.dir/src/games/cclcc/helpmenu.cpp.o
+[218/403] Building CXX object CMakeFiles/impacto.dir/src/games/mo6tw/systemmenu.cpp.o
+[219/403] Building CXX object CMakeFiles/impacto.dir/src/games/mo6tw/sysmesbox.cpp.o
+[220/403] Building CXX object CMakeFiles/impacto.dir/src/games/mo6tw/titlemenu.cpp.o
+[221/403] Building CXX object CMakeFiles/impacto.dir/src/games/mo6tw/savemenu.cpp.o
+[222/403] Building CXX object CMakeFiles/impacto.dir/src/games/mo6tw/tipsmenu.cpp.o
+[223/403] Building CXX object CMakeFiles/impacto.dir/src/games/mo6tw/optionsmenu.cpp.o
+[224/403] Building CXX object CMakeFiles/impacto.dir/src/games/mo6tw/savesystem.cpp.o
+[225/403] Building CXX object CMakeFiles/impacto.dir/src/games/mo6tw/tipssystem.cpp.o
+[226/403] Building CXX object CMakeFiles/impacto.dir/src/games/mo6tw/clearlistmenu.cpp.o
+[227/403] Building CXX object CMakeFiles/impacto.dir/src/games/mo6tw/moviemenu.cpp.o
+[228/403] Building CXX object CMakeFiles/impacto.dir/src/games/mo6tw/musicmenu.cpp.o
+[229/403] Building CXX object CMakeFiles/impacto.dir/src/games/mo6tw/actorsvoicemenu.cpp.o
+[230/403] Building CXX object CMakeFiles/impacto.dir/src/games/mo6tw/albummenu.cpp.o
+[231/403] Building CXX object CMakeFiles/impacto.dir/src/games/mo8/titlemenu.cpp.o
+[232/403] Building CXX object CMakeFiles/impacto.dir/src/games/mo8/systemmenu.cpp.o
+[233/403] Building CXX object CMakeFiles/impacto.dir/src/games/mo8/optionsmenu.cpp.o
+[234/403] Building CXX object CMakeFiles/impacto.dir/src/games/mo8/savemenu.cpp.o
+[235/403] Building CXX object CMakeFiles/impacto.dir/src/games/darling/sysmesbox.cpp.o
+[236/403] Building CXX object CMakeFiles/impacto.dir/src/hud/defaultsaveiconanimation.cpp.o
+[237/403] Building CXX object CMakeFiles/impacto.dir/src/hud/dialoguebox.cpp.o
+[238/403] Building CXX object CMakeFiles/impacto.dir/src/hud/datedisplay.cpp.o
+[239/403] Building CXX object CMakeFiles/impacto.dir/src/hud/saveicondisplay.cpp.o
+[240/403] Building CXX object CMakeFiles/impacto.dir/src/hud/loadingdisplay.cpp.o
+[241/403] Building CXX object CMakeFiles/impacto.dir/src/hud/nametagdisplay.cpp.o
+[242/403] Building CXX object CMakeFiles/impacto.dir/src/hud/autoicondisplay.cpp.o
+[243/403] Building CXX object CMakeFiles/impacto.dir/src/hud/skipicondisplay.cpp.o
+[244/403] Building CXX object CMakeFiles/impacto.dir/src/hud/tipsnotification.cpp.o
+[245/403] Building CXX object CMakeFiles/impacto.dir/src/hud/waiticondisplay.cpp.o
+[246/403] Building CXX object CMakeFiles/impacto.dir/src/hud/achievementnotification.cpp.o
+[247/403] Building CXX object CMakeFiles/impacto.dir/src/hud/cc/dialoguebox.cpp.o
+[248/403] Building CXX object CMakeFiles/impacto.dir/src/hud/cc/nametagdisplay.cpp.o
+[249/403] Building CXX object CMakeFiles/impacto.dir/src/hud/cclcc/tipsnotification.cpp.o
+[250/403] Building CXX object CMakeFiles/impacto.dir/src/hud/chlcc/dialoguebox.cpp.o
+[251/403] Building CXX object CMakeFiles/impacto.dir/src/hud/chlcc/nametagdisplay.cpp.o
+[252/403] Building CXX object CMakeFiles/impacto.dir/src/hud/chlcc/tipsnotification.cpp.o
+[253/403] Building CXX object CMakeFiles/impacto.dir/src/hud/mo6tw/dialoguebox.cpp.o
+[254/403] Building CXX object CMakeFiles/impacto.dir/src/hud/rne/datedisplay.cpp.o
+[255/403] Building CXX object CMakeFiles/impacto.dir/src/hud/mo6tw/tipsnotification.cpp.o
+[256/403] Building CXX object CMakeFiles/impacto.dir/src/ui/widget.cpp.o
+[257/403] Building CXX object CMakeFiles/impacto.dir/src/ui/nullmenu.cpp.o
+[258/403] Building CXX object CMakeFiles/impacto.dir/src/ui/menu.cpp.o
+[259/403] Building CXX object CMakeFiles/impacto.dir/src/ui/sysmesbox.cpp.o
+[260/403] Building CXX object CMakeFiles/impacto.dir/src/ui/selectionmenu.cpp.o
+[261/403] Building CXX object CMakeFiles/impacto.dir/src/ui/tipsmenu.cpp.o
+[262/403] Building CXX object CMakeFiles/impacto.dir/src/ui/backlogmenu.cpp.o
+[263/403] Building CXX object CMakeFiles/impacto.dir/src/ui/optionsmenu.cpp.o
+[264/403] Building CXX object CMakeFiles/impacto.dir/src/ui/widgets/label.cpp.o
+[265/403] Building CXX object CMakeFiles/impacto.dir/src/ui/widgets/button.cpp.o
+[266/403] Building CXX object CMakeFiles/impacto.dir/src/ui/widgets/backlogentry.cpp.o
+[267/403] Building CXX object CMakeFiles/impacto.dir/src/ui/widgets/scrollbar.cpp.o
+[268/403] Building CXX object CMakeFiles/impacto.dir/src/ui/widgets/optiongroup.cpp.o
+[269/403] Building CXX object CMakeFiles/impacto.dir/src/ui/widgets/toggle.cpp.o
+[270/403] Building CXX object CMakeFiles/impacto.dir/src/ui/widgets/carousel.cpp.o
+[271/403] Building CXX object CMakeFiles/impacto.dir/src/ui/widgets/group.cpp.o
+[272/403] Building CXX object CMakeFiles/impacto.dir/src/ui/widgets/clickarea.cpp.o
+[273/403] Building CXX object CMakeFiles/impacto.dir/src/ui/widgets/cgviewer.cpp.o
+[274/403] Building CXX object CMakeFiles/impacto.dir/src/ui/widgets/mo6tw/titlebutton.cpp.o
+[275/403] Building CXX object CMakeFiles/impacto.dir/src/ui/widgets/mo6tw/saveentrybutton.cpp.o
+[276/403] Building CXX object CMakeFiles/impacto.dir/src/ui/widgets/mo6tw/tipsentrybutton.cpp.o
+[277/403] Building CXX object CMakeFiles/impacto.dir/src/ui/widgets/mo6tw/scenelistentry.cpp.o
+[278/403] Building CXX object CMakeFiles/impacto.dir/src/ui/widgets/mo6tw/imagethumbnailbutton.cpp.o
+[279/403] Building CXX object CMakeFiles/impacto.dir/src/ui/widgets/mo6tw/albumthumbnailbutton.cpp.o
+[280/403] Building CXX object CMakeFiles/impacto.dir/src/ui/widgets/mo6tw/actorsvoicebutton.cpp.o
+[281/403] Building CXX object CMakeFiles/impacto.dir/src/ui/widgets/mo6tw/albumcharacterbutton.cpp.o
+[282/403] Building CXX object CMakeFiles/impacto.dir/src/ui/widgets/chlcc/titlebutton.cpp.o
+[283/403] Building CXX object CMakeFiles/impacto.dir/src/ui/widgets/chlcc/systemmenuentrybutton.cpp.o
+[284/403] Building CXX object CMakeFiles/impacto.dir/src/ui/widgets/chlcc/saveentrybutton.cpp.o
+[285/403] Building CXX object CMakeFiles/impacto.dir/src/ui/widgets/chlcc/systemmessagebutton.cpp.o
+[286/403] Building CXX object CMakeFiles/impacto.dir/src/ui/widgets/chlcc/moviemenuentrybutton.cpp.o
+[287/403] Building CXX object CMakeFiles/impacto.dir/src/ui/widgets/chlcc/albumthumbnailbutton.cpp.o
+[288/403] Building CXX object CMakeFiles/impacto.dir/src/ui/widgets/chlcc/backlogentry.cpp.o
+[289/403] Building CXX object CMakeFiles/impacto.dir/src/ui/widgets/chlcc/trackselectbutton.cpp.o
+[290/403] Building CXX object CMakeFiles/impacto.dir/src/ui/widgets/chlcc/trophymenuentry.cpp.o
+[291/403] Building CXX object CMakeFiles/impacto.dir/src/ui/widgets/chlcc/optionsentry.cpp.o
+[292/403] Building CXX object CMakeFiles/impacto.dir/src/ui/widgets/chlcc/optionsbutton.cpp.o
+[293/403] Building CXX object CMakeFiles/impacto.dir/src/ui/widgets/chlcc/optionsslider.cpp.o
+[294/403] Building CXX object CMakeFiles/impacto.dir/src/ui/widgets/rne/sysmenubutton.cpp.o
+[295/403] Building CXX object CMakeFiles/impacto.dir/src/ui/widgets/chlcc/tipsentrybutton.cpp.o
+[296/403] Building CXX object CMakeFiles/impacto.dir/src/ui/widgets/cc/titlebutton.cpp.o
+[297/403] Building CXX object CMakeFiles/impacto.dir/src/ui/widgets/cc/backlogentry.cpp.o
+[298/403] Building CXX object CMakeFiles/impacto.dir/src/ui/widgets/cclcc/titlebutton.cpp.o
+[299/403] Building CXX object CMakeFiles/impacto.dir/src/ui/widgets/cclcc/optionsentry.cpp.o
+[300/403] Building CXX object CMakeFiles/impacto.dir/src/ui/widgets/cclcc/optionsslider.cpp.o
+[301/403] Building CXX object CMakeFiles/impacto.dir/src/ui/widgets/cclcc/optionsbinarybutton.cpp.o
+[302/403] Building CXX object CMakeFiles/impacto.dir/src/ui/widgets/cclcc/optionsvoiceslider.cpp.o
+[303/403] Building CXX object CMakeFiles/impacto.dir/src/ui/widgets/cclcc/sysmenubutton.cpp.o
+[304/403] Building CXX object CMakeFiles/impacto.dir/src/ui/widgets/cclcc/saveentrybutton.cpp.o
+[305/403] Building CXX object CMakeFiles/impacto.dir/src/ui/widgets/cclcc/tipsentrybutton.cpp.o
+[306/403] Building CXX object CMakeFiles/impacto.dir/src/ui/widgets/cclcc/tipstabgroup.cpp.o
+[307/403] Building CXX object CMakeFiles/impacto.dir/src/renderer/3d/camera.cpp.o
+[308/403] Building CXX object CMakeFiles/impacto.dir/src/ui/gamespecific.cpp.o
+[309/403] Building CXX object CMakeFiles/impacto.dir/src/renderer/3d/transform.cpp.o
+[310/403] Building CXX object CMakeFiles/impacto.dir/src/renderer/3d/model.cpp.o
+[311/403] Building CXX object CMakeFiles/impacto.dir/src/renderer/3d/animation.cpp.o
+[312/403] Building CXX object CMakeFiles/impacto.dir/src/renderer/3d/modelanimator.cpp.o
+[313/403] Building CXX object CMakeFiles/impacto.dir/src/io/filemeta.cpp.o
+[314/403] Building CXX object CMakeFiles/impacto.dir/src/io/assetpath.cpp.o
+[315/403] Building CXX object CMakeFiles/impacto.dir/src/io/memorystream.cpp.o
+[316/403] Building CXX object CMakeFiles/impacto.dir/src/io/vfs.cpp.o
+[317/403] Building CXX object CMakeFiles/impacto.dir/src/io/uncompressedstream.cpp.o
+[318/403] Building CXX object CMakeFiles/impacto.dir/src/io/physicalfilestream.cpp.o
+[319/403] Building CXX object CMakeFiles/impacto.dir/src/io/zlibstream.cpp.o
+[320/403] Building CXX object CMakeFiles/impacto.dir/src/io/vfsarchive.cpp.o
+[321/403] Building CXX object CMakeFiles/impacto.dir/src/io/mpkarchive.cpp.o
+[322/403] Building CXX object CMakeFiles/impacto.dir/src/io/lnk4archive.cpp.o
+[323/403] Building CXX object CMakeFiles/impacto.dir/src/io/cpkarchive.cpp.o
+[324/403] Building CXX object CMakeFiles/impacto.dir/src/io/textarchive.cpp.o
+[325/403] Building CXX object CMakeFiles/impacto.dir/src/io/afsarchive.cpp.o
+[326/403] Building CXX object CMakeFiles/impacto.dir/src/texture/texture.cpp.o
+[327/403] Building CXX object CMakeFiles/impacto.dir/src/texture/s3tc.cpp.o
+[328/403] Building CXX object CMakeFiles/impacto.dir/src/io/fsfolderarchive.cpp.o
+[329/403] Building CXX object CMakeFiles/impacto.dir/src/texture/bcdecode.cpp.o
+[330/403] Building CXX object CMakeFiles/impacto.dir/src/texture/bntxloader.cpp.o
+[331/403] Building CXX object CMakeFiles/impacto.dir/src/texture/gxtloader.cpp.o
+[332/403] Building CXX object CMakeFiles/impacto.dir/src/texture/plainloader.cpp.o
+[333/403] Building CXX object CMakeFiles/impacto.dir/src/texture/stbiloader.cpp.o
+[334/403] Building CXX object CMakeFiles/impacto.dir/src/texture/ddsloader.cpp.o
+[335/403] Building CXX object CMakeFiles/impacto.dir/src/texture/webpdecode.cpp.o
+[336/403] Building CXX object CMakeFiles/impacto.dir/src/vm/expression.cpp.o
+[337/403] Building CXX object CMakeFiles/impacto.dir/src/vm/thread.cpp.o
+[338/403] Building CXX object CMakeFiles/impacto.dir/src/vm/vm.cpp.o
+[339/403] Building CXX object CMakeFiles/impacto.dir/src/vm/inst_controlflow.cpp.o
+[340/403] Building CXX object CMakeFiles/impacto.dir/src/vm/inst_system.cpp.o
+[341/403] Building CXX object CMakeFiles/impacto.dir/src/vm/inst_dialogue.cpp.o
+[342/403] Building CXX object CMakeFiles/impacto.dir/src/vm/inst_gamespecific.cpp.o
+[343/403] Building CXX object CMakeFiles/impacto.dir/src/vm/inst_graphics3d.cpp.o
+[344/403] Building CXX object CMakeFiles/impacto.dir/src/vm/inst_graphics2d.cpp.o
+[345/403] Building CXX object CMakeFiles/impacto.dir/src/vm/inst_movie.cpp.o
+[346/403] Building CXX object CMakeFiles/impacto.dir/src/vm/inst_misc.cpp.o
+[347/403] Building CXX object CMakeFiles/impacto.dir/src/vm/inst_sound.cpp.o
+[348/403] Building CXX object CMakeFiles/impacto.dir/src/vm/interface/scene3d.cpp.o
+[349/403] Building CXX object CMakeFiles/impacto.dir/src/audio/audiosystem.cpp.o
+[350/403] Building CXX object CMakeFiles/impacto.dir/src/vm/interface/input.cpp.o
+[351/403] Building CXX object CMakeFiles/impacto.dir/src/audio/audiostream.cpp.o
+[352/403] Building CXX object CMakeFiles/impacto.dir/src/audio/audiochannel.cpp.o
+[353/403] Building CXX object CMakeFiles/impacto.dir/src/audio/vorbisaudiostream.cpp.o
+[354/403] Building CXX object CMakeFiles/impacto.dir/src/audio/atrac9audiostream.cpp.o
+[355/403] Building CXX object CMakeFiles/impacto.dir/src/audio/adxaudiostream.cpp.o
+[356/403] Building CXX object CMakeFiles/impacto.dir/src/audio/hcaaudiostream.cpp.o
+[357/403] Building CXX object CMakeFiles/impacto.dir/src/video/videoplayer.cpp.o
+[358/403] Building CXX object CMakeFiles/impacto.dir/src/video/videosystem.cpp.o
+[359/403] Building CXX object CMakeFiles/impacto.dir/src/video/clock.cpp.o
+[360/403] Building CXX object CMakeFiles/impacto.dir/src/io/memorymappedfilestream.cpp.o
+[361/403] Building CXX object CMakeFiles/impacto.dir/src/subtitle/subtitlesystem.cpp.o
+[362/403] Building CXX object CMakeFiles/impacto.dir/src/audio/openal/audiobackend.cpp.o
+[363/403] Building CXX object CMakeFiles/impacto.dir/src/audio/openal/openalaudiochannel.cpp.o
+[364/403] Building CXX object CMakeFiles/impacto.dir/src/audio/openal/ffmpegaudioplayer.cpp.o
+[365/403] Building CXX object CMakeFiles/impacto.dir/src/subtitle/ass/subtitlerenderer.cpp.o
+[366/403] Building CXX object CMakeFiles/impacto.dir/src/debugmenu.cpp.o
+[367/403] Building CXX object CMakeFiles/impacto.dir/src/renderer/opengl/window.cpp.o
+[368/403] Building CXX object CMakeFiles/impacto.dir/src/overlay.cpp.o
+[369/403] Building CXX object CMakeFiles/impacto.dir/src/renderer/opengl/shader.cpp.o
+[370/403] Building CXX object CMakeFiles/impacto.dir/src/renderer/opengl/renderer.cpp.o
+[371/403] Building CXX object CMakeFiles/impacto.dir/src/renderer/opengl/glc.cpp.o
+[372/403] Building CXX object CMakeFiles/impacto.dir/src/renderer/opengl/yuvframe.cpp.o
+[373/403] Building CXX object CMakeFiles/impacto.dir/src/renderer/opengl/nv12frame.cpp.o
+[374/403] Building CXX object CMakeFiles/impacto.dir/src/renderer/opengl/3d/renderable3d.cpp.o
+[375/403] Building CXX object CMakeFiles/impacto.dir/src/renderer/opengl/3d/scene.cpp.o
+[376/403] Building CXX object CMakeFiles/impacto.dir/src/video/ffmpegstream.cpp.o
+[377/403] Building CXX object CMakeFiles/impacto.dir/src/video/ffmpegplayer.cpp.o
+[378/403] Building CXX object CMakeFiles/impacto.dir/src/subtitle/ffmpegsubtitlehelper.cpp.o
+[379/403] Building CXX object CMakeFiles/impacto.dir/src/io/lzxstream.cpp.o
+[380/403] Building CXX object CMakeFiles/impacto.dir/src/renderer/vulkan/window.cpp.o
+[381/403] Building CXX object CMakeFiles/impacto.dir/src/renderer/vulkan/pipeline.cpp.o
+[382/403] Building CXX object CMakeFiles/impacto.dir/src/renderer/vulkan/renderer.cpp.o
+[383/403] Building CXX object CMakeFiles/impacto.dir/src/renderer/vulkan/yuvframe.cpp.o
+[384/403] Building CXX object CMakeFiles/impacto.dir/src/renderer/vulkan/nv12frame.cpp.o
+[385/403] Building CXX object CMakeFiles/impacto.dir/src/renderer/vulkan/utils.cpp.o
+[386/403] Building CXX object CMakeFiles/impacto.dir/src/renderer/vulkan/3d/renderable3d.cpp.o
+[387/403] Building C object _deps/libatrac9-build/CMakeFiles/atrac9.dir/C/src/band_extension.c.o
+[388/403] Building C object _deps/libatrac9-build/CMakeFiles/atrac9.dir/C/src/bit_allocation.c.o
+[389/403] Building C object _deps/libatrac9-build/CMakeFiles/atrac9.dir/C/src/bit_reader.c.o
+[390/403] Building C object _deps/libatrac9-build/CMakeFiles/atrac9.dir/C/src/decinit.c.o
+[391/403] Building C object _deps/libatrac9-build/CMakeFiles/atrac9.dir/C/src/decoder.c.o
+[392/403] Building C object _deps/libatrac9-build/CMakeFiles/atrac9.dir/C/src/huffCodes.c.o
+[393/403] Building C object _deps/libatrac9-build/CMakeFiles/atrac9.dir/C/src/imdct.c.o
+[394/403] Building C object _deps/libatrac9-build/CMakeFiles/atrac9.dir/C/src/libatrac9.c.o
+[395/403] Building C object _deps/libatrac9-build/CMakeFiles/atrac9.dir/C/src/quantization.c.o
+[396/403] Building C object _deps/libatrac9-build/CMakeFiles/atrac9.dir/C/src/scale_factors.c.o
+[397/403] Building C object _deps/libatrac9-build/CMakeFiles/atrac9.dir/C/src/tables.c.o
+[398/403] Building C object _deps/libatrac9-build/CMakeFiles/atrac9.dir/C/src/unpack.c.o
+[399/403] Building C object _deps/libatrac9-build/CMakeFiles/atrac9.dir/C/src/utility.c.o
+[400/403] Linking C shared library _deps/libatrac9-build/libatrac9.so
+[401/403] Building CXX object CMakeFiles/impacto.dir/src/renderer/vulkan/3d/scene.cpp.o
+[402/403] Linking CXX executable impacto
+[402/403] Install the project...
+-- Install configuration: "Release"
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./impacto
+-- Set non-toolchain portion of runtime path of "/home/user/workspace/repo/release/ubuntu24/./impacto" to "$ORIGIN/:$ORIGIN/lib"
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./lib/libatrac9.so
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./lib/libSDL3.so.0
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./lib/libSDL3.so.0.4.0
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./lib/libass.so
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./lib/libavcodec.so.61
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./lib/libavcodec.so.61.19.101
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./lib/libavcpp.so
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./lib/libavformat.so.61
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./lib/libavformat.so.61.7.100
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./lib/libavutil.so.59
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./lib/libavutil.so.59.39.100
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./lib/libbrotlicommon.so.1
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./lib/libbrotlicommon.so.1.2.0
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./lib/libbrotlidec.so.1
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./lib/libbrotlidec.so.1.2.0
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./lib/libbz2.so.1.0
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./lib/libbz2.so.1.0.8
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./lib/libdav1d.so.7
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./lib/libdav1d.so.7.0.0
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./lib/libexpat.so.1
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./lib/libexpat.so.1.11.2
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./lib/libfmt.so.12
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./lib/libfmt.so.12.1.0
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./lib/libfontconfig.so.1
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./lib/libfontconfig.so.1.16.0
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./lib/libfreetype.so.6
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./lib/libfreetype.so.6.20.2
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./lib/libfribidi.so.0
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./lib/libfribidi.so.0.4.0
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./lib/libharfbuzz.so.0
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./lib/libharfbuzz.so.0.61232.0
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./lib/libogg.so.0
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./lib/libogg.so.0.8.6
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./lib/libopenal.so.1
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./lib/libopenal.so.1.25.1
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./lib/libpng16.so.16
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./lib/libpng16.so.16.55.0
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./lib/libswresample.so.5
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./lib/libswresample.so.5.3.100
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./lib/libswscale.so.8
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./lib/libswscale.so.8.3.100
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./lib/libva-drm.so.2
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./lib/libva-drm.so.2.2000.0
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./lib/libva.so.2
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./lib/libva.so.2.2000.0
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./lib/libvorbis.so.0.4.9
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./lib/libvorbisfile.so.3.3.8
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./lib/libwebpdecoder.so.3
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./lib/libwebpdecoder.so.3.2.0
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./lib/libz.so.1
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./lib/libz.so.1.3.1
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/opengl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/opengl/CHLCCMenuBackground_frag.glsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/opengl/SubtitleGlyph_vert.glsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/opengl/GaussianBlur_vert.glsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/opengl/Renderable3D_Outline_vert.glsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/opengl/MaskedSprite_vert.glsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/opengl/MaskedSpriteBinary_vert.glsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/opengl/ScreenMaskedSprite_frag.glsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/opengl/ColorDodgeMaskedSprite_vert.glsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/opengl/HardLightMaskedSprite_vert.glsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/opengl/Mosaic_frag.glsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/opengl/EdgeDetectedSingleSheetFont_frag.glsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/opengl/OverlayMaskedSprite_vert.glsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/opengl/Renderable3D_Eye_frag.glsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/opengl/AdditiveMaskedSprite_vert.glsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/opengl/Renderable3D_Outline_frag.glsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/opengl/NV12Frame_vert.glsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/opengl/Sprite_frag.glsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/opengl/SoftLightMaskedSprite_vert.glsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/opengl/OverlayMaskedSprite_frag.glsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/opengl/SpriteInverted_frag.glsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/opengl/AdditiveMaskedSprite_frag.glsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/opengl/SoftLightMaskedSprite_frag.glsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/opengl/Renderable3D_Eye_vert.glsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/opengl/NV12Frame_frag.glsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/opengl/ColorMaskedSprite_frag.glsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/opengl/HardLightMaskedSprite_frag.glsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/opengl/LinearBurnMaskedSprite_frag.glsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/opengl/SpriteInverted_vert.glsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/opengl/SubtitleGlyph_frag.glsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/opengl/MaskedSpriteNoAlpha_vert.glsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/opengl/LinearBurnMaskedSprite_vert.glsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/opengl/Sprite_vert.glsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/opengl/ColorBurnMaskedSprite_vert.glsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/opengl/ColorDodgeMaskedSprite_frag.glsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/opengl/MaskedSpriteNoAlpha_frag.glsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/opengl/YUVFrame_frag.glsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/opengl/Mosaic_vert.glsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/opengl/CCMessageBoxSprite_frag.glsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/opengl/Renderable3D_Background_vert.glsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/opengl/CHLCCMenuBackground_vert.glsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/opengl/SceneToRT_frag.glsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/opengl/Renderable3D_Background_frag.glsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/opengl/Renderable3D_Character_frag.glsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/opengl/MaskedSpriteBinary_frag.glsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/opengl/ColorMaskedSprite_vert.glsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/opengl/SceneToRT_vert.glsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/opengl/MaskedSprite_frag.glsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/opengl/CCMessageBoxSprite_vert.glsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/opengl/Renderable3D_Character_vert.glsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/opengl/ColorBurnMaskedSprite_frag.glsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/opengl/EdgeDetectedSingleSheetFont_vert.glsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/opengl/ScreenMaskedSprite_vert.glsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/opengl/GaussianBlur_frag.glsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/opengl/YUVFrame_vert.glsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/vulkan
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/vulkan/CHLCCMenuBackground_frag.glsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/vulkan/Renderable3D_Outline_vert.glsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/vulkan/MaskedSprite_vert.glsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/vulkan/Sprite_inverted_frag.spv
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/vulkan/NV12Frame_vert.spv
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/vulkan/Sprite_vert.spv
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/vulkan/CHLCCMenuBackground_frag.spv
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/vulkan/Renderable3D_Eye_vert.spv
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/vulkan/Renderable3D_Eye_frag.glsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/vulkan/Sprite_inverted_vert.spv
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/vulkan/Renderable3D_Outline_frag.glsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/vulkan/NV12Frame_vert.glsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/vulkan/Sprite_frag.glsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/vulkan/MaskedSprite_frag.spv
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/vulkan/NV12Frame_frag.spv
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/vulkan/CCMessageBoxSprite_frag.spv
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/vulkan/Renderable3D_Background_vert.spv
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/vulkan/Sprite_inverted_vert.glsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/vulkan/Renderable3D_Eye_vert.glsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/vulkan/Renderable3D_Outline_vert.spv
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/vulkan/NV12Frame_frag.glsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/vulkan/Renderable3D_Eye_frag.spv
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/vulkan/Renderable3D_Character_frag.spv
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/vulkan/Sprite_inverted_frag.glsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/vulkan/Sprite_frag.spv
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/vulkan/MaskedSpriteNoAlpha_vert.glsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/vulkan/Sprite_vert.glsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/vulkan/Renderable3D_Background_frag.spv
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/vulkan/MaskedSprite_vert.spv
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/vulkan/MaskedSpriteNoAlpha_frag.glsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/vulkan/YUVFrame_vert.spv
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/vulkan/YUVFrame_frag.glsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/vulkan/CHLCCMenuBackground_vert.spv
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/vulkan/CCMessageBoxSprite_frag.glsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/vulkan/MaskedSpriteNoAlpha_frag.spv
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/vulkan/Renderable3D_Background_vert.glsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/vulkan/CCMessageBoxSprite_vert.spv
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/vulkan/CHLCCMenuBackground_vert.glsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/vulkan/Renderable3D_Outline_frag.spv
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/vulkan/Renderable3D_Background_frag.glsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/vulkan/Renderable3D_Character_frag.glsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/vulkan/YUVFrame_frag.spv
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/vulkan/Renderable3D_Character_vert.spv
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/vulkan/MaskedSpriteNoAlpha_vert.spv
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/vulkan/MaskedSprite_frag.glsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/vulkan/CCMessageBoxSprite_vert.glsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/vulkan/Renderable3D_Character_vert.glsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/vulkan/YUVFrame_vert.glsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/dx9
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/dx9/CCMessageBoxSprite_vert.hlsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/dx9/CCMessageBoxSprite_frag.hlsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/dx9/MaskedSprite_frag.hlsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/dx9/Renderable3D_Character_vert.hlsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/dx9/YUVFrame_frag.hlsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/dx9/Renderable3D_Outline_frag.hlsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/dx9/Renderable3D_Background_frag.hlsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/dx9/Sprite_vert.hlsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/dx9/Renderable3D_Character_frag.hlsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/dx9/MaskedSpriteNoAlpha_vert.hlsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/dx9/MaskedSpriteNoAlpha_frag.hlsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/dx9/CHLCCMenuBackground_frag.hlsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/dx9/Renderable3D_Eye_vert.hlsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/dx9/Sprite_inverted_vert.hlsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/dx9/NV12Frame_frag.hlsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/dx9/Sprite_frag.hlsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/dx9/MaskedSprite_vert.hlsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/dx9/Renderable3D_Eye_frag.hlsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/dx9/Sprite_inverted_frag.hlsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/dx9/Renderable3D_Outline_vert.hlsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/dx9/CHLCCMenuBackground_vert.hlsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/dx9/NV12Frame_vert.hlsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/dx9/Renderable3D_Background_vert.hlsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./shaders/dx9/YUVFrame_vert.hlsl
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./resources
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./resources/rne
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./resources/rne/.gitkeep
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./resources/rne/font-lb
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./resources/rne/font-lb/widths.bin
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./resources/rne/font-lb/outline.png
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./resources/rne/font-lb/foreground.png
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./resources/common
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./resources/common/font
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./resources/common/font/NotoSansCJKjp-Regular.otf
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./resources/common/font/NotoSansCJKjp-Bold.otf
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./resources/common/icons
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./resources/common/icons/icon.svg
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./resources/common/icons/icon.icns
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./resources/common/icons/icon.ico
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./resources/common/icons/icon.jpg
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./resources/common/icons/icon.png
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./resources/common/achievementnotification.png
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./resources/sg0
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./resources/sg0/.gitkeep
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./resources/sg0/font-lb
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./resources/sg0/font-lb/widths.bin
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./resources/sg0/font-lb/outline.png
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./resources/sg0/font-lb/foreground.png
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./resources/chlcc
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./resources/chlcc/.gitkeep
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./resources/chlcc/font-lb
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./resources/chlcc/font-lb/widths.bin
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./resources/chlcc/font-lb/outline.png
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./resources/chlcc/font-lb/foreground.png
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./resources/chlcc/icondata
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./resources/chlcc/icondata/cursor_arrow.png
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./resources/chlcc/icondata/icon.icns
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./resources/chlcc/icondata/cursor_pointer.png
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./resources/chlcc/icondata/icon.ico
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./resources/chlcc/icondata/icon.png
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./resources/cclcc
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./resources/cclcc/icondata
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./resources/cclcc/icondata/cursor_arrow.png
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./resources/cclcc/icondata/icon.icns
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./resources/cclcc/icondata/cursor_pointer.png
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./resources/cclcc/icondata/icon.ico
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./resources/cclcc/icondata/icon.png
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./resources/cclcc/font-lb-italic
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./resources/cclcc/font-lb-italic/widths.bin
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./resources/cclcc/font-lb-italic/outline.png
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./resources/cclcc/font-lb-italic/foreground.png
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./resources/cc
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./resources/cc/.gitkeep
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./resources/cc/font-lb
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./resources/cc/font-lb/widths.bin
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./resources/cc/font-lb/outline.png
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./resources/cc/font-lb/foreground.png
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/mo7
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/mo7/hud
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/mo7/hud/datedisplay.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/mo7/hud/tipsmenu.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/mo7/hud/selectiondisplay.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/mo7/hud/backlogmenu.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/mo7/hud/sysmesboxdisplay.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/mo7/hud/tipsnotification.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/mo7/hud/saveicon.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/mo7/hud/loadingdisplay.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/mo7/scriptvars.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/mo7/game.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/mo7/font.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/mo7/sprites.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/mo7/savedata.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/mo7/vfs.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/mo7/dialogue.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/mo7/charset.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/mo7/tipssystem.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/modelviewer-dash
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/modelviewer-dash/game.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/rne
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/rne/hud
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/rne/hud/datedisplay.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/rne/hud/systemmenu.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/rne/hud/tipsmenu.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/rne/hud/selectiondisplay.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/rne/hud/backlogmenu.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/rne/hud/titlemenu.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/rne/hud/sysmesboxdisplay.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/rne/hud/tipsnotification.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/rne/hud/saveicon.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/rne/hud/loadingdisplay.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/rne/gamespecific.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/rne/scene3d
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/rne/scene3d/characters.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/rne/scene3d/scene3d.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/rne/game.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/rne/font.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/rne/sprites.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/rne/savedata.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/rne/vfs.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/rne/dialogue.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/rne/charset.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/rne/tipssystem.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/characterviewer
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/characterviewer/game.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/modelviewer
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/modelviewer/game.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/common
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/common/scriptinput.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/common/animation.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/common/scriptvars.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/common/achievementnotification.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/common/charset.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/chn
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/chn/hud
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/chn/hud/datedisplay.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/chn/hud/systemmenu.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/chn/hud/tipsmenu.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/chn/hud/selectiondisplay.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/chn/hud/backlogmenu.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/chn/hud/titlemenu.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/chn/hud/sysmesboxdisplay.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/chn/hud/tipsnotification.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/chn/hud/saveicon.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/chn/hud/loadingdisplay.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/chn/scriptvars.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/chn/game.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/chn/font.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/chn/sprites.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/chn/savedata.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/chn/vfs.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/chn/dialogue.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/chn/charset.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/chn/tipssystem.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/dash
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/dash/hud
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/dash/hud/datedisplay.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/dash/hud/systemmenu.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/dash/hud/tipsmenu.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/dash/hud/selectiondisplay.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/dash/hud/backlogmenu.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/dash/hud/titlemenu.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/dash/hud/sysmesboxdisplay.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/dash/hud/tipsnotification.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/dash/hud/saveicon.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/dash/hud/loadingdisplay.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/dash/gamespecific.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/dash/scriptvars.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/dash/scene3d
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/dash/scene3d/characters.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/dash/scene3d/scene3d.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/dash/game.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/dash/font.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/dash/sprites.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/dash/savedata.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/dash/vfs.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/dash/dialogue.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/dash/charset.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/dash/tipssystem.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/mo8
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/mo8/hud
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/mo8/hud/optionsmenu.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/mo8/hud/datedisplay.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/mo8/hud/systemmenu.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/mo8/hud/tipsmenu.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/mo8/hud/savemenu.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/mo8/hud/selectiondisplay.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/mo8/hud/backlogmenu.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/mo8/hud/titlemenu.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/mo8/hud/sysmesboxdisplay.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/mo8/hud/tipsnotification.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/mo8/hud/saveicon.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/mo8/hud/loadingdisplay.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/mo8/scriptvars.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/mo8/game.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/mo8/font.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/mo8/sprites.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/mo8/savedata.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/mo8/vfs.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/mo8/dialogue.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/mo8/charset.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/mo8/tipssystem.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/darling
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/darling/hud
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/darling/hud/datedisplay.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/darling/hud/systemmenu.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/darling/hud/tipsmenu.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/darling/hud/selectiondisplay.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/darling/hud/backlogmenu.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/darling/hud/titlemenu.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/darling/hud/sysmesboxdisplay.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/darling/hud/tipsnotification.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/darling/hud/saveicon.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/darling/hud/loadingdisplay.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/darling/scriptvars.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/darling/game.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/darling/font.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/darling/sprites.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/darling/savedata.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/darling/vfs.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/darling/dialogue.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/darling/charset.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/darling/tipssystem.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/sgps3
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/sgps3/hud
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/sgps3/hud/datedisplay.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/sgps3/hud/systemmenu.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/sgps3/hud/tipsmenu.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/sgps3/hud/selectiondisplay.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/sgps3/hud/backlogmenu.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/sgps3/hud/titlemenu.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/sgps3/hud/sysmesboxdisplay.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/sgps3/hud/tipsnotification.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/sgps3/hud/saveicon.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/sgps3/hud/loadingdisplay.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/sgps3/scriptvars.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/sgps3/game.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/sgps3/font.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/sgps3/sprites.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/sgps3/savedata.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/sgps3/vfs.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/sgps3/dialogue.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/sgps3/charset.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/sgps3/tipssystem.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/mo6tw
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/mo6tw/hud
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/mo6tw/hud/optionsmenu.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/mo6tw/hud/datedisplay.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/mo6tw/hud/extramenus.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/mo6tw/hud/systemmenu.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/mo6tw/hud/tipsmenu.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/mo6tw/hud/savemenu.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/mo6tw/hud/selectiondisplay.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/mo6tw/hud/backlogmenu.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/mo6tw/hud/titlemenu.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/mo6tw/hud/sysmesboxdisplay.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/mo6tw/hud/tipsnotification.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/mo6tw/hud/saveicon.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/mo6tw/hud/loadingdisplay.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/mo6tw/scriptinput.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/mo6tw/scriptvars.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/mo6tw/game.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/mo6tw/font.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/mo6tw/sprites.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/mo6tw/savedata.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/mo6tw/vfs.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/mo6tw/dialogue.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/mo6tw/charset.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/mo6tw/tipssystem.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/chlcc
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/chlcc/hud
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/chlcc/hud/optionsmenu.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/chlcc/hud/datedisplay.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/chlcc/hud/extramenus.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/chlcc/hud/delusiontrigger.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/chlcc/hud/systemmenu.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/chlcc/hud/commonmenu.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/chlcc/hud/tipsmenu.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/chlcc/hud/savemenu.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/chlcc/hud/selectiondisplay.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/chlcc/hud/backlogmenu.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/chlcc/hud/titlemenu.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/chlcc/hud/sysmesboxdisplay.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/chlcc/hud/tipsnotification.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/chlcc/hud/saveicon.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/chlcc/hud/trophymenu.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/chlcc/hud/loadingdisplay.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/chlcc/gamespecific.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/chlcc/scriptinput.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/chlcc/scriptvars.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/chlcc/game.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/chlcc/font.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/chlcc/waveeffects.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/chlcc/sprites.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/chlcc/savedata.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/chlcc/vfs.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/chlcc/dialogue.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/chlcc/equivalentlines.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/chlcc/charset.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/chlcc/tipssystem.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/cclcc
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/cclcc/hud
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/cclcc/hud/optionsmenu.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/cclcc/hud/datedisplay.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/cclcc/hud/extramenus.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/cclcc/hud/helpmenu.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/cclcc/hud/delusiontrigger.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/cclcc/hud/systemmenu.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/cclcc/hud/tipsmenu.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/cclcc/hud/savemenu.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/cclcc/hud/selectiondisplay.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/cclcc/hud/backlogmenu.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/cclcc/hud/titlemenu.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/cclcc/hud/sysmesboxdisplay.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/cclcc/hud/tipsnotification.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/cclcc/hud/saveicon.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/cclcc/hud/loadingdisplay.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/cclcc/gamespecific.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/cclcc/scriptinput.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/cclcc/scriptvars.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/cclcc/yesnotrigger.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/cclcc/bgeff.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/cclcc/game.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/cclcc/font.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/cclcc/waveeffects.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/cclcc/sprites.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/cclcc/savedata.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/cclcc/vfs.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/cclcc/dialogue.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/cclcc/mapsystem.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/cclcc/configsystem.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/cclcc/equivalentlines.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/cclcc/charset.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/cclcc/tipssystem.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/cc
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/cc/hud
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/cc/hud/datedisplay.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/cc/hud/systemmenu.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/cc/hud/tipsmenu.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/cc/hud/selectiondisplay.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/cc/hud/backlogmenu.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/cc/hud/titlemenu.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/cc/hud/sysmesboxdisplay.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/cc/hud/tipsnotification.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/cc/hud/saveicon.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/cc/hud/loadingdisplay.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/cc/scriptvars.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/cc/game.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/cc/font.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/cc/waveeffects.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/cc/sprites.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/cc/savedata.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/cc/vfs.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/cc/dialogue.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/cc/charset.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./profiles/cc/tipssystem.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./gamedefinitions.lua
+-- Installing: /home/user/workspace/repo/release/ubuntu24/./basepaths.lua

@@ -1,75 +1,105 @@
 # Project Handoff
 
 ## Current Milestone
-Thread 01 (Upstream Architecture and Feasibility) is complete. Phase 0 documentation
-exists; no engine code has been changed and nothing has been built or run.
+Thread 02 — Reproducible Desktop Build is complete. Linux compilation and
+asset-free launcher startup/shutdown are verified locally and in
+[GitHub CI run 37733016683](https://github.com/Tasnemo/impacto-ios/actions/runs/37733016683).
+See [desktop-test-results.md](desktop-test-results.md) for actual results.
+Thread 03 has **not** started. This is not proof of game compatibility.
 
 ## Repository State
-- Branch: `phase-00-upstream-analysis` (based on `master` at `bbe53401`, which is upstream
-  CommitteeOfZero/impacto `ba51381f` + `workme.md`).
-- Changes on this branch: `docs/` tree (architecture, compatibility-matrix, blockers,
-  decisions, roadmap, test-results, handoff, threads/01-upstream-investigation) and a
-  pointer block at the top of `README.md`.
-- Not merged into `master`. Merge after review, or have Thread 02 branch from it.
-- Engine source is byte-identical to upstream `ba51381f`.
+- Repository: `Tasnemo/impacto-ios`; default integration branch is **master**, not
+  `main`. GitHub reports it is **public** despite `workme.md` proposing private.
+  No commercial assets or secrets were added; visibility was not changed.
+- Thread 01 reports are committed in
+  [b468d4fb](https://github.com/Tasnemo/impacto-ios/commit/b468d4fb60314344a1c3b66096b263427b87d4c6)
+  and were already on `origin/master` at startup. The prior “not merged” note was stale.
+- Thread 02 branch: `phase-01-desktop-baseline`, based on that commit.
+- Build/workflow commit:
+  [51478a26](https://github.com/Tasnemo/impacto-ios/commit/51478a26).
+  Smoke logging fix and Ubuntu Docker recipe:
+  [a97fb46c](https://github.com/Tasnemo/impacto-ios/commit/a97fb46c).
+  Both are pushed; CI passed on `a97fb46c`. This handoff and the detailed reports
+  are the following documentation-only checkpoint (CI skipped because no build
+  inputs changed); obtain its exact commit with
+  `git log -1 --format=%H -- docs/handoff.md`.
+- Thread 02 is **not merged into master**. Start the next branch from
+  `origin/phase-01-desktop-baseline`, or merge after review before branching.
+- `src/`, profiles, resources and game behavior are unchanged. CMake only pins
+  LibAtrac9 instead of fetching moving `master`.
 
 ## Completed Work
-Research only. See `docs/threads/01-upstream-investigation.md` for the full report.
-Headline facts:
-- impacto: C++20, CMake 3.28 + vcpkg, SDL3 3.4.0, OpenAL, ffmpeg 7.1.2; backends GL
-  (GL3.3/GLES3), Vulkan (partial), DX9; Android = shared lib + SDLActivity; no iOS code.
-- STEINS;GATE support upstream = PS3 release only, "2D gfx, sound, video" (tracker #1).
-  `profiles/sgps3` is a scaffold: `SaveDataType.None`, no `src/games/sgps3`, no SGPS3
-  branches in `src/vm/inst_*.cpp`, `InstPhoneSG`/`InstMail` are stubs.
-- Steam release (`sghd`): `.mpk` archives, SC3 `.scx`, Vorbis, PNG/DDS, **Bink 2 movies**
-  (ffmpeg cannot decode Bink 2), own charset, D3D9 engine, saves `SAVEDATA.DAT`.
-- No `sghd` profile exists; the Steam opcode set is unverified.
-- No upstream test suite; upstream CI depends on a private CoZ NuGet vcpkg cache.
+- Pinned upstream CMake/Ninja/vcpkg Linux build; native Ubuntu 24.04 CI and an
+  Ubuntu container recipe for Debian-based orbs. No CoZ cache access required.
+- Dependency installer, CLI/launcher smoke harness and GitHub desktop workflow.
+- Full build, toolchain and runtime logs under `docs/threads/02-logs/`.
+- Reproduction: [desktop-build.md](desktop-build.md).
+  Results: [desktop-test-results.md](desktop-test-results.md).
+  Milestone report: [threads/02-desktop-baseline.md](threads/02-desktop-baseline.md).
 
 ## Verification
-None executed. `docs/test-results.md` lists the read-only inspections performed.
+- Ubuntu 24.04.5/GCC 13.3, CMake 3.31.10, upstream `ci-release`, target/host
+  `x64-linux-ci`: built all 67 dependencies from source and compiled/installed impacto.
+- Executable loaded Lua config, created 1280×720 software OpenGL window,
+  compiled shaders, ran the launcher for five seconds and exited 0 through SDL quit.
+- CLI missing parameter rejected with exit 1. Relocated install passed both checks.
+- CTest executed: **No tests were found**. There is no upstream engine test suite.
+- Workflow syntax checked with actionlint. Engine warnings-as-errors retained.
+- GitHub Ubuntu 24.04 job passed configure, build/install, CTest discovery and
+  both smoke checks in 23m32s; diagnostic upload and cache save also passed.
 
-## Known Failures
-Nothing is known to work. See `docs/blockers.md` B1–B9. Hard blockers for desktop
-playability: Bink 2 video (B1), missing `sghd` profile/instruction set (B2), phone/mail
-stubs (B3), no save system (B4).
+## Known Failures / Limitations
+- Native Debian 12/GCC 12 fails OpenAL Soft 1.25.1 on missing `<format>`.
+  Use Ubuntu 24.04/GCC 13; do not downgrade dependencies to work around it.
+- First CI build passed compilation but its test harness wrongly expected console
+  logging. Fixed by explicit `-lf` logs; see results for both CI runs.
+- Upstream ImGui compiler and LibAtrac9 CMake install warnings remain nonfatal.
+- Legacy `impacto.yml` still uses the CoZ NuGet feed. `desktop.yml` is the fork's
+  independent Linux baseline; other platform jobs are not verified here.
+- No game data: no game-profile initialization, audio/video playback, script
+  execution, saves or SG behavior verified. `characterviewer` is **not asset-free**;
+  it inherits CHLCC. Use no `-g` for the launcher. SDL dummy cannot supply OpenGL.
+- Steam SG blockers B1–B5 are unchanged: movie format unverified locally,
+  missing Steam profile/opcode mapping, phone/mail stubs and absent saves.
 
 ## Architectural Decisions
-`docs/decisions.md`: ADR-001 keep impacto; ADR-002 new `sghd` profile (proposed);
-ADR-003 defer iOS renderer choice to Thread 05; ADR-004 Bink 2 via asset-prep transcode
-(proposed); ADR-005 branch/doc discipline.
+- Preserve the upstream architecture, default Linux features and dependency pins.
+  Solve the compiler mismatch with a supported environment, not source rewrites.
+- Pin LibAtrac9's current revision. Keep the upstream vcpkg baseline and overlays.
+- Headless Xvfb/Mesa launcher testing needs no game assets and changes no engine API.
+- Treat successful compilation, launcher startup and game compatibility as separate
+  claims. No iOS or missing STEINS;GATE implementation was attempted.
+- Prior ADRs remain in [decisions.md](decisions.md); SG profile/transcoding proposals
+  are still proposals, not verified implementations.
 
 ## Open Questions
-1. MPK version field of Steam SG archives (expect 2.0) — needs one hexdump.
-2. Movie file signatures (`BIK` vs `KB2`) and their on-disk location in the Steam install.
-3. Does Steam SG share PS3 SG's opcode numbering? Needs `script.mpk` disassembly.
-4. Semantics of `PhoneSG`/`Mail` opcodes as used by the scripts.
-5. Is OpenGL ES still usable on iOS 26.x on the developer's device?
-6. Sideloading route from Windows (AltStore / Sideloadly / paid cert).
+1. Steam SG MPK version and movie signatures (`BIK` versus `KB2`).
+2. Steam SC3 opcode numbering/argument layouts versus SGPS3; phone/mail semantics.
+3. Full game-profile runtime behavior, including real audio/video, saves and routes.
+4. iOS renderer/SDK and Windows-driven signing questions remain deferred.
 
 ## Next Thread
-Thread 02 — Reproducible Desktop Build.
+Thread 03 — STEINS;GATE Desktop Compatibility.
 
 ## Recommended Mode
-High.
+**Ultra**, as specified by `workme.md`, for compatibility investigation and opcode
+analysis. Do not begin iOS work. Use High later for bounded implementation fixes.
 
 ## Next Objective
-On a new branch `phase-01-desktop-baseline` (from this branch or from `master` after
-merge):
-1. Produce a Linux x64 build in an orb: apt packages from
-   `.github/workflows/impacto.yml` (ubuntu-24.04 job) / `doc/ubuntu_build.md`, vcpkg
-   bootstrap, `cmake --preset ci-release` (or `Release`), build. Record exact commands,
-   versions, and the full log in `docs/test-results.md`.
-2. Prove execution, not just compilation: run `impacto` headless (Xvfb or
-   `SDL_VIDEODRIVER=dummy`) with a profile that needs no assets (e.g. `-g characterviewer`
-   or any profile with `-ll Debug`) and capture the startup log up to the first asset
-   error. No game assets are needed or allowed in the repo.
-3. Add a GitHub Actions Linux workflow for this fork that does not depend on the CoZ NuGet
-   feed (use GitHub Actions cache / `x-gha` vcpkg binary caching) and runs the smoke
-   launch.
-4. Document compiler/dependency requirements in `docs/threads/02-desktop-baseline.md`,
-   update `docs/handoff.md`, commit, push, stop.
+Read `workme.md` (lowercase filename), this handoff, the desktop reports and all
+Thread 01 architecture/compatibility reports. Start from the Thread 02 branch,
+reproduce the build/smoke check, then investigate original English Steam SG using
+legally obtained local evidence. Request the Windows install listing, first 64
+bytes of archive/movie headers and selected sc3tools output before drawing runtime
+conclusions. Keep commercial assets and derivative script dumps out of git.
+Prioritize missing-profile/opcode, phone/mail, save and movie blockers; update the
+compatibility matrix from evidence. If no game evidence is available, record the
+limitation rather than inventing gameplay success.
 
-In parallel the developer should prepare (on Windows, outside git) the evidence pack
-described in `docs/roadmap.md` for Thread 03: install listing, first 64 bytes of every
-`.mpk` and movie file, and sc3tools output for a few scripts.
+## Orb state is disposable
+This orb has `impacto-desktop:ubuntu24`, a supervised `desktop-docker` daemon,
+vcpkg at `/home/user/.local/share/impacto-tools/vcpkg`, build output at
+`ci-build/ubuntu24`, and installed files at `release/ubuntu24`. These are **not**
+committed and are not assumed to exist in another thread. Follow the documented
+container commands; keep the vcpkg mount when rebuilding. No paid/private cache,
+local game installation or conversation transcript is required for the baseline.

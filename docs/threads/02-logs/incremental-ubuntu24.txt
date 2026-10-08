@@ -1,0 +1,309 @@
+[0/1] Re-running CMake...
+-- Running vcpkg install
+Detecting compiler hash for triplet x64-linux-ci...
+Compiler found: /usr/bin/c++
+The following packages are already installed:
+  * alsa:x64-linux-ci@1.2.15.3
+    avcpp:x64-linux-ci@3.0.1.0
+  * boost-assert:x64-linux-ci@1.90.0#1
+    boost-circular-buffer:x64-linux-ci@1.90.0#1
+  * boost-cmake:x64-linux-ci@1.90.0#1
+  * boost-concept-check:x64-linux-ci@1.90.0#1
+  * boost-config:x64-linux-ci@1.90.0#1
+  * boost-core:x64-linux-ci@1.90.0#1
+  * boost-headers:x64-linux-ci@1.90.0#1
+  * boost-move:x64-linux-ci@1.90.0#1
+  * boost-preprocessor:x64-linux-ci@1.90.0#1
+  * boost-static-assert:x64-linux-ci@1.90.0#1
+  * boost-throw-exception:x64-linux-ci@1.90.0#1
+  * boost-type-traits:x64-linux-ci@1.90.0#1
+  * boost-uninstall:x64-linux-ci@1.90.0#1
+  * brotli:x64-linux-ci@1.2.0
+  * bzip2[core,tool]:x64-linux-ci@1.0.8#6
+    concurrentqueue:x64-linux-ci@1.0.4#1
+  * dav1d:x64-linux-ci@1.5.3
+  * dbus[core,systemd]:x64-linux-ci@1.16.2#2
+  * dirent:x64-linux-ci@1.26
+  * expat:x64-linux-ci@2.7.4
+    ffmpeg[core,zlib,vaapi,swscale,swresample,dav1d,avformat,avcodec]:x64-linux-ci@7.1.2#5
+    fmt:x64-linux-ci@12.1.0
+  * fontconfig[core,iconv]:x64-linux-ci@2.17.1#1
+    freetype[core,zlib,png,bzip2,brotli]:x64-linux-ci@2.13.3
+  * fribidi:x64-linux-ci@1.0.16
+    glm:x64-linux-ci@1.0.3
+  * gperf:x64-linux-ci@3.3
+    harfbuzz[core,freetype]:x64-linux-ci@12.3.2
+    libass:x64-linux-ci@0.17.4
+  * libcap:x64-linux-ci@2.77
+  * libiconv:x64-linux-ci@1.18#3
+  * liblzma:x64-linux-ci@5.8.2#1
+  * libmount:x64-linux-ci@2.41.3
+    libogg:x64-linux-ci@1.3.6#1
+  * libpng:x64-linux-ci@1.6.55
+  * libsystemd:x64-linux-ci@257.8#1
+  * libuuid:x64-linux-ci@1.0.3#16
+  * libva:x64-linux-ci@2.20.0
+    libvorbis:x64-linux-ci@1.3.7#4
+    libwebp[core,simd,nearlossless,libwebpmux]:x64-linux-ci@1.6.0#2
+  * libxcrypt:x64-linux-ci@4.5.2
+  * lz4:x64-linux-ci@1.10.0
+    openal-soft:x64-linux-ci@1.25.1
+  * pkgconf:x64-linux-ci@2.5.1#4
+  * pthread:x64-linux-ci@3.0.0#2
+  * pthreads:x64-linux-ci@3.0.0#14
+    pugixml:x64-linux-ci@1.15#1
+    readerwriterqueue:x64-linux-ci@1.0.7
+    sdl3[core,x11,wayland,vulkan,ibus]:x64-linux-ci@3.4.0
+    toml11:x64-linux-ci@4.4.0
+    unordered-dense:x64-linux-ci@4.8.1
+    utfcpp:x64-linux-ci@4.0.9
+  * vcpkg-boost:x64-linux-ci@2025-03-29
+  * vcpkg-cmake:x64-linux-ci@2024-04-23
+  * vcpkg-cmake-config:x64-linux-ci@2024-05-23
+  * vcpkg-cmake-get-vars:x64-linux-ci@2025-05-29
+  * vcpkg-get-python-packages:x64-linux-ci@2025-04-05
+  * vcpkg-make:x64-linux-ci@2026-01-01
+  * vcpkg-pkgconfig-get-modules:x64-linux-ci@2024-04-03
+  * vcpkg-tool-meson:x64-linux-ci@1.9.0#3
+    vulkan:x64-linux-ci@2023-12-17
+  * vulkan-headers:x64-linux-ci@1.4.335.0#1
+  * vulkan-loader:x64-linux-ci@1.4.335.0
+    zlib:x64-linux-ci@1.3.1
+  * zstd:x64-linux-ci@1.5.7
+The package zlib is compatible with built-in CMake targets:
+
+    find_package(ZLIB REQUIRED)
+    target_link_libraries(main PRIVATE ZLIB::ZLIB)
+
+ffmpeg provides CMake integration:
+
+  find_package(FFMPEG REQUIRED)
+  target_include_directories(main PRIVATE ${FFMPEG_INCLUDE_DIRS})
+  target_link_directories(main PRIVATE ${FFMPEG_LIBRARY_DIRS})
+  target_link_libraries(main PRIVATE ${FFMPEG_LIBRARIES})
+
+ffmpeg provides pkg-config modules:
+
+  # FFmpeg codec library
+  libavcodec
+
+  # FFmpeg device handling library
+  libavdevice
+
+  # FFmpeg audio/video filtering library
+  libavfilter
+
+  # FFmpeg container format library
+  libavformat
+
+  # FFmpeg utility library
+  libavutil
+
+  # FFmpeg audio resampling library
+  libswresample
+
+  # FFmpeg image rescaling library
+  libswscale
+
+avcpp provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(avcpp CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE avcpp::avcpp avcpp::FFmpeg)
+
+avcpp provides pkg-config modules:
+
+  # FFmpeg libraries C++ interface
+  libavcpp
+
+The package boost-circular-buffer is compatible with built-in CMake targets of FindBoost.cmake:
+
+    find_package(Boost REQUIRED COMPONENTS circular_buffer)
+    target_link_libraries(main PRIVATE Boost::circular_buffer)
+
+or the generated cmake configs via:
+
+    find_package( REQUIRED CONFIG)
+    target_link_libraries(main PRIVATE Boost::circular_buffer)
+
+concurrentqueue provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(concurrentqueue CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE concurrentqueue::concurrentqueue)
+
+The package fmt provides CMake targets:
+
+    find_package(fmt CONFIG REQUIRED)
+    target_link_libraries(main PRIVATE fmt::fmt)
+
+    # Or use the header-only version
+    find_package(fmt CONFIG REQUIRED)
+    target_link_libraries(main PRIVATE fmt::fmt-header-only)
+
+freetype is compatible with built-in CMake targets:
+
+    find_package(Freetype REQUIRED)
+    target_link_libraries(main PRIVATE Freetype::Freetype) # since CMake 3.10
+
+The package glm provides CMake targets:
+
+    find_package(glm CONFIG REQUIRED)
+    target_link_libraries(main PRIVATE glm::glm)
+
+    # Or use the header-only version
+    find_package(glm CONFIG REQUIRED)
+    target_link_libraries(main PRIVATE glm::glm-header-only)
+
+harfbuzz provides CMake targets:
+
+  find_package(harfbuzz CONFIG REQUIRED)
+  # HarfBuzz font subsetter
+  target_link_libraries(main PRIVATE harfbuzz::harfbuzz-subset)
+  # HarfBuzz text shaping library
+  target_link_libraries(main PRIVATE harfbuzz::harfbuzz)
+
+harfbuzz provides pkg-config modules:
+
+  # HarfBuzz font subsetter
+  harfbuzz-subset
+
+  # HarfBuzz text shaping library
+  harfbuzz
+
+libass provides pkg-config modules:
+
+  # libass is an SSA/ASS subtitles rendering library
+  libass
+
+libogg provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(Ogg CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Ogg::ogg)
+
+libogg provides pkg-config modules:
+
+  # ogg is a library for manipulating ogg bitstreams
+  ogg
+
+The package libvorbis provides CMake targets:
+
+    # Vorbis reference encoder and decoder, low-level API
+    find_package(Vorbis CONFIG REQUIRED)
+    target_link_libraries(main PRIVATE Vorbis::vorbis)
+
+    # Audio stream decoding and basic manipulation, high-level API
+    find_package(Vorbis CONFIG REQUIRED)
+    target_link_libraries(main PRIVATE Vorbis::vorbisfile)
+
+    # Convenience API for setting up an encoding environment
+    find_package(Vorbis CONFIG REQUIRED)
+    target_link_libraries(main PRIVATE Vorbis::vorbisenc)
+
+libwebp provides CMake targets:
+
+    find_package(WebP CONFIG REQUIRED)
+    # basic usage
+    target_link_libraries(main PRIVATE WebP::webp WebP::webpdecoder WebP::webpdemux)
+    # for manipulating the WebP graphics format container (port feature libwebpmux)
+    target_link_libraries(main PRIVATE WebP::libwebpmux)
+    # for sharp RGB to YUV conversion
+    target_link_libraries(main PRIVATE WebP::sharpyuv)
+
+openal-soft provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(OpenAL CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE OpenAL::OpenAL)
+
+openal-soft provides pkg-config modules:
+
+  # OpenAL is a cross-platform 3D audio API
+  openal
+
+pugixml provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(pugixml CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE pugixml::shared pugixml::pugixml)
+
+pugixml provides pkg-config modules:
+
+  # Light-weight, simple and fast XML parser for C++ with XPath support.
+  pugixml
+
+readerwriterqueue provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(readerwriterqueue CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE readerwriterqueue::readerwriterqueue)
+
+sdl3 provides CMake targets:
+
+  find_package(SDL3 CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE SDL3::SDL3)
+
+toml11 provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(toml11 CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE toml11::toml11)
+
+unordered-dense provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(unordered_dense CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE unordered_dense::unordered_dense)
+
+utfcpp provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(utf8cpp CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE utf8::cpp utf8cpp::utf8cpp)
+
+vulkan is compatible with built-in CMake targets:
+
+    # https://cmake.org/cmake/help/latest/module/FindVulkan.html
+    find_package(Vulkan REQUIRED)
+    target_link_libraries(main PRIVATE Vulkan::Vulkan)
+
+All requested installations completed successfully in: 631 us
+-- Running vcpkg install - done
+-- NOT enabling ASAN and UBSAN, consider enabling them when developing
+CMake Warning (dev) at ci-build/ubuntu24/vcpkg_installed/x64-linux-ci/share/boost/vcpkg-cmake-wrapper.cmake:3 (_find_package):
+  Policy CMP0167 is not set: The FindBoost module is removed.  Run "cmake
+  --help-policy CMP0167" for policy details.  Use the cmake_policy command to
+  set the policy and suppress this warning.
+
+Call Stack (most recent call first):
+  /opt/vcpkg/scripts/buildsystems/vcpkg.cmake:862 (include)
+  CMakeLists.txt:1028 (find_package)
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+-- Checking for module 'dav1d'
+--   Found dav1d, version 1.5.3
+-- Checking for module 'dav1d'
+--   Found dav1d, version 1.5.3
+-- Enabling warnings for GCC
+CMake Warning (dev) at CMakeLists.txt:1454 (install):
+  Policy CMP0177 is not set: install() DESTINATION paths are normalized.  Run
+  "cmake --help-policy CMP0177" for policy details.  Use the cmake_policy
+  command to set the policy and suppress this warning.
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+CMake Warning (dev) at CMakeLists.txt:1454 (install):
+  Policy CMP0177 is not set: install() DESTINATION paths are normalized.  Run
+  "cmake --help-policy CMP0177" for policy details.  Use the cmake_policy
+  command to set the policy and suppress this warning.
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+CMake Warning (dev) at CMakeLists.txt:1454 (install):
+  Target atrac9 has PUBLIC_HEADER files but no PUBLIC_HEADER DESTINATION.
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+-- Configuring done (4.5s)
+-- Generating done (0.1s)
+-- Build files have been written to: /home/user/workspace/repo/ci-build/ubuntu24
+ninja: no work to do.
+ninja: no work to do.

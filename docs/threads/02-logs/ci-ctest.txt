@@ -1,0 +1,3 @@
+Internal ctest changing into directory: /home/runner/work/impacto-ios/impacto-ios/ci-build/ci-release
+Test project /home/runner/work/impacto-ios/impacto-ios/ci-build/ci-release
+No tests were found!!!

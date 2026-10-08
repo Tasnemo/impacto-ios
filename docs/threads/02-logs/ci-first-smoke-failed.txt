@@ -1,0 +1,18 @@
+build-and-smoke	Run asset-free launcher smoke checks	﻿2026-10-08T05:24:15.9675336Z ##[group]Run xvfb-run -a python3 .github/scripts/desktop-smoke.py release/ci-release/impacto 2>&1 | tee ci-build/logs/smoke.log
+build-and-smoke	Run asset-free launcher smoke checks	2026-10-08T05:24:15.9676033Z ^[[36;1mxvfb-run -a python3 .github/scripts/desktop-smoke.py release/ci-release/impacto 2>&1 | tee ci-build/logs/smoke.log^[[0m
+build-and-smoke	Run asset-free launcher smoke checks	2026-10-08T05:24:15.9733080Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+build-and-smoke	Run asset-free launcher smoke checks	2026-10-08T05:24:15.9733350Z env:
+build-and-smoke	Run asset-free launcher smoke checks	2026-10-08T05:24:15.9733555Z   VCPKG_COMMIT: 62159a45e18f3a9ac0548628dcaf74fcb60c6ff9
+build-and-smoke	Run asset-free launcher smoke checks	2026-10-08T05:24:15.9733889Z   VCPKG_ROOT: /home/runner/work/impacto-ios/impacto-ios/.tools/vcpkg
+build-and-smoke	Run asset-free launcher smoke checks	2026-10-08T05:24:15.9734171Z   VCPKG_MAX_CONCURRENCY: 4
+build-and-smoke	Run asset-free launcher smoke checks	2026-10-08T05:24:15.9734360Z   CMAKE_BUILD_PARALLEL_LEVEL: 2
+build-and-smoke	Run asset-free launcher smoke checks	2026-10-08T05:24:15.9734700Z   VCPKG_BINARY_SOURCES: clear;files,/home/runner/work/impacto-ios/impacto-ios/.cache/vcpkg,readwrite
+build-and-smoke	Run asset-free launcher smoke checks	2026-10-08T05:24:15.9735064Z ##[endgroup]
+build-and-smoke	Run asset-free launcher smoke checks	2026-10-08T05:24:16.2376727Z Traceback (most recent call last):
+build-and-smoke	Run asset-free launcher smoke checks	2026-10-08T05:24:16.2377515Z   File "/home/runner/work/impacto-ios/impacto-ios/.github/scripts/desktop-smoke.py", line 55, in <module>
+build-and-smoke	Run asset-free launcher smoke checks	2026-10-08T05:24:16.2379127Z     main()
+build-and-smoke	Run asset-free launcher smoke checks	2026-10-08T05:24:16.2379623Z   File "/home/runner/work/impacto-ios/impacto-ios/.github/scripts/desktop-smoke.py", line 24, in main
+build-and-smoke	Run asset-free launcher smoke checks	2026-10-08T05:24:16.2380189Z     assert "Invalid number of arguments" in output
+build-and-smoke	Run asset-free launcher smoke checks	2026-10-08T05:24:16.2380433Z            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+build-and-smoke	Run asset-free launcher smoke checks	2026-10-08T05:24:16.2380643Z AssertionError
+build-and-smoke	Run asset-free launcher smoke checks	2026-10-08T05:24:16.2457863Z ##[error]Process completed with exit code 1.

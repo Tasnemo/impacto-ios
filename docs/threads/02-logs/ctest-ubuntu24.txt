@@ -1,0 +1,3 @@
+Internal ctest changing into directory: /home/user/workspace/repo/ci-build/ubuntu24
+Test project /home/user/workspace/repo/ci-build/ubuntu24
+No tests were found!!!

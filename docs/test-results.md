@@ -20,3 +20,14 @@ What was executed (read-only inspection, in an Amp orb, Linux x64):
 | Steam release facts | PCGamingWiki, CoZ LanguageBarrier/sc3tools repos, nipkownix FMV project | MAGES. engine, D3D9, Bink 2 movies, `.mpk` archives, Vorbis audio, PNG/DDS |
 
 Not done: vcpkg install, CMake configure, compile, engine launch, any asset loading.
+
+## Thread 02 — 2026-10-08 — branch `phase-01-desktop-baseline`
+
+Ubuntu 24.04/GCC 13.3 build and asset-free OpenGL launcher execution verified.
+CLI rejection, normal launcher shutdown and relocated installation smoke checks
+passed. CTest ran but found no upstream tests. Native Debian/GCC 12 failed in
+OpenAL Soft on missing `<format>`; use the documented Ubuntu container.
+
+Full commands, compiler output, CI results, failures and limitations:
+[desktop-test-results.md](desktop-test-results.md).
+Reproduction: [desktop-build.md](desktop-build.md).

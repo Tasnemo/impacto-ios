@@ -1,0 +1,1534 @@
+Preset CMake variables:
+
+  CMAKE_BUILD_TYPE="Release"
+  CMAKE_TOOLCHAIN_FILE:FILEPATH="/opt/vcpkg/scripts/buildsystems/vcpkg.cmake"
+  IMPACTO_WARNINGS="ON"
+  VCPKG_OVERLAY_PORTS="/home/user/workspace/repo/portfiles"
+  VCPKG_OVERLAY_TRIPLETS="/home/user/workspace/repo/triplets"
+
+-- Running vcpkg install
+Detecting compiler hash for triplet x64-linux-ci...
+Compiler found: /usr/bin/c++
+The following packages will be built and installed:
+  * alsa:x64-linux-ci@1.2.15.3
+    avcpp:x64-linux-ci@3.0.1.0 -- /home/user/workspace/repo/portfiles/avcpp
+  * boost-assert:x64-linux-ci@1.90.0#1
+    boost-circular-buffer:x64-linux-ci@1.90.0#1
+  * boost-cmake:x64-linux-ci@1.90.0#1
+  * boost-concept-check:x64-linux-ci@1.90.0#1
+  * boost-config:x64-linux-ci@1.90.0#1
+  * boost-core:x64-linux-ci@1.90.0#1
+  * boost-headers:x64-linux-ci@1.90.0#1
+  * boost-move:x64-linux-ci@1.90.0#1
+  * boost-preprocessor:x64-linux-ci@1.90.0#1
+  * boost-static-assert:x64-linux-ci@1.90.0#1
+  * boost-throw-exception:x64-linux-ci@1.90.0#1
+  * boost-type-traits:x64-linux-ci@1.90.0#1
+  * boost-uninstall:x64-linux-ci@1.90.0#1
+  * brotli:x64-linux-ci@1.2.0
+  * bzip2[core,tool]:x64-linux-ci@1.0.8#6
+    concurrentqueue:x64-linux-ci@1.0.4#1
+  * dav1d:x64-linux-ci@1.5.3
+  * dbus[core,systemd]:x64-linux-ci@1.16.2#2
+  * dirent:x64-linux-ci@1.26
+  * expat:x64-linux-ci@2.7.4
+    ffmpeg[avcodec,avformat,core,dav1d,swresample,swscale,vaapi,zlib]:x64-linux-ci@7.1.2#5
+    fmt:x64-linux-ci@12.1.0
+  * fontconfig[core,iconv]:x64-linux-ci@2.17.1#1
+    freetype[brotli,bzip2,core,png,zlib]:x64-linux-ci@2.13.3
+  * fribidi:x64-linux-ci@1.0.16
+    glm:x64-linux-ci@1.0.3
+  * gperf:x64-linux-ci@3.3
+    harfbuzz[core,freetype]:x64-linux-ci@12.3.2
+    libass:x64-linux-ci@0.17.4
+  * libcap:x64-linux-ci@2.77
+  * libiconv:x64-linux-ci@1.18#3
+  * liblzma:x64-linux-ci@5.8.2#1
+  * libmount:x64-linux-ci@2.41.3
+    libogg:x64-linux-ci@1.3.6#1
+  * libpng:x64-linux-ci@1.6.55
+  * libsystemd:x64-linux-ci@257.8#1
+  * libuuid:x64-linux-ci@1.0.3#16
+  * libva:x64-linux-ci@2.20.0
+    libvorbis:x64-linux-ci@1.3.7#4
+    libwebp[core,libwebpmux,nearlossless,simd]:x64-linux-ci@1.6.0#2
+  * libxcrypt:x64-linux-ci@4.5.2
+  * lz4:x64-linux-ci@1.10.0
+    openal-soft:x64-linux-ci@1.25.1
+  * pkgconf:x64-linux-ci@2.5.1#4
+  * pthread:x64-linux-ci@3.0.0#2
+  * pthreads:x64-linux-ci@3.0.0#14
+    pugixml:x64-linux-ci@1.15#1
+    readerwriterqueue:x64-linux-ci@1.0.7
+    sdl3[core,ibus,vulkan,wayland,x11]:x64-linux-ci@3.4.0
+    toml11:x64-linux-ci@4.4.0
+    unordered-dense:x64-linux-ci@4.8.1
+    utfcpp:x64-linux-ci@4.0.9
+  * vcpkg-boost:x64-linux-ci@2025-03-29
+  * vcpkg-cmake:x64-linux-ci@2024-04-23
+  * vcpkg-cmake-config:x64-linux-ci@2024-05-23
+  * vcpkg-cmake-get-vars:x64-linux-ci@2025-05-29
+  * vcpkg-get-python-packages:x64-linux-ci@2025-04-05
+  * vcpkg-make:x64-linux-ci@2026-01-01
+  * vcpkg-pkgconfig-get-modules:x64-linux-ci@2024-04-03
+  * vcpkg-tool-meson:x64-linux-ci@1.9.0#3
+    vulkan:x64-linux-ci@2023-12-17
+  * vulkan-headers:x64-linux-ci@1.4.335.0#1
+  * vulkan-loader:x64-linux-ci@1.4.335.0
+    zlib:x64-linux-ci@1.3.1
+  * zstd:x64-linux-ci@1.5.7
+Additional packages (*) will be modified to complete this operation.
+Installing 1/67 vcpkg-cmake-config:x64-linux-ci@2024-05-23...
+vcpkg-cmake-config:x64-linux-ci@2024-05-23 package ABI: 2e2d024e779428440a52a06c2e01e5f7b15adaab8f6ac11fa346ca9fbaa7555f
+Building vcpkg-cmake-config:x64-linux-ci@2024-05-23...
+/home/user/workspace/repo/triplets/x64-linux-ci.cmake: info: loaded overlay triplet from here
+-- Installing: /opt/vcpkg/packages/vcpkg-cmake-config_x64-linux-ci/share/vcpkg-cmake-config/vcpkg_cmake_config_fixup.cmake
+-- Installing: /opt/vcpkg/packages/vcpkg-cmake-config_x64-linux-ci/share/vcpkg-cmake-config/vcpkg-port-config.cmake
+-- Installing: /opt/vcpkg/packages/vcpkg-cmake-config_x64-linux-ci/share/vcpkg-cmake-config/copyright
+-- Skipping post-build validation due to VCPKG_POLICY_EMPTY_PACKAGE
+Elapsed time to handle vcpkg-cmake-config:x64-linux-ci: 137 ms
+Installing 2/67 vcpkg-cmake:x64-linux-ci@2024-04-23...
+vcpkg-cmake:x64-linux-ci@2024-04-23 package ABI: 838ae0b09a5b596423e5549df0c11dc14ff4578e7177ade679863c01bb2eff6f
+Building vcpkg-cmake:x64-linux-ci@2024-04-23...
+/home/user/workspace/repo/triplets/x64-linux-ci.cmake: info: loaded overlay triplet from here
+-- Installing: /opt/vcpkg/packages/vcpkg-cmake_x64-linux-ci/share/vcpkg-cmake/vcpkg_cmake_configure.cmake
+-- Installing: /opt/vcpkg/packages/vcpkg-cmake_x64-linux-ci/share/vcpkg-cmake/vcpkg_cmake_build.cmake
+-- Installing: /opt/vcpkg/packages/vcpkg-cmake_x64-linux-ci/share/vcpkg-cmake/vcpkg_cmake_install.cmake
+-- Installing: /opt/vcpkg/packages/vcpkg-cmake_x64-linux-ci/share/vcpkg-cmake/vcpkg-port-config.cmake
+-- Installing: /opt/vcpkg/packages/vcpkg-cmake_x64-linux-ci/share/vcpkg-cmake/copyright
+-- Performing post-build validation
+Elapsed time to handle vcpkg-cmake:x64-linux-ci: 147 ms
+Installing 3/67 zlib:x64-linux-ci@1.3.1...
+zlib:x64-linux-ci@1.3.1 package ABI: 7f0049d35575d6f9f1ce81de85fc5a19b9f9cf2404730e513c9b2c7ad57f94b2
+Building zlib:x64-linux-ci@1.3.1...
+/home/user/workspace/repo/triplets/x64-linux-ci.cmake: info: loaded overlay triplet from here
+-- Using cached madler-zlib-v1.3.1.tar.gz
+-- Cleaning sources at /opt/vcpkg/buildtrees/zlib/src/v1.3.1-2e5db616bf.clean. Use --editable to skip cleaning for the packages you specify.
+-- Extracting source /opt/vcpkg/downloads/madler-zlib-v1.3.1.tar.gz
+-- Applying patch 0001-Prevent-invalid-inclusions-when-HAVE_-is-set-to-0.patch
+-- Applying patch 0002-build-static-or-shared-not-both.patch
+-- Applying patch 0003-android-and-mingw-fixes.patch
+-- Using source at /opt/vcpkg/buildtrees/zlib/src/v1.3.1-2e5db616bf.clean
+-- Configuring x64-linux-ci
+-- Building x64-linux-ci-rel
+-- Installing: /opt/vcpkg/packages/zlib_x64-linux-ci/share/zlib/vcpkg-cmake-wrapper.cmake
+-- Fixing pkgconfig file: /opt/vcpkg/packages/zlib_x64-linux-ci/lib/pkgconfig/zlib.pc
+-- Installing: /opt/vcpkg/packages/zlib_x64-linux-ci/share/zlib/copyright
+-- Adjusted RPATH of '/opt/vcpkg/packages/zlib_x64-linux-ci/lib/libz.so.1.3.1' (From '' -> To '$ORIGIN')
+-- Performing post-build validation
+Elapsed time to handle zlib:x64-linux-ci: 1.9 s
+Installing 4/67 vcpkg-cmake-get-vars:x64-linux-ci@2025-05-29...
+vcpkg-cmake-get-vars:x64-linux-ci@2025-05-29 package ABI: 3bc4f20bffd5a96f5e75763a38f3c248b16b315585b2d0ad79143cc438e1019b
+Building vcpkg-cmake-get-vars:x64-linux-ci@2025-05-29...
+/home/user/workspace/repo/triplets/x64-linux-ci.cmake: info: loaded overlay triplet from here
+-- Installing: /opt/vcpkg/packages/vcpkg-cmake-get-vars_x64-linux-ci/share/vcpkg-cmake-get-vars/vcpkg_cmake_get_vars.cmake
+-- Installing: /opt/vcpkg/packages/vcpkg-cmake-get-vars_x64-linux-ci/share/vcpkg-cmake-get-vars/cmake_get_vars
+-- Installing: /opt/vcpkg/packages/vcpkg-cmake-get-vars_x64-linux-ci/share/vcpkg-cmake-get-vars/cmake_get_vars/CMakeLists.txt
+-- Installing: /opt/vcpkg/packages/vcpkg-cmake-get-vars_x64-linux-ci/share/vcpkg-cmake-get-vars/cmake-get-vars.cmake.in
+-- Installing: /opt/vcpkg/packages/vcpkg-cmake-get-vars_x64-linux-ci/share/vcpkg-cmake-get-vars/vcpkg-port-config.cmake
+-- Installing: /opt/vcpkg/packages/vcpkg-cmake-get-vars_x64-linux-ci/share/vcpkg-cmake-get-vars/copyright
+-- Performing post-build validation
+Elapsed time to handle vcpkg-cmake-get-vars:x64-linux-ci: 135 ms
+Installing 5/67 vcpkg-tool-meson:x64-linux-ci@1.9.0#3...
+vcpkg-tool-meson:x64-linux-ci@1.9.0#3 package ABI: 46a53b3610955edf5252361764ed80e6aa108776714d4d530379b53b0cb1cd3e
+Building vcpkg-tool-meson:x64-linux-ci@1.9.0#3...
+/home/user/workspace/repo/triplets/x64-linux-ci.cmake: info: loaded overlay triplet from here
+-- Installing: /opt/vcpkg/packages/vcpkg-tool-meson_x64-linux-ci/share/vcpkg-tool-meson/copyright
+-- Found Python version '3.12.3 at /opt/cmake/bin/python3'
+-- Using meson: /opt/vcpkg/downloads/tools/meson-1.9.0-d1fcc2/meson.py
+-- Performing post-build validation
+Elapsed time to handle vcpkg-tool-meson:x64-linux-ci: 144 ms
+Installing 6/67 libva:x64-linux-ci@2.20.0...
+libva:x64-linux-ci@2.20.0 package ABI: 7657d0ca6cb72648dbce4cd15ac7390ba3fd6691ffb978c6458c5eaa619695a9
+Building libva:x64-linux-ci@2.20.0...
+/home/user/workspace/repo/triplets/x64-linux-ci.cmake: info: loaded overlay triplet from here
+-- Found Python version '3.12.3 at /opt/cmake/bin/python3'
+-- Using meson: /opt/vcpkg/downloads/tools/meson-1.9.0-d1fcc2/meson.py
+-- Using cached intel-libva-2.20.0.tar.gz
+-- Cleaning sources at /opt/vcpkg/buildtrees/libva/src/2.20.0-f8f6abf47c.clean. Use --editable to skip cleaning for the packages you specify.
+-- Extracting source /opt/vcpkg/downloads/intel-libva-2.20.0.tar.gz
+-- Using source at /opt/vcpkg/buildtrees/libva/src/2.20.0-f8f6abf47c.clean
+CMake Warning at buildtrees/versioning_/versions/libva/739fb2042eb20d480f710b1bd73c772753e18523/portfile.cmake:16 (message):
+  You will need to install libdrm dependencies to use this port:
+
+  sudo apt install libdrm-dev
+
+Call Stack (most recent call first):
+  scripts/ports.cmake:206 (include)
+
+
+-- Configuring x64-linux-ci-rel
+-- Getting CMake variables for x64-linux-ci
+-- Loading CMake variables from /opt/vcpkg/buildtrees/libva/cmake-get-vars_C_CXX-x64-linux-ci.cmake.log
+-- Configuring x64-linux-ci-rel done
+-- Package x64-linux-ci-rel
+-- Fixing pkgconfig file: /opt/vcpkg/packages/libva_x64-linux-ci/lib/pkgconfig/libva-drm.pc
+-- Fixing pkgconfig file: /opt/vcpkg/packages/libva_x64-linux-ci/lib/pkgconfig/libva.pc
+-- Installing: /opt/vcpkg/packages/libva_x64-linux-ci/share/libva/copyright
+-- Adjusted RPATH of '/opt/vcpkg/packages/libva_x64-linux-ci/lib/libva-drm.so.2.2000.0' (From '' -> To '$ORIGIN')
+-- Adjusted RPATH of '/opt/vcpkg/packages/libva_x64-linux-ci/lib/libva.so.2.2000.0' (From '' -> To '$ORIGIN')
+-- Performing post-build validation
+Elapsed time to handle libva:x64-linux-ci: 3.9 s
+Installing 7/67 dav1d:x64-linux-ci@1.5.3...
+dav1d:x64-linux-ci@1.5.3 package ABI: 5f4958041b8211b952cc5b2743123c41724bdc65b2461821156296a50bd9ff4c
+Building dav1d:x64-linux-ci@1.5.3...
+/home/user/workspace/repo/triplets/x64-linux-ci.cmake: info: loaded overlay triplet from here
+-- Found Python version '3.12.3 at /opt/cmake/bin/python3'
+-- Using meson: /opt/vcpkg/downloads/tools/meson-1.9.0-d1fcc2/meson.py
+-- Using cached videolan-dav1d-1.5.3.tar.gz
+-- Cleaning sources at /opt/vcpkg/buildtrees/dav1d/src/1.5.3-f15718dea2.clean. Use --editable to skip cleaning for the packages you specify.
+-- Extracting source /opt/vcpkg/downloads/videolan-dav1d-1.5.3.tar.gz
+-- Using source at /opt/vcpkg/buildtrees/dav1d/src/1.5.3-f15718dea2.clean
+-- Configuring x64-linux-ci-rel
+-- Getting CMake variables for x64-linux-ci
+-- Loading CMake variables from /opt/vcpkg/buildtrees/dav1d/cmake-get-vars_C_CXX-x64-linux-ci.cmake.log
+-- Configuring x64-linux-ci-rel done
+-- Package x64-linux-ci-rel
+-- Fixing pkgconfig file: /opt/vcpkg/packages/dav1d_x64-linux-ci/lib/pkgconfig/dav1d.pc
+-- Installing: /opt/vcpkg/packages/dav1d_x64-linux-ci/share/dav1d/usage
+-- Installing: /opt/vcpkg/packages/dav1d_x64-linux-ci/share/dav1d/copyright
+-- Adjusted RPATH of '/opt/vcpkg/packages/dav1d_x64-linux-ci/lib/libdav1d.so.7.0.0' (From '' -> To '$ORIGIN')
+-- Performing post-build validation
+Elapsed time to handle dav1d:x64-linux-ci: 33 s
+Installing 8/67 pkgconf:x64-linux-ci@2.5.1#4...
+pkgconf:x64-linux-ci@2.5.1#4 package ABI: 12711343aa4b1de97635d028b1975101983580f410c9c967abe8da3ec0bc290e
+Building pkgconf:x64-linux-ci@2.5.1#4...
+/home/user/workspace/repo/triplets/x64-linux-ci.cmake: info: loaded overlay triplet from here
+-- Found Python version '3.12.3 at /opt/cmake/bin/python3'
+-- Using meson: /opt/vcpkg/downloads/tools/meson-1.9.0-d1fcc2/meson.py
+-- Using cached pkgconf-pkgconf-pkgconf-2.5.1.tar.gz
+-- Cleaning sources at /opt/vcpkg/buildtrees/pkgconf/src/conf-2.5.1-5bc6f0da3f.clean. Use --editable to skip cleaning for the packages you specify.
+-- Extracting source /opt/vcpkg/downloads/pkgconf-pkgconf-pkgconf-2.5.1.tar.gz
+-- Applying patch 001-unveil-fixes.patch
+-- Using source at /opt/vcpkg/buildtrees/pkgconf/src/conf-2.5.1-5bc6f0da3f.clean
+-- Configuring x64-linux-ci-rel
+-- Getting CMake variables for x64-linux-ci
+-- Loading CMake variables from /opt/vcpkg/buildtrees/pkgconf/cmake-get-vars_C_CXX-x64-linux-ci.cmake.log
+-- Configuring x64-linux-ci-rel done
+-- Package x64-linux-ci-rel
+-- Fixing pkgconfig file: /opt/vcpkg/packages/pkgconf_x64-linux-ci/lib/pkgconfig/libpkgconf.pc
+-- Installing: /opt/vcpkg/packages/pkgconf_x64-linux-ci/share/pkgconf/copyright
+-- Adjusted RPATH of '/opt/vcpkg/packages/pkgconf_x64-linux-ci/lib/libpkgconf.so.7.0.0' (From '' -> To '$ORIGIN')
+-- Adjusted RPATH of '/opt/vcpkg/packages/pkgconf_x64-linux-ci/tools/pkgconf/bomtool' (From '' -> To '$ORIGIN:$ORIGIN/../../lib')
+-- Adjusted RPATH of '/opt/vcpkg/packages/pkgconf_x64-linux-ci/tools/pkgconf/pkgconf' (From '' -> To '$ORIGIN:$ORIGIN/../../lib')
+-- Performing post-build validation
+Elapsed time to handle pkgconf:x64-linux-ci: 2.5 s
+Installing 9/67 vcpkg-pkgconfig-get-modules:x64-linux-ci@2024-04-03...
+vcpkg-pkgconfig-get-modules:x64-linux-ci@2024-04-03 package ABI: 7260d2198f510989542e0f8f836214c5a98222105a37e6fc7b4f4d6c2f443f0e
+Building vcpkg-pkgconfig-get-modules:x64-linux-ci@2024-04-03...
+/home/user/workspace/repo/triplets/x64-linux-ci.cmake: info: loaded overlay triplet from here
+-- Installing: /opt/vcpkg/packages/vcpkg-pkgconfig-get-modules_x64-linux-ci/share/vcpkg-pkgconfig-get-modules/copyright
+-- Performing post-build validation
+Elapsed time to handle vcpkg-pkgconfig-get-modules:x64-linux-ci: 136 ms
+Installing 10/67 ffmpeg[avcodec,avformat,core,dav1d,swresample,swscale,vaapi,zlib]:x64-linux-ci@7.1.2#5...
+ffmpeg[avcodec,avformat,core,dav1d,swresample,swscale,vaapi,zlib]:x64-linux-ci@7.1.2#5 package ABI: 1a4dd0d4fa701d71f95d9590c9a560afc14d70d2d96a6d89950f353b595628ef
+Building ffmpeg[avcodec,avformat,core,dav1d,swresample,swscale,vaapi,zlib]:x64-linux-ci@7.1.2#5...
+/home/user/workspace/repo/triplets/x64-linux-ci.cmake: info: loaded overlay triplet from here
+-- Using cached ffmpeg-ffmpeg-n7.1.2.tar.gz
+-- Cleaning sources at /opt/vcpkg/buildtrees/ffmpeg/src/n7.1.2-a0bd95c46c.clean. Use --editable to skip cleaning for the packages you specify.
+-- Extracting source /opt/vcpkg/downloads/ffmpeg-ffmpeg-n7.1.2.tar.gz
+-- Applying patch 0001-create-lib-libraries.patch
+-- Applying patch 0002-fix-msvc-link.patch
+-- Applying patch 0003-fix-windowsinclude.patch
+-- Applying patch 0004-dependencies.patch
+-- Applying patch 0005-fix-nasm.patch
+-- Applying patch 0007-fix-lib-naming.patch
+-- Applying patch 0013-define-WINVER.patch
+-- Applying patch 0020-fix-aarch64-libswscale.patch
+-- Applying patch 0024-fix-osx-host-c11.patch
+-- Applying patch 0040-ffmpeg-add-av_stream_get_first_dts-for-chromium.patch
+-- Applying patch 0041-add-const-for-opengl-definition.patch
+-- Applying patch 0043-fix-miss-head.patch
+-- Applying patch 0044-fix-vulkan-debug-callback-abi.patch
+-- Using source at /opt/vcpkg/buildtrees/ffmpeg/src/n7.1.2-a0bd95c46c.clean
+-- Getting CMake variables for x64-linux-ci
+-- Loading CMake variables from /opt/vcpkg/buildtrees/ffmpeg/cmake-get-vars_C_CXX-x64-linux-ci.cmake.log
+-- Building Options: --enable-pic --disable-doc --enable-debug --enable-runtime-cpudetect --disable-autodetect --target-os=linux --enable-pthreads --cc=cc --host_cc=cc --cxx=c++ --nm=nm --ar='ar' --ranlib=ranlib --strip=strip --disable-ffmpeg --disable-ffplay --disable-ffprobe --enable-avcodec --disable-avdevice --enable-avformat --disable-avfilter --disable-postproc --enable-swresample --enable-swscale --disable-alsa --disable-amf --disable-libaom --disable-libass --disable-avisynth --disable-bzlib --enable-libdav1d --disable-libfdk-aac --disable-libfontconfig --disable-libharfbuzz --disable-libfreetype --disable-libfribidi --disable-iconv --disable-libilbc --disable-lzma --disable-libmp3lame --disable-libmodplug --disable-cuda --disable-nvenc --disable-nvdec  --disable-cuvid --disable-ffnvcodec --disable-opencl --disable-opengl --disable-libopenh264 --disable-libopenjpeg --disable-libopenmpt --disable-openssl --disable-libopus --disable-sdl2 --disable-libsnappy --disable-libsoxr --disable-libspeex --disable-libssh --disable-libtensorflow --disable-libtesseract --disable-libtheora --disable-libvorbis --disable-libvpx --disable-vulkan --disable-libwebp --disable-libx264 --disable-libx265 --disable-libxml2 --enable-zlib --disable-libsrt --disable-libmfx --enable-vaapi --disable-libzmq --disable-librubberband --enable-cross-compile --disable-static --enable-shared --pkg-config="/bin/pkg-config"
+-- Building Release Options: --enable-optimizations --extra-ldflags=-L"/home/user/workspace/repo/ci-build/ubuntu24/vcpkg_installed/x64-linux-ci/lib"
+-- Building ffmpeg for Release
+-- Fixing pkgconfig file: /opt/vcpkg/packages/ffmpeg_x64-linux-ci/lib/pkgconfig/libavcodec.pc
+-- Fixing pkgconfig file: /opt/vcpkg/packages/ffmpeg_x64-linux-ci/lib/pkgconfig/libavformat.pc
+-- Fixing pkgconfig file: /opt/vcpkg/packages/ffmpeg_x64-linux-ci/lib/pkgconfig/libavutil.pc
+-- Fixing pkgconfig file: /opt/vcpkg/packages/ffmpeg_x64-linux-ci/lib/pkgconfig/libswresample.pc
+-- Fixing pkgconfig file: /opt/vcpkg/packages/ffmpeg_x64-linux-ci/lib/pkgconfig/libswscale.pc
+-- Dependencies (release):
+-- Dependencies (debug):
+-- Installing: /opt/vcpkg/packages/ffmpeg_x64-linux-ci/share/ffmpeg/usage
+-- Installing: /opt/vcpkg/packages/ffmpeg_x64-linux-ci/share/ffmpeg/copyright
+-- Adjusted RPATH of '/opt/vcpkg/packages/ffmpeg_x64-linux-ci/lib/libavcodec.so.61.19.101' (From '' -> To '$ORIGIN')
+-- Adjusted RPATH of '/opt/vcpkg/packages/ffmpeg_x64-linux-ci/lib/libavformat.so.61.7.100' (From '' -> To '$ORIGIN')
+-- Adjusted RPATH of '/opt/vcpkg/packages/ffmpeg_x64-linux-ci/lib/libavutil.so.59.39.100' (From '' -> To '$ORIGIN')
+-- Adjusted RPATH of '/opt/vcpkg/packages/ffmpeg_x64-linux-ci/lib/libswresample.so.5.3.100' (From '' -> To '$ORIGIN')
+-- Adjusted RPATH of '/opt/vcpkg/packages/ffmpeg_x64-linux-ci/lib/libswscale.so.8.3.100' (From '' -> To '$ORIGIN')
+-- Performing post-build validation
+Elapsed time to handle ffmpeg:x64-linux-ci: 3 min
+Installing 11/67 avcpp:x64-linux-ci@3.0.1.0...
+avcpp:x64-linux-ci@3.0.1.0 package ABI: 721fb85234f0bc972b9153526b65e72b6dee41dd7697a42aabd90e86fe443623
+Building avcpp:x64-linux-ci@3.0.1.0...
+/home/user/workspace/repo/triplets/x64-linux-ci.cmake: info: loaded overlay triplet from here
+/home/user/workspace/repo/portfiles/avcpp: info: installing overlay port from here
+-- Using cached h4tr3d-avcpp-6bf8c76b120cf2cc448d706ea22f112017803605.tar.gz
+-- Cleaning sources at /opt/vcpkg/buildtrees/avcpp/src/2017803605-f72da452a1.clean. Use --editable to skip cleaning for the packages you specify.
+-- Extracting source /opt/vcpkg/downloads/h4tr3d-avcpp-6bf8c76b120cf2cc448d706ea22f112017803605.tar.gz
+-- Applying patch 0002-av_init_packet_deprecation.patch
+-- Using source at /opt/vcpkg/buildtrees/avcpp/src/2017803605-f72da452a1.clean
+-- Configuring x64-linux-ci
+-- Building x64-linux-ci-rel
+-- Fixing pkgconfig file: /opt/vcpkg/packages/avcpp_x64-linux-ci/lib/pkgconfig/libavcpp.pc
+-- Adjusted RPATH of '/opt/vcpkg/packages/avcpp_x64-linux-ci/lib/libavcpp.so' (From '' -> To '$ORIGIN')
+-- Performing post-build validation
+Elapsed time to handle avcpp:x64-linux-ci: 9.1 s
+Installing 12/67 vcpkg-boost:x64-linux-ci@2025-03-29...
+vcpkg-boost:x64-linux-ci@2025-03-29 package ABI: 84c10095d9e8949c1c865aad033b1cfeca300026ebd47680dd3d559f4698afe7
+Building vcpkg-boost:x64-linux-ci@2025-03-29...
+/home/user/workspace/repo/triplets/x64-linux-ci.cmake: info: loaded overlay triplet from here
+-- Installing: /opt/vcpkg/packages/vcpkg-boost_x64-linux-ci/share/vcpkg-boost/usage.in
+-- Installing: /opt/vcpkg/packages/vcpkg-boost_x64-linux-ci/share/vcpkg-boost/boost-install.cmake
+-- Installing: /opt/vcpkg/packages/vcpkg-boost_x64-linux-ci/share/vcpkg-boost/vcpkg-port-config.cmake
+-- Installing: /opt/vcpkg/packages/vcpkg-boost_x64-linux-ci/share/vcpkg-boost/copyright
+-- Performing post-build validation
+Elapsed time to handle vcpkg-boost:x64-linux-ci: 132 ms
+Installing 13/67 boost-uninstall:x64-linux-ci@1.90.0#1...
+boost-uninstall:x64-linux-ci@1.90.0#1 package ABI: fa2fe1508de368177964b27e8ac9f1accef931672c747f2e303ea2411e488f92
+Building boost-uninstall:x64-linux-ci@1.90.0#1...
+/home/user/workspace/repo/triplets/x64-linux-ci.cmake: info: loaded overlay triplet from here
+--
+Please use the following command when you need to remove all boost ports/components:
+    "./vcpkg remove boost-uninstall:x64-linux-ci --recurse"
+
+-- Skipping post-build validation due to VCPKG_POLICY_EMPTY_PACKAGE
+Elapsed time to handle boost-uninstall:x64-linux-ci: 127 ms
+Installing 14/67 boost-cmake:x64-linux-ci@1.90.0#1...
+boost-cmake:x64-linux-ci@1.90.0#1 package ABI: f747bf30bd7648c4dc9e0cceddeffb33f02fa4c624588ebf0d25d9ac4cd0df9f
+Building boost-cmake:x64-linux-ci@1.90.0#1...
+/home/user/workspace/repo/triplets/x64-linux-ci.cmake: info: loaded overlay triplet from here
+-- Using cached boostorg-cmake-boost-1.90.0.tar.gz
+-- Cleaning sources at /opt/vcpkg/buildtrees/boost-cmake/src/ost-1.90.0-7084b3f473.clean. Use --editable to skip cleaning for the packages you specify.
+-- Extracting source /opt/vcpkg/downloads/boostorg-cmake-boost-1.90.0.tar.gz
+-- Applying patch 0001-vcpkg-build.patch
+-- Applying patch 0002-remove-prefix-and-suffix.patch
+-- Using source at /opt/vcpkg/buildtrees/boost-cmake/src/ost-1.90.0-7084b3f473.clean
+-- Configuring x64-linux-ci
+-- Building x64-linux-ci-rel
+-- Up-to-date: /opt/vcpkg/packages/boost-cmake_x64-linux-ci/share/boost/cmake-build
+-- Installing: /opt/vcpkg/packages/boost-cmake_x64-linux-ci/share/boost/cmake-build/BoostTest.cmake
+-- Installing: /opt/vcpkg/packages/boost-cmake_x64-linux-ci/share/boost/cmake-build/BoostTestJamfile.cmake
+-- Installing: /opt/vcpkg/packages/boost-cmake_x64-linux-ci/share/boost/cmake-build/BoostInstall.cmake
+-- Installing: /opt/vcpkg/packages/boost-cmake_x64-linux-ci/share/boost/cmake-build/BoostMessage.cmake
+-- Installing: /opt/vcpkg/packages/boost-cmake_x64-linux-ci/share/boost/cmake-build/BoostFetch.cmake
+-- Installing: /opt/vcpkg/packages/boost-cmake_x64-linux-ci/share/boost/cmake-build/BoostRoot.cmake
+-- Installing: /opt/vcpkg/packages/boost-cmake_x64-linux-ci/share/boost-cmake/vcpkg-port-config.cmake
+-- Installing: /opt/vcpkg/packages/boost-cmake_x64-linux-ci/share/boost-cmake/usage
+-- Using cached boost-1.90.0-LICENSE_1_0.txt
+-- Installing: /opt/vcpkg/packages/boost-cmake_x64-linux-ci/share/boost-cmake/copyright
+-- Performing post-build validation
+Elapsed time to handle boost-cmake:x64-linux-ci: 210 ms
+Installing 15/67 boost-headers:x64-linux-ci@1.90.0#1...
+boost-headers:x64-linux-ci@1.90.0#1 package ABI: d9db95e0f52611601fb143170c6cb5b52c374a889211b0f0b294d31a12a484c1
+Building boost-headers:x64-linux-ci@1.90.0#1...
+/home/user/workspace/repo/triplets/x64-linux-ci.cmake: info: loaded overlay triplet from here
+-- Using cached boostorg-headers-boost-1.90.0.tar.gz
+-- Cleaning sources at /opt/vcpkg/buildtrees/boost-headers/src/ost-1.90.0-cba82c0a22.clean. Use --editable to skip cleaning for the packages you specify.
+-- Extracting source /opt/vcpkg/downloads/boostorg-headers-boost-1.90.0.tar.gz
+-- Using source at /opt/vcpkg/buildtrees/boost-headers/src/ost-1.90.0-cba82c0a22.clean
+-- Configuring x64-linux-ci
+-- Building x64-linux-ci-rel
+-- Installing: /opt/vcpkg/packages/boost-headers_x64-linux-ci/share/boost-headers/copyright
+-- Performing post-build validation
+Elapsed time to handle boost-headers:x64-linux-ci: 367 ms
+Installing 16/67 boost-config:x64-linux-ci@1.90.0#1...
+boost-config:x64-linux-ci@1.90.0#1 package ABI: ac79e6cb272b2b662a4033d7b0b958ba387011c3b46d2bced4e73f1ef5b3cb03
+Building boost-config:x64-linux-ci@1.90.0#1...
+/home/user/workspace/repo/triplets/x64-linux-ci.cmake: info: loaded overlay triplet from here
+-- Using cached boostorg-config-boost-1.90.0.tar.gz
+-- Cleaning sources at /opt/vcpkg/buildtrees/boost-config/src/ost-1.90.0-12347e67c4.clean. Use --editable to skip cleaning for the packages you specify.
+-- Extracting source /opt/vcpkg/downloads/boostorg-config-boost-1.90.0.tar.gz
+-- Using source at /opt/vcpkg/buildtrees/boost-config/src/ost-1.90.0-12347e67c4.clean
+-- Configuring x64-linux-ci
+-- Building x64-linux-ci-rel
+-- Installing: /opt/vcpkg/packages/boost-config_x64-linux-ci/share/boost-config/copyright
+-- Performing post-build validation
+Elapsed time to handle boost-config:x64-linux-ci: 480 ms
+Installing 17/67 boost-static-assert:x64-linux-ci@1.90.0#1...
+boost-static-assert:x64-linux-ci@1.90.0#1 package ABI: af70f24033ca631c5831814ff74fb134a237d672c8ac7d3c1cbc3829610e62ec
+Building boost-static-assert:x64-linux-ci@1.90.0#1...
+/home/user/workspace/repo/triplets/x64-linux-ci.cmake: info: loaded overlay triplet from here
+-- Using cached boostorg-static_assert-boost-1.90.0.tar.gz
+-- Cleaning sources at /opt/vcpkg/buildtrees/boost-static-assert/src/ost-1.90.0-100358d51d.clean. Use --editable to skip cleaning for the packages you specify.
+-- Extracting source /opt/vcpkg/downloads/boostorg-static_assert-boost-1.90.0.tar.gz
+-- Using source at /opt/vcpkg/buildtrees/boost-static-assert/src/ost-1.90.0-100358d51d.clean
+-- Configuring x64-linux-ci
+-- Building x64-linux-ci-rel
+-- Installing: /opt/vcpkg/packages/boost-static-assert_x64-linux-ci/share/boost-static-assert/copyright
+-- Performing post-build validation
+Elapsed time to handle boost-static-assert:x64-linux-ci: 405 ms
+Installing 18/67 boost-type-traits:x64-linux-ci@1.90.0#1...
+boost-type-traits:x64-linux-ci@1.90.0#1 package ABI: 7ab29f5bae1130481b6d254671a9113edf6b3042a2273eabe09ceef2c7b333c5
+Building boost-type-traits:x64-linux-ci@1.90.0#1...
+/home/user/workspace/repo/triplets/x64-linux-ci.cmake: info: loaded overlay triplet from here
+-- Using cached boostorg-type_traits-boost-1.90.0.tar.gz
+-- Cleaning sources at /opt/vcpkg/buildtrees/boost-type-traits/src/ost-1.90.0-7486f52674.clean. Use --editable to skip cleaning for the packages you specify.
+-- Extracting source /opt/vcpkg/downloads/boostorg-type_traits-boost-1.90.0.tar.gz
+-- Using source at /opt/vcpkg/buildtrees/boost-type-traits/src/ost-1.90.0-7486f52674.clean
+-- Configuring x64-linux-ci
+-- Building x64-linux-ci-rel
+-- Installing: /opt/vcpkg/packages/boost-type-traits_x64-linux-ci/share/boost-type-traits/copyright
+-- Performing post-build validation
+Elapsed time to handle boost-type-traits:x64-linux-ci: 487 ms
+Installing 19/67 boost-assert:x64-linux-ci@1.90.0#1...
+boost-assert:x64-linux-ci@1.90.0#1 package ABI: 08976224355f5aa3750d029aa54d02ca26c0f1ace019e0aa11542ee5cd6ab367
+Building boost-assert:x64-linux-ci@1.90.0#1...
+/home/user/workspace/repo/triplets/x64-linux-ci.cmake: info: loaded overlay triplet from here
+-- Using cached boostorg-assert-boost-1.90.0.tar.gz
+-- Cleaning sources at /opt/vcpkg/buildtrees/boost-assert/src/ost-1.90.0-48c99ab941.clean. Use --editable to skip cleaning for the packages you specify.
+-- Extracting source /opt/vcpkg/downloads/boostorg-assert-boost-1.90.0.tar.gz
+-- Using source at /opt/vcpkg/buildtrees/boost-assert/src/ost-1.90.0-48c99ab941.clean
+-- Configuring x64-linux-ci
+-- Building x64-linux-ci-rel
+-- Installing: /opt/vcpkg/packages/boost-assert_x64-linux-ci/share/boost-assert/copyright
+-- Performing post-build validation
+Elapsed time to handle boost-assert:x64-linux-ci: 395 ms
+Installing 20/67 boost-throw-exception:x64-linux-ci@1.90.0#1...
+boost-throw-exception:x64-linux-ci@1.90.0#1 package ABI: 4933ecd678b951e8185427651698cc9d071195355c9872c42d9e7c571744d54a
+Building boost-throw-exception:x64-linux-ci@1.90.0#1...
+/home/user/workspace/repo/triplets/x64-linux-ci.cmake: info: loaded overlay triplet from here
+-- Using cached boostorg-throw_exception-boost-1.90.0.tar.gz
+-- Cleaning sources at /opt/vcpkg/buildtrees/boost-throw-exception/src/ost-1.90.0-a9b55e045d.clean. Use --editable to skip cleaning for the packages you specify.
+-- Extracting source /opt/vcpkg/downloads/boostorg-throw_exception-boost-1.90.0.tar.gz
+-- Using source at /opt/vcpkg/buildtrees/boost-throw-exception/src/ost-1.90.0-a9b55e045d.clean
+-- Configuring x64-linux-ci
+-- Building x64-linux-ci-rel
+-- Installing: /opt/vcpkg/packages/boost-throw-exception_x64-linux-ci/share/boost-throw-exception/copyright
+-- Performing post-build validation
+Elapsed time to handle boost-throw-exception:x64-linux-ci: 411 ms
+Installing 21/67 boost-move:x64-linux-ci@1.90.0#1...
+boost-move:x64-linux-ci@1.90.0#1 package ABI: 2ab4a3efab95bc9a52302b594c3bcb802abe77ffed37a6063f2fc448d6f4e8d2
+Building boost-move:x64-linux-ci@1.90.0#1...
+/home/user/workspace/repo/triplets/x64-linux-ci.cmake: info: loaded overlay triplet from here
+-- Using cached boostorg-move-boost-1.90.0.tar.gz
+-- Cleaning sources at /opt/vcpkg/buildtrees/boost-move/src/ost-1.90.0-0b8fc9ef7a.clean. Use --editable to skip cleaning for the packages you specify.
+-- Extracting source /opt/vcpkg/downloads/boostorg-move-boost-1.90.0.tar.gz
+-- Using source at /opt/vcpkg/buildtrees/boost-move/src/ost-1.90.0-0b8fc9ef7a.clean
+-- Configuring x64-linux-ci
+-- Building x64-linux-ci-rel
+-- Installing: /opt/vcpkg/packages/boost-move_x64-linux-ci/share/boost-move/copyright
+-- Performing post-build validation
+Elapsed time to handle boost-move:x64-linux-ci: 396 ms
+Installing 22/67 boost-core:x64-linux-ci@1.90.0#1...
+boost-core:x64-linux-ci@1.90.0#1 package ABI: 97fe5d673655f7886125a5f234d0bf33516adc2243f387686b68d0aed987edeb
+Building boost-core:x64-linux-ci@1.90.0#1...
+/home/user/workspace/repo/triplets/x64-linux-ci.cmake: info: loaded overlay triplet from here
+-- Using cached boostorg-core-boost-1.90.0.tar.gz
+-- Cleaning sources at /opt/vcpkg/buildtrees/boost-core/src/ost-1.90.0-711a16cc0a.clean. Use --editable to skip cleaning for the packages you specify.
+-- Extracting source /opt/vcpkg/downloads/boostorg-core-boost-1.90.0.tar.gz
+-- Using source at /opt/vcpkg/buildtrees/boost-core/src/ost-1.90.0-711a16cc0a.clean
+-- Configuring x64-linux-ci
+-- Building x64-linux-ci-rel
+-- Installing: /opt/vcpkg/packages/boost-core_x64-linux-ci/share/boost-core/copyright
+-- Performing post-build validation
+Elapsed time to handle boost-core:x64-linux-ci: 430 ms
+Installing 23/67 boost-preprocessor:x64-linux-ci@1.90.0#1...
+boost-preprocessor:x64-linux-ci@1.90.0#1 package ABI: 1f32bab024f09aa92a0996cc7fe4321ebde2c051d3a75a756fd275d6738509b5
+Building boost-preprocessor:x64-linux-ci@1.90.0#1...
+/home/user/workspace/repo/triplets/x64-linux-ci.cmake: info: loaded overlay triplet from here
+-- Using cached boostorg-preprocessor-boost-1.90.0.tar.gz
+-- Cleaning sources at /opt/vcpkg/buildtrees/boost-preprocessor/src/ost-1.90.0-2f2f4ed921.clean. Use --editable to skip cleaning for the packages you specify.
+-- Extracting source /opt/vcpkg/downloads/boostorg-preprocessor-boost-1.90.0.tar.gz
+-- Using source at /opt/vcpkg/buildtrees/boost-preprocessor/src/ost-1.90.0-2f2f4ed921.clean
+-- Configuring x64-linux-ci
+-- Building x64-linux-ci-rel
+-- Installing: /opt/vcpkg/packages/boost-preprocessor_x64-linux-ci/share/boost-preprocessor/copyright
+-- Performing post-build validation
+Elapsed time to handle boost-preprocessor:x64-linux-ci: 635 ms
+Installing 24/67 boost-concept-check:x64-linux-ci@1.90.0#1...
+boost-concept-check:x64-linux-ci@1.90.0#1 package ABI: 90cc003abda0a028b537412cf4cca02982ebbe5198b3ae7c40f7e1898ac12120
+Building boost-concept-check:x64-linux-ci@1.90.0#1...
+/home/user/workspace/repo/triplets/x64-linux-ci.cmake: info: loaded overlay triplet from here
+-- Using cached boostorg-concept_check-boost-1.90.0.tar.gz
+-- Cleaning sources at /opt/vcpkg/buildtrees/boost-concept-check/src/ost-1.90.0-cae984afcf.clean. Use --editable to skip cleaning for the packages you specify.
+-- Extracting source /opt/vcpkg/downloads/boostorg-concept_check-boost-1.90.0.tar.gz
+-- Using source at /opt/vcpkg/buildtrees/boost-concept-check/src/ost-1.90.0-cae984afcf.clean
+-- Configuring x64-linux-ci
+-- Building x64-linux-ci-rel
+-- Installing: /opt/vcpkg/packages/boost-concept-check_x64-linux-ci/share/boost-concept-check/copyright
+-- Performing post-build validation
+Elapsed time to handle boost-concept-check:x64-linux-ci: 382 ms
+Installing 25/67 boost-circular-buffer:x64-linux-ci@1.90.0#1...
+boost-circular-buffer:x64-linux-ci@1.90.0#1 package ABI: 409dfcb86882e7bd1044c55695df3cf2bf41a8459759c03acdcca23e3b4db3fb
+Building boost-circular-buffer:x64-linux-ci@1.90.0#1...
+/home/user/workspace/repo/triplets/x64-linux-ci.cmake: info: loaded overlay triplet from here
+-- Using cached boostorg-circular_buffer-boost-1.90.0.tar.gz
+-- Cleaning sources at /opt/vcpkg/buildtrees/boost-circular-buffer/src/ost-1.90.0-e8ba16326a.clean. Use --editable to skip cleaning for the packages you specify.
+-- Extracting source /opt/vcpkg/downloads/boostorg-circular_buffer-boost-1.90.0.tar.gz
+-- Using source at /opt/vcpkg/buildtrees/boost-circular-buffer/src/ost-1.90.0-e8ba16326a.clean
+-- Configuring x64-linux-ci
+-- Building x64-linux-ci-rel
+-- Installing: /opt/vcpkg/packages/boost-circular-buffer_x64-linux-ci/share/boost-circular-buffer/copyright
+-- Performing post-build validation
+Elapsed time to handle boost-circular-buffer:x64-linux-ci: 397 ms
+Installing 26/67 concurrentqueue:x64-linux-ci@1.0.4#1...
+concurrentqueue:x64-linux-ci@1.0.4#1 package ABI: 859fbd39afeb9103766b58f0ec8e938ad5eca8b21b142844809a1d5432360a78
+Building concurrentqueue:x64-linux-ci@1.0.4#1...
+/home/user/workspace/repo/triplets/x64-linux-ci.cmake: info: loaded overlay triplet from here
+-- Using cached cameron314-concurrentqueue-v1.0.4.tar.gz
+-- Cleaning sources at /opt/vcpkg/buildtrees/concurrentqueue/src/v1.0.4-ec5e592afa.clean. Use --editable to skip cleaning for the packages you specify.
+-- Extracting source /opt/vcpkg/downloads/cameron314-concurrentqueue-v1.0.4.tar.gz
+-- Using source at /opt/vcpkg/buildtrees/concurrentqueue/src/v1.0.4-ec5e592afa.clean
+-- Configuring x64-linux-ci
+-- Building x64-linux-ci-rel
+-- Performing post-build validation
+Elapsed time to handle concurrentqueue:x64-linux-ci: 656 ms
+Installing 27/67 fmt:x64-linux-ci@12.1.0...
+fmt:x64-linux-ci@12.1.0 package ABI: 2cd13a59c1c86cbde75bc7c19cbb4d5068a7d732b9b506d34aefc51cf1f76800
+Building fmt:x64-linux-ci@12.1.0...
+/home/user/workspace/repo/triplets/x64-linux-ci.cmake: info: loaded overlay triplet from here
+-- Using cached fmtlib-fmt-12.1.0.tar.gz
+-- Cleaning sources at /opt/vcpkg/buildtrees/fmt/src/12.1.0-54f1f91231.clean. Use --editable to skip cleaning for the packages you specify.
+-- Extracting source /opt/vcpkg/downloads/fmtlib-fmt-12.1.0.tar.gz
+-- Using source at /opt/vcpkg/buildtrees/fmt/src/12.1.0-54f1f91231.clean
+-- Configuring x64-linux-ci
+-- Building x64-linux-ci-rel
+-- Fixing pkgconfig file: /opt/vcpkg/packages/fmt_x64-linux-ci/lib/pkgconfig/fmt.pc
+-- Installing: /opt/vcpkg/packages/fmt_x64-linux-ci/share/fmt/usage
+-- Installing: /opt/vcpkg/packages/fmt_x64-linux-ci/share/fmt/copyright
+-- Adjusted RPATH of '/opt/vcpkg/packages/fmt_x64-linux-ci/lib/libfmt.so.12.1.0' (From '' -> To '$ORIGIN')
+-- Performing post-build validation
+Elapsed time to handle fmt:x64-linux-ci: 4.4 s
+Installing 28/67 libpng:x64-linux-ci@1.6.55...
+libpng:x64-linux-ci@1.6.55 package ABI: 86fd4d01cf7307c164539d28bae3fc5f8a66e67bbe753232ececc2ac57c6205a
+Building libpng:x64-linux-ci@1.6.55...
+/home/user/workspace/repo/triplets/x64-linux-ci.cmake: info: loaded overlay triplet from here
+-- Using cached pnggroup-libpng-v1.6.55.tar.gz
+-- Cleaning sources at /opt/vcpkg/buildtrees/libpng/src/v1.6.55-30e824c5a8.clean. Use --editable to skip cleaning for the packages you specify.
+-- Extracting source /opt/vcpkg/downloads/pnggroup-libpng-v1.6.55.tar.gz
+-- Applying patch cmake.patch
+-- Using source at /opt/vcpkg/buildtrees/libpng/src/v1.6.55-30e824c5a8.clean
+-- Configuring x64-linux-ci
+-- Building x64-linux-ci-rel
+-- Installing: /opt/vcpkg/packages/libpng_x64-linux-ci/share/png/vcpkg-cmake-wrapper.cmake
+-- Installing: /opt/vcpkg/packages/libpng_x64-linux-ci/share/libpng/libpng-config.cmake
+-- Fixing pkgconfig file: /opt/vcpkg/packages/libpng_x64-linux-ci/lib/pkgconfig/libpng16.pc
+-- Installing: /opt/vcpkg/packages/libpng_x64-linux-ci/lib/pkgconfig/libpng.pc
+-- Installing: /opt/vcpkg/packages/libpng_x64-linux-ci/share/libpng/usage
+-- Installing: /opt/vcpkg/packages/libpng_x64-linux-ci/share/libpng/copyright
+-- Adjusted RPATH of '/opt/vcpkg/packages/libpng_x64-linux-ci/lib/libpng16.so.16.55.0' (From '' -> To '$ORIGIN')
+-- Performing post-build validation
+Elapsed time to handle libpng:x64-linux-ci: 2.4 s
+Installing 29/67 bzip2[core,tool]:x64-linux-ci@1.0.8#6...
+bzip2[core,tool]:x64-linux-ci@1.0.8#6 package ABI: ec8bf9ad10068db61190841a8bb4d0da77d8733bc8e10369ac144ce1c2e1c84a
+Building bzip2[core,tool]:x64-linux-ci@1.0.8#6...
+/home/user/workspace/repo/triplets/x64-linux-ci.cmake: info: loaded overlay triplet from here
+-- Using cached bzip2-1.0.8.tar.gz
+-- Cleaning sources at /opt/vcpkg/buildtrees/bzip2/src/bzip2-1-336d4794a3.clean. Use --editable to skip cleaning for the packages you specify.
+-- Extracting source /opt/vcpkg/downloads/bzip2-1.0.8.tar.gz
+-- Applying patch fix-import-export-macros.patch
+-- Using source at /opt/vcpkg/buildtrees/bzip2/src/bzip2-1-336d4794a3.clean
+-- Configuring x64-linux-ci
+-- Building x64-linux-ci-rel
+-- Fixing pkgconfig file: /opt/vcpkg/packages/bzip2_x64-linux-ci/lib/pkgconfig/bzip2.pc
+-- Installing: /opt/vcpkg/packages/bzip2_x64-linux-ci/share/bzip2/copyright
+-- Adjusted RPATH of '/opt/vcpkg/packages/bzip2_x64-linux-ci/lib/libbz2.so.1.0.8' (From '' -> To '$ORIGIN')
+-- Adjusted RPATH of '/opt/vcpkg/packages/bzip2_x64-linux-ci/tools/bzip2/bzip2' (From '' -> To '$ORIGIN:$ORIGIN/../../lib')
+-- Adjusted RPATH of '/opt/vcpkg/packages/bzip2_x64-linux-ci/tools/bzip2/bzip2recover' (From '' -> To '$ORIGIN:$ORIGIN/../../lib')
+-- Performing post-build validation
+Elapsed time to handle bzip2:x64-linux-ci: 3.6 s
+Installing 30/67 brotli:x64-linux-ci@1.2.0...
+brotli:x64-linux-ci@1.2.0 package ABI: d2703cca38c6e2ec4bfdc0712ef7e5cd7fa4c13e154203c05388cc790f709abd
+Building brotli:x64-linux-ci@1.2.0...
+/home/user/workspace/repo/triplets/x64-linux-ci.cmake: info: loaded overlay triplet from here
+-- Using cached google-brotli-v1.2.0.tar.gz
+-- Cleaning sources at /opt/vcpkg/buildtrees/brotli/src/v1.2.0-7af7ca71ad.clean. Use --editable to skip cleaning for the packages you specify.
+-- Extracting source /opt/vcpkg/downloads/google-brotli-v1.2.0.tar.gz
+-- Applying patch install.patch
+-- Applying patch pkgconfig.patch
+-- Using source at /opt/vcpkg/buildtrees/brotli/src/v1.2.0-7af7ca71ad.clean
+-- Configuring x64-linux-ci
+-- Building x64-linux-ci-rel
+-- Fixing pkgconfig file: /opt/vcpkg/packages/brotli_x64-linux-ci/lib/pkgconfig/libbrotlicommon.pc
+-- Fixing pkgconfig file: /opt/vcpkg/packages/brotli_x64-linux-ci/lib/pkgconfig/libbrotlidec.pc
+-- Fixing pkgconfig file: /opt/vcpkg/packages/brotli_x64-linux-ci/lib/pkgconfig/libbrotlienc.pc
+-- Installing: /opt/vcpkg/packages/brotli_x64-linux-ci/share/brotli/usage
+-- Installing: /opt/vcpkg/packages/brotli_x64-linux-ci/share/brotli/copyright
+-- Adjusted RPATH of '/opt/vcpkg/packages/brotli_x64-linux-ci/lib/libbrotlicommon.so.1.2.0' (From '' -> To '$ORIGIN')
+-- Adjusted RPATH of '/opt/vcpkg/packages/brotli_x64-linux-ci/lib/libbrotlidec.so.1.2.0' (From '' -> To '$ORIGIN')
+-- Adjusted RPATH of '/opt/vcpkg/packages/brotli_x64-linux-ci/lib/libbrotlienc.so.1.2.0' (From '' -> To '$ORIGIN')
+-- Adjusted RPATH of '/opt/vcpkg/packages/brotli_x64-linux-ci/tools/brotli/brotli' (From '' -> To '$ORIGIN:$ORIGIN/../../lib')
+-- Performing post-build validation
+Elapsed time to handle brotli:x64-linux-ci: 8.4 s
+Installing 31/67 freetype[brotli,bzip2,core,png,zlib]:x64-linux-ci@2.13.3...
+freetype[brotli,bzip2,core,png,zlib]:x64-linux-ci@2.13.3 package ABI: 6de9511b6e3b467c397c514ad24d25666db237ecdfd1157984750a46699b2198
+Building freetype[brotli,bzip2,core,png,zlib]:x64-linux-ci@2.13.3...
+/home/user/workspace/repo/triplets/x64-linux-ci.cmake: info: loaded overlay triplet from here
+-- Using cached freetype-freetype-VER-2-13-3.tar.gz
+-- Cleaning sources at /opt/vcpkg/buildtrees/freetype/src/VER-2-13-3-8b423a038b.clean. Use --editable to skip cleaning for the packages you specify.
+-- Extracting source /opt/vcpkg/downloads/freetype-freetype-VER-2-13-3.tar.gz
+-- Applying patch 0003-Fix-UWP.patch
+-- Applying patch brotli-static.patch
+-- Applying patch bzip2.patch
+-- Applying patch fix-exports.patch
+-- Using source at /opt/vcpkg/buildtrees/freetype/src/VER-2-13-3-8b423a038b.clean
+-- Configuring x64-linux-ci
+-- Building x64-linux-ci-rel
+-- Fixing pkgconfig file: /opt/vcpkg/packages/freetype_x64-linux-ci/lib/pkgconfig/freetype2.pc
+-- Installing: /opt/vcpkg/packages/freetype_x64-linux-ci/share/freetype/usage
+-- Adjusted RPATH of '/opt/vcpkg/packages/freetype_x64-linux-ci/lib/libfreetype.so.6.20.2' (From '' -> To '$ORIGIN')
+-- Performing post-build validation
+Elapsed time to handle freetype:x64-linux-ci: 6.7 s
+Installing 32/67 glm:x64-linux-ci@1.0.3...
+glm:x64-linux-ci@1.0.3 package ABI: 30fc85480ba0617770fe61f02e9a42e50363f0b43efe9f9f2f5e84ece89eed15
+Building glm:x64-linux-ci@1.0.3...
+/home/user/workspace/repo/triplets/x64-linux-ci.cmake: info: loaded overlay triplet from here
+-- Note: glm only supports static library linkage. Building static library.
+-- Using cached g-truc-glm-1.0.3.tar.gz
+-- Cleaning sources at /opt/vcpkg/buildtrees/glm/src/1.0.3-65552ff9f1.clean. Use --editable to skip cleaning for the packages you specify.
+-- Extracting source /opt/vcpkg/downloads/g-truc-glm-1.0.3.tar.gz
+-- Using source at /opt/vcpkg/buildtrees/glm/src/1.0.3-65552ff9f1.clean
+-- Configuring x64-linux-ci
+-- Building x64-linux-ci-rel
+-- Installing: /opt/vcpkg/packages/glm_x64-linux-ci/share/glm/copyright
+-- Installing: /opt/vcpkg/packages/glm_x64-linux-ci/share/glm/usage
+-- Performing post-build validation
+Elapsed time to handle glm:x64-linux-ci: 5.4 s
+Installing 33/67 harfbuzz[core,freetype]:x64-linux-ci@12.3.2...
+harfbuzz[core,freetype]:x64-linux-ci@12.3.2 package ABI: 0916e61ea6f1b497d695f65add043ad35cc4b1b8c4ee742cce818ceff7efff03
+Building harfbuzz[core,freetype]:x64-linux-ci@12.3.2...
+/home/user/workspace/repo/triplets/x64-linux-ci.cmake: info: loaded overlay triplet from here
+-- Found Python version '3.12.3 at /opt/cmake/bin/python3'
+-- Using meson: /opt/vcpkg/downloads/tools/meson-1.9.0-d1fcc2/meson.py
+-- Using cached harfbuzz-harfbuzz-12.3.2.tar.gz
+-- Cleaning sources at /opt/vcpkg/buildtrees/harfbuzz/src/12.3.2-a52e4fc92f.clean. Use --editable to skip cleaning for the packages you specify.
+-- Extracting source /opt/vcpkg/downloads/harfbuzz-harfbuzz-12.3.2.tar.gz
+-- Applying patch fix-win32-build.patch
+-- Using source at /opt/vcpkg/buildtrees/harfbuzz/src/12.3.2-a52e4fc92f.clean
+-- Configuring x64-linux-ci-rel
+-- Getting CMake variables for x64-linux-ci
+-- Loading CMake variables from /opt/vcpkg/buildtrees/harfbuzz/cmake-get-vars_C_CXX-x64-linux-ci.cmake.log
+-- Configuring x64-linux-ci-rel done
+-- Package x64-linux-ci-rel
+-- Fixing pkgconfig file: /opt/vcpkg/packages/harfbuzz_x64-linux-ci/lib/pkgconfig/harfbuzz-subset.pc
+-- Fixing pkgconfig file: /opt/vcpkg/packages/harfbuzz_x64-linux-ci/lib/pkgconfig/harfbuzz.pc
+-- Installing: /opt/vcpkg/packages/harfbuzz_x64-linux-ci/share/harfbuzz/copyright
+-- Installing: /opt/vcpkg/packages/harfbuzz_x64-linux-ci/share/harfbuzz/usage
+-- Adjusted RPATH of '/opt/vcpkg/packages/harfbuzz_x64-linux-ci/lib/libharfbuzz-subset.so.0.61232.0' (From '' -> To '$ORIGIN')
+-- Adjusted RPATH of '/opt/vcpkg/packages/harfbuzz_x64-linux-ci/lib/libharfbuzz.so.0.61232.0' (From '' -> To '$ORIGIN')
+-- Performing post-build validation
+Elapsed time to handle harfbuzz:x64-linux-ci: 1.2 min
+Installing 34/67 fribidi:x64-linux-ci@1.0.16...
+fribidi:x64-linux-ci@1.0.16 package ABI: a4a9a688dfef91ccbe50374b33f17f404814da5781e9969864928ff6989536a1
+Building fribidi:x64-linux-ci@1.0.16...
+/home/user/workspace/repo/triplets/x64-linux-ci.cmake: info: loaded overlay triplet from here
+-- Found Python version '3.12.3 at /opt/cmake/bin/python3'
+-- Using meson: /opt/vcpkg/downloads/tools/meson-1.9.0-d1fcc2/meson.py
+-- Using cached fribidi-fribidi-v1.0.16.tar.gz
+-- Cleaning sources at /opt/vcpkg/buildtrees/fribidi/src/v1.0.16-f8a9d8c141.clean. Use --editable to skip cleaning for the packages you specify.
+-- Extracting source /opt/vcpkg/downloads/fribidi-fribidi-v1.0.16.tar.gz
+-- Applying patch meson-crosscompile.patch
+-- Using source at /opt/vcpkg/buildtrees/fribidi/src/v1.0.16-f8a9d8c141.clean
+-- Configuring x64-linux-ci-rel
+-- Getting CMake variables for x64-linux-ci
+-- Loading CMake variables from /opt/vcpkg/buildtrees/fribidi/cmake-get-vars_C_CXX-x64-linux-ci.cmake.log
+-- Configuring x64-linux-ci-rel done
+-- Package x64-linux-ci-rel
+-- Fixing pkgconfig file: /opt/vcpkg/packages/fribidi_x64-linux-ci/lib/pkgconfig/fribidi.pc
+-- Installing: /opt/vcpkg/packages/fribidi_x64-linux-ci/share/fribidi/copyright
+-- Adjusted RPATH of '/opt/vcpkg/packages/fribidi_x64-linux-ci/lib/libfribidi.so.0.4.0' (From '' -> To '$ORIGIN')
+-- Performing post-build validation
+Elapsed time to handle fribidi:x64-linux-ci: 2.8 s
+Installing 35/67 libiconv:x64-linux-ci@1.18#3...
+libiconv:x64-linux-ci@1.18#3 package ABI: c238aade8bf56467b6b1d3660f9e80da07e1338cc85fb9757496cc6a4d4a0f7e
+Building libiconv:x64-linux-ci@1.18#3...
+/home/user/workspace/repo/triplets/x64-linux-ci.cmake: info: loaded overlay triplet from here
+-- Not building GNU libiconv.
+-- Skipping post-build validation due to VCPKG_POLICY_EMPTY_PACKAGE
+Elapsed time to handle libiconv:x64-linux-ci: 131 ms
+Installing 36/67 pthreads:x64-linux-ci@3.0.0#14...
+pthreads:x64-linux-ci@3.0.0#14 package ABI: e08a8db293efbed183812fd0c05e999b34779d4e0f163d00f56ded50ba2063d6
+Building pthreads:x64-linux-ci@3.0.0#14...
+/home/user/workspace/repo/triplets/x64-linux-ci.cmake: info: loaded overlay triplet from here
+-- Skipping post-build validation due to VCPKG_POLICY_EMPTY_PACKAGE
+Elapsed time to handle pthreads:x64-linux-ci: 132 ms
+Installing 37/67 pthread:x64-linux-ci@3.0.0#2...
+pthread:x64-linux-ci@3.0.0#2 package ABI: c4d85900c4c52cc75d64a5bfd83aab72401515dc443ec1fc3899fd8b10946ade
+Building pthread:x64-linux-ci@3.0.0#2...
+/home/user/workspace/repo/triplets/x64-linux-ci.cmake: info: loaded overlay triplet from here
+-- Skipping post-build validation due to VCPKG_POLICY_EMPTY_PACKAGE
+Elapsed time to handle pthread:x64-linux-ci: 128 ms
+Installing 38/67 libuuid:x64-linux-ci@1.0.3#16...
+libuuid:x64-linux-ci@1.0.3#16 package ABI: 69517716349226d8c67a58f093e1d6efef4b3b8ee68fbb8527bf804c2c050e19
+Building libuuid:x64-linux-ci@1.0.3#16...
+/home/user/workspace/repo/triplets/x64-linux-ci.cmake: info: loaded overlay triplet from here
+-- Using cached libuuid-1.0.3.tar.gz
+-- Cleaning sources at /opt/vcpkg/buildtrees/libuuid/src/-f5e8f5589c.clean. Use --editable to skip cleaning for the packages you specify.
+-- Extracting source /opt/vcpkg/downloads/libuuid-1.0.3.tar.gz
+-- Using source at /opt/vcpkg/buildtrees/libuuid/src/-f5e8f5589c.clean
+-- Configuring x64-linux-ci
+-- Building x64-linux-ci-rel
+-- Installing: /opt/vcpkg/packages/libuuid_x64-linux-ci/lib/pkgconfig/uuid.pc
+-- Fixing pkgconfig file: /opt/vcpkg/packages/libuuid_x64-linux-ci/lib/pkgconfig/uuid.pc
+-- Installing: /opt/vcpkg/packages/libuuid_x64-linux-ci/share/libuuid/copyright
+-- Performing post-build validation
+Elapsed time to handle libuuid:x64-linux-ci: 487 ms
+Installing 39/67 vcpkg-make:x64-linux-ci@2026-01-01...
+vcpkg-make:x64-linux-ci@2026-01-01 package ABI: 4774945c740ccc080b1e7cec2364284fd33109e49d06bac554988f766c7f6a6c
+Building vcpkg-make:x64-linux-ci@2026-01-01...
+/home/user/workspace/repo/triplets/x64-linux-ci.cmake: info: loaded overlay triplet from here
+-- Using cached automake-1.17.tar.gz
+-- Cleaning sources at /opt/vcpkg/buildtrees/vcpkg-make/src/automake-1-c362683103.clean. Use --editable to skip cleaning for the packages you specify.
+-- Extracting source /opt/vcpkg/downloads/automake-1.17.tar.gz
+-- Using source at /opt/vcpkg/buildtrees/vcpkg-make/src/automake-1-c362683103.clean
+-- Getting CMake variables for x64-linux-ci
+-- Loading CMake variables from /opt/vcpkg/buildtrees/vcpkg-make/cmake-get-vars_C_CXX-x64-linux-ci.cmake.log
+-- x64-linux-ci autotools triplet: x86_64-pc-linux-gnu (from config.guess)
+-- Performing post-build validation
+Elapsed time to handle vcpkg-make:x64-linux-ci: 678 ms
+Installing 40/67 gperf:x64-linux-ci@3.3...
+gperf:x64-linux-ci@3.3 package ABI: 7735116f0881f8fabede8864004cd8002f9ca4567d1a3ead75a0dc3fdfebd939
+Building gperf:x64-linux-ci@3.3...
+/home/user/workspace/repo/triplets/x64-linux-ci.cmake: info: loaded overlay triplet from here
+-- Using cached gperf-3.3.tar.gz
+-- Cleaning sources at /opt/vcpkg/buildtrees/gperf/src/gperf-3-b814f52c10.clean. Use --editable to skip cleaning for the packages you specify.
+-- Extracting source /opt/vcpkg/downloads/gperf-3.3.tar.gz
+-- Using source at /opt/vcpkg/buildtrees/gperf/src/gperf-3-b814f52c10.clean
+-- Getting CMake variables for x64-linux-ci
+-- Loading CMake variables from /opt/vcpkg/buildtrees/gperf/cmake-get-vars_C_CXX-x64-linux-ci.cmake.log
+-- Generating configure for x64-linux-ci
+-- Finished generating configure for x64-linux-ci
+-- Configuring x64-linux-ci-rel
+-- Building/Installing x64-linux-ci-rel
+-- Making target 'all' for x64-linux-ci-rel
+-- Making target 'install' for x64-linux-ci-rel
+-- Installing: /opt/vcpkg/packages/gperf_x64-linux-ci/share/gperf/copyright
+-- Adjusted RPATH of '/opt/vcpkg/packages/gperf_x64-linux-ci/tools/gperf/gperf' (From '' -> To '$ORIGIN:$ORIGIN/../../lib')
+-- Performing post-build validation
+Elapsed time to handle gperf:x64-linux-ci: 24 s
+Installing 41/67 expat:x64-linux-ci@2.7.4...
+expat:x64-linux-ci@2.7.4 package ABI: 12795709232bab11aa2878f77e21ddfec60d16647bd842621d11d2eda8463d28
+Building expat:x64-linux-ci@2.7.4...
+/home/user/workspace/repo/triplets/x64-linux-ci.cmake: info: loaded overlay triplet from here
+-- Using cached libexpat-libexpat-R_2_7_4.tar.gz
+-- Cleaning sources at /opt/vcpkg/buildtrees/expat/src/R_2_7_4-a99b9cb3be.clean. Use --editable to skip cleaning for the packages you specify.
+-- Extracting source /opt/vcpkg/downloads/libexpat-libexpat-R_2_7_4.tar.gz
+-- Using source at /opt/vcpkg/buildtrees/expat/src/R_2_7_4-a99b9cb3be.clean
+-- Configuring x64-linux-ci
+-- Building x64-linux-ci-rel
+-- Fixing pkgconfig file: /opt/vcpkg/packages/expat_x64-linux-ci/lib/pkgconfig/expat.pc
+-- Installing: /opt/vcpkg/packages/expat_x64-linux-ci/share/expat/copyright
+-- Adjusted RPATH of '/opt/vcpkg/packages/expat_x64-linux-ci/lib/libexpat.so.1.11.2' (From '' -> To '$ORIGIN')
+-- Performing post-build validation
+Elapsed time to handle expat:x64-linux-ci: 3.9 s
+Installing 42/67 dirent:x64-linux-ci@1.26...
+dirent:x64-linux-ci@1.26 package ABI: 7f592ca772fc39fe558334d45af1b2379aedfcb1afbce5b828c2bc8967db4c73
+Building dirent:x64-linux-ci@1.26...
+/home/user/workspace/repo/triplets/x64-linux-ci.cmake: info: loaded overlay triplet from here
+-- Skipping post-build validation due to VCPKG_POLICY_EMPTY_PACKAGE
+Elapsed time to handle dirent:x64-linux-ci: 139 ms
+Installing 43/67 fontconfig[core,iconv]:x64-linux-ci@2.17.1#1...
+fontconfig[core,iconv]:x64-linux-ci@2.17.1#1 package ABI: 0c152701014c8df1d8ee5148a9905ee0c31e69dfefd6540b8679fa89ebd18788
+Building fontconfig[core,iconv]:x64-linux-ci@2.17.1#1...
+/home/user/workspace/repo/triplets/x64-linux-ci.cmake: info: loaded overlay triplet from here
+-- Found Python version '3.12.3 at /opt/cmake/bin/python3'
+-- Using meson: /opt/vcpkg/downloads/tools/meson-1.9.0-d1fcc2/meson.py
+-- Using cached fontconfig-fontconfig-2.17.1.tar.gz
+-- Cleaning sources at /opt/vcpkg/buildtrees/fontconfig/src/2.17.1-6edd6fe145.clean. Use --editable to skip cleaning for the packages you specify.
+-- Extracting source /opt/vcpkg/downloads/fontconfig-fontconfig-2.17.1.tar.gz
+-- Applying patch dllexport.diff
+-- Applying patch no-etc-symlinks.patch
+-- Applying patch libgetopt.patch
+-- Applying patch libintl.diff
+-- Applying patch fix-wasm-shared-memory-atomics.patch
+-- Using source at /opt/vcpkg/buildtrees/fontconfig/src/2.17.1-6edd6fe145.clean
+-- Configuring x64-linux-ci-rel
+-- Getting CMake variables for x64-linux-ci
+-- Loading CMake variables from /opt/vcpkg/buildtrees/fontconfig/cmake-get-vars_C_CXX-x64-linux-ci.cmake.log
+-- Configuring x64-linux-ci-rel done
+-- Package x64-linux-ci-rel
+-- Fixing pkgconfig file: /opt/vcpkg/packages/fontconfig_x64-linux-ci/lib/pkgconfig/fontconfig.pc
+-- Installing: /opt/vcpkg/packages/fontconfig_x64-linux-ci/share/fontconfig/usage
+-- Installing: /opt/vcpkg/packages/fontconfig_x64-linux-ci/share/fontconfig/copyright
+-- Adjusted RPATH of '/opt/vcpkg/packages/fontconfig_x64-linux-ci/lib/libfontconfig.so.1.16.0' (From '' -> To '$ORIGIN')
+-- Performing post-build validation
+Elapsed time to handle fontconfig:x64-linux-ci: 8.9 s
+Installing 44/67 libass:x64-linux-ci@0.17.4...
+libass:x64-linux-ci@0.17.4 package ABI: 717f3b83a851053e8a9a81c5abda1aac9aa3747b3ea12af820453fc06cb34085
+Building libass:x64-linux-ci@0.17.4...
+/home/user/workspace/repo/triplets/x64-linux-ci.cmake: info: loaded overlay triplet from here
+-- Using cached libass-libass-0.17.4.tar.gz
+-- Cleaning sources at /opt/vcpkg/buildtrees/libass/src/0.17.4-f7a4c39a9c.clean. Use --editable to skip cleaning for the packages you specify.
+-- Extracting source /opt/vcpkg/downloads/libass-libass-0.17.4.tar.gz
+-- Using source at /opt/vcpkg/buildtrees/libass/src/0.17.4-f7a4c39a9c.clean
+-- Configuring x64-linux-ci
+-- Building x64-linux-ci-rel
+-- Fixing pkgconfig file: /opt/vcpkg/packages/libass_x64-linux-ci/lib/pkgconfig/libass.pc
+-- Installing: /opt/vcpkg/packages/libass_x64-linux-ci/share/libass/copyright
+-- Adjusted RPATH of '/opt/vcpkg/packages/libass_x64-linux-ci/lib/libass.so' (From '' -> To '$ORIGIN')
+-- Performing post-build validation
+Elapsed time to handle libass:x64-linux-ci: 3.1 s
+Installing 45/67 libogg:x64-linux-ci@1.3.6#1...
+libogg:x64-linux-ci@1.3.6#1 package ABI: 2cf6a417d48de8b5a42f75bd222da50ad478939cdb7a85e3ae59e2d022ae33c7
+Building libogg:x64-linux-ci@1.3.6#1...
+/home/user/workspace/repo/triplets/x64-linux-ci.cmake: info: loaded overlay triplet from here
+-- Using cached xiph-ogg-v1.3.6.tar.gz
+-- Cleaning sources at /opt/vcpkg/buildtrees/libogg/src/v1.3.6-4ad11a7327.clean. Use --editable to skip cleaning for the packages you specify.
+-- Extracting source /opt/vcpkg/downloads/xiph-ogg-v1.3.6.tar.gz
+-- Using source at /opt/vcpkg/buildtrees/libogg/src/v1.3.6-4ad11a7327.clean
+-- Configuring x64-linux-ci
+-- Building x64-linux-ci-rel
+-- Fixing pkgconfig file: /opt/vcpkg/packages/libogg_x64-linux-ci/lib/pkgconfig/ogg.pc
+-- Installing: /opt/vcpkg/packages/libogg_x64-linux-ci/share/libogg/copyright
+-- Adjusted RPATH of '/opt/vcpkg/packages/libogg_x64-linux-ci/lib/libogg.so.0.8.6' (From '' -> To '$ORIGIN')
+-- Performing post-build validation
+Elapsed time to handle libogg:x64-linux-ci: 1.7 s
+Installing 46/67 libvorbis:x64-linux-ci@1.3.7#4...
+libvorbis:x64-linux-ci@1.3.7#4 package ABI: 06ed1d5f9aab78a65c1e0a4b9c9c4722e2b1b2651a35a50c31b1cbbdec160f55
+Building libvorbis:x64-linux-ci@1.3.7#4...
+/home/user/workspace/repo/triplets/x64-linux-ci.cmake: info: loaded overlay triplet from here
+-- Using cached xiph-vorbis-v1.3.7.tar.gz
+-- Cleaning sources at /opt/vcpkg/buildtrees/libvorbis/src/v1.3.7-c32164610e.clean. Use --editable to skip cleaning for the packages you specify.
+-- Extracting source /opt/vcpkg/downloads/xiph-vorbis-v1.3.7.tar.gz
+-- Applying patch 0001-Dont-export-vorbisenc-functions.patch
+-- Applying patch 0002-Fixup-pkgconfig-libs.patch
+-- Applying patch 0003-def-mingw-compat.patch
+-- Applying patch 0004-ogg-find-dependency.patch
+-- Using source at /opt/vcpkg/buildtrees/libvorbis/src/v1.3.7-c32164610e.clean
+-- Configuring x64-linux-ci
+-- Building x64-linux-ci-rel
+-- Fixing pkgconfig file: /opt/vcpkg/packages/libvorbis_x64-linux-ci/lib/pkgconfig/vorbis.pc
+-- Fixing pkgconfig file: /opt/vcpkg/packages/libvorbis_x64-linux-ci/lib/pkgconfig/vorbisenc.pc
+-- Fixing pkgconfig file: /opt/vcpkg/packages/libvorbis_x64-linux-ci/lib/pkgconfig/vorbisfile.pc
+-- Installing: /opt/vcpkg/packages/libvorbis_x64-linux-ci/share/libvorbis/usage
+-- Installing: /opt/vcpkg/packages/libvorbis_x64-linux-ci/share/libvorbis/copyright
+-- Adjusted RPATH of '/opt/vcpkg/packages/libvorbis_x64-linux-ci/lib/libvorbis.so.0.4.9' (From '' -> To '$ORIGIN')
+-- Adjusted RPATH of '/opt/vcpkg/packages/libvorbis_x64-linux-ci/lib/libvorbisenc.so.2.0.12' (From '' -> To '$ORIGIN')
+-- Adjusted RPATH of '/opt/vcpkg/packages/libvorbis_x64-linux-ci/lib/libvorbisfile.so.3.3.8' (From '' -> To '$ORIGIN')
+-- Performing post-build validation
+Elapsed time to handle libvorbis:x64-linux-ci: 2.8 s
+Installing 47/67 libwebp[core,libwebpmux,nearlossless,simd]:x64-linux-ci@1.6.0#2...
+libwebp[core,libwebpmux,nearlossless,simd]:x64-linux-ci@1.6.0#2 package ABI: 53978ffcf733570a4a381fc49df608c9ba0c963e367eb8bddc19b0ae0ba45abc
+Building libwebp[core,libwebpmux,nearlossless,simd]:x64-linux-ci@1.6.0#2...
+/home/user/workspace/repo/triplets/x64-linux-ci.cmake: info: loaded overlay triplet from here
+-- Using cached webmproject-libwebp-v1.6.0.tar.gz
+-- Cleaning sources at /opt/vcpkg/buildtrees/libwebp/src/v1.6.0-bbdfbfe91d.clean. Use --editable to skip cleaning for the packages you specify.
+-- Extracting source /opt/vcpkg/downloads/webmproject-libwebp-v1.6.0.tar.gz
+-- Applying patch 0002-cmake-config.patch
+-- Applying patch 0003-simd.patch
+-- Applying patch 0008-sdl.patch
+-- Applying patch 0009-cpufeatures-android.patch
+-- Using source at /opt/vcpkg/buildtrees/libwebp/src/v1.6.0-bbdfbfe91d.clean
+-- Configuring x64-linux-ci
+-- Building x64-linux-ci-rel
+-- Fixing pkgconfig file: /opt/vcpkg/packages/libwebp_x64-linux-ci/lib/pkgconfig/libsharpyuv.pc
+-- Fixing pkgconfig file: /opt/vcpkg/packages/libwebp_x64-linux-ci/lib/pkgconfig/libwebp.pc
+-- Fixing pkgconfig file: /opt/vcpkg/packages/libwebp_x64-linux-ci/lib/pkgconfig/libwebpdecoder.pc
+-- Fixing pkgconfig file: /opt/vcpkg/packages/libwebp_x64-linux-ci/lib/pkgconfig/libwebpdemux.pc
+-- Fixing pkgconfig file: /opt/vcpkg/packages/libwebp_x64-linux-ci/lib/pkgconfig/libwebpmux.pc
+-- Installing: /opt/vcpkg/packages/libwebp_x64-linux-ci/share/libwebp/usage
+-- Adjusted RPATH of '/opt/vcpkg/packages/libwebp_x64-linux-ci/lib/libsharpyuv.so.0.1.2' (From '/opt/vcpkg/packages/libwebp_x64-linux-ci/lib' -> To '$ORIGIN')
+-- Adjusted RPATH of '/opt/vcpkg/packages/libwebp_x64-linux-ci/lib/libwebp.so.7.2.0' (From '/opt/vcpkg/packages/libwebp_x64-linux-ci/lib' -> To '$ORIGIN')
+-- Adjusted RPATH of '/opt/vcpkg/packages/libwebp_x64-linux-ci/lib/libwebpdecoder.so.3.2.0' (From '/opt/vcpkg/packages/libwebp_x64-linux-ci/lib' -> To '$ORIGIN')
+-- Adjusted RPATH of '/opt/vcpkg/packages/libwebp_x64-linux-ci/lib/libwebpdemux.so.2.0.17' (From '/opt/vcpkg/packages/libwebp_x64-linux-ci/lib' -> To '$ORIGIN')
+-- Adjusted RPATH of '/opt/vcpkg/packages/libwebp_x64-linux-ci/lib/libwebpmux.so.3.1.2' (From '/opt/vcpkg/packages/libwebp_x64-linux-ci/lib' -> To '$ORIGIN')
+-- Performing post-build validation
+Elapsed time to handle libwebp:x64-linux-ci: 9.4 s
+Installing 48/67 alsa:x64-linux-ci@1.2.15.3...
+alsa:x64-linux-ci@1.2.15.3 package ABI: 387b03edbbd0509178c066ac0f800c90f0de866dff4754d09e31ead1bf5a2796
+Building alsa:x64-linux-ci@1.2.15.3...
+/home/user/workspace/repo/triplets/x64-linux-ci.cmake: info: loaded overlay triplet from here
+alsa currently requires the following programs from the system package manager:
+    autoconf autoheader aclocal automake libtoolize
+On Debian and Ubuntu derivatives:
+    sudo apt install autoconf libtool
+On recent Red Hat and Fedora derivatives:
+    sudo dnf install autoconf libtool
+On Arch Linux and derivatives:
+    sudo pacman -S autoconf automake libtool
+On Alpine:
+    apk add autoconf automake libtool
+-- Using cached alsa-project-alsa-lib-v1.2.15.3.tar.gz
+-- Cleaning sources at /opt/vcpkg/buildtrees/alsa/src/v1.2.15.3-f23c25925a.clean. Use --editable to skip cleaning for the packages you specify.
+-- Extracting source /opt/vcpkg/downloads/alsa-project-alsa-lib-v1.2.15.3.tar.gz
+-- Applying patch fix-plugin-dir.patch
+-- Applying patch libdl.diff
+-- Using source at /opt/vcpkg/buildtrees/alsa/src/v1.2.15.3-f23c25925a.clean
+-- Getting CMake variables for x64-linux-ci-rel
+-- Generating configure for x64-linux-ci
+-- Finished generating configure for x64-linux-ci
+-- Configuring x64-linux-ci-rel
+-- Building x64-linux-ci-rel
+-- Installing x64-linux-ci-rel
+-- Fixing pkgconfig file: /opt/vcpkg/packages/alsa_x64-linux-ci/lib/pkgconfig/alsa-topology.pc
+-- Fixing pkgconfig file: /opt/vcpkg/packages/alsa_x64-linux-ci/lib/pkgconfig/alsa.pc
+-- Installing: /opt/vcpkg/packages/alsa_x64-linux-ci/share/alsa/vcpkg-cmake-wrapper.cmake
+-- Installing: /opt/vcpkg/packages/alsa_x64-linux-ci/share/alsa/copyright
+-- Installing: /opt/vcpkg/packages/alsa_x64-linux-ci/share/alsa/usage
+-- Adjusted RPATH of '/opt/vcpkg/packages/alsa_x64-linux-ci/lib/libasound.so.2.0.0' (From '' -> To '$ORIGIN')
+-- Adjusted RPATH of '/opt/vcpkg/packages/alsa_x64-linux-ci/lib/libatopology.so.2.0.0' (From '/home/user/workspace/repo/ci-build/ubuntu24/vcpkg_installed/x64-linux-ci/lib' -> To '$ORIGIN')
+-- Adjusted RPATH of '/opt/vcpkg/packages/alsa_x64-linux-ci/tools/alsa/bin/aserver' (From '/home/user/workspace/repo/ci-build/ubuntu24/vcpkg_installed/x64-linux-ci/lib' -> To '$ORIGIN:$ORIGIN/../../../lib')
+-- Performing post-build validation
+Elapsed time to handle alsa:x64-linux-ci: 27 s
+Installing 49/67 openal-soft:x64-linux-ci@1.25.1...
+openal-soft:x64-linux-ci@1.25.1 package ABI: 695265738ac429543b1471c19067cc74ce67729cbea3876054a4055adab3a035
+Building openal-soft:x64-linux-ci@1.25.1...
+/home/user/workspace/repo/triplets/x64-linux-ci.cmake: info: loaded overlay triplet from here
+-- Using cached kcat-openal-soft-1.25.1.tar.gz
+-- Cleaning sources at /opt/vcpkg/buildtrees/openal-soft/src/1.25.1-16ea79609e.clean. Use --editable to skip cleaning for the packages you specify.
+-- Extracting source /opt/vcpkg/downloads/kcat-openal-soft-1.25.1.tar.gz
+-- Applying patch pkgconfig-cxx.diff
+-- Applying patch devendor-fmt.diff
+-- Using source at /opt/vcpkg/buildtrees/openal-soft/src/1.25.1-16ea79609e.clean
+-- Configuring x64-linux-ci
+-- Building x64-linux-ci-rel
+-- Fixing pkgconfig file: /opt/vcpkg/packages/openal-soft_x64-linux-ci/lib/pkgconfig/openal.pc
+-- Adjusted RPATH of '/opt/vcpkg/packages/openal-soft_x64-linux-ci/lib/libopenal.so.1.25.1' (From '' -> To '$ORIGIN')
+-- Performing post-build validation
+Elapsed time to handle openal-soft:x64-linux-ci: 1 min
+Installing 50/67 pugixml:x64-linux-ci@1.15#1...
+pugixml:x64-linux-ci@1.15#1 package ABI: 58e91e1cfc1dc8144281817b8f62ece37f892ab072f1b354b8f579697546c379
+Building pugixml:x64-linux-ci@1.15#1...
+/home/user/workspace/repo/triplets/x64-linux-ci.cmake: info: loaded overlay triplet from here
+Downloading https://github.com/zeux/pugixml/archive/v1.15.tar.gz -> zeux-pugixml-v1.15.tar.gz
+Successfully downloaded zeux-pugixml-v1.15.tar.gz
+-- Extracting source /opt/vcpkg/downloads/zeux-pugixml-v1.15.tar.gz
+-- Using source at /opt/vcpkg/buildtrees/pugixml/src/v1.15-8a9beec4a5.clean
+-- Configuring x64-linux-ci
+-- Building x64-linux-ci-rel
+-- Fixing pkgconfig file: /opt/vcpkg/packages/pugixml_x64-linux-ci/lib/pkgconfig/pugixml.pc
+-- Installing: /opt/vcpkg/packages/pugixml_x64-linux-ci/share/pugixml/copyright
+-- Adjusted RPATH of '/opt/vcpkg/packages/pugixml_x64-linux-ci/lib/libpugixml.so.1.15' (From '' -> To '$ORIGIN')
+-- Performing post-build validation
+Elapsed time to handle pugixml:x64-linux-ci: 6.3 s
+Installing 51/67 readerwriterqueue:x64-linux-ci@1.0.7...
+readerwriterqueue:x64-linux-ci@1.0.7 package ABI: d3e0071ab08e8cec0bbdf6ce02cf7ffc9d31a99452f84bcd2c567a7a82666b68
+Building readerwriterqueue:x64-linux-ci@1.0.7...
+/home/user/workspace/repo/triplets/x64-linux-ci.cmake: info: loaded overlay triplet from here
+Downloading https://github.com/cameron314/readerwriterqueue/archive/v1.0.7.tar.gz -> cameron314-readerwriterqueue-v1.0.7.tar.gz
+Successfully downloaded cameron314-readerwriterqueue-v1.0.7.tar.gz
+-- Extracting source /opt/vcpkg/downloads/cameron314-readerwriterqueue-v1.0.7.tar.gz
+-- Using source at /opt/vcpkg/buildtrees/readerwriterqueue/src/v1.0.7-43efc1ba7f.clean
+-- Configuring x64-linux-ci
+-- Building x64-linux-ci-rel
+-- Installing: /opt/vcpkg/packages/readerwriterqueue_x64-linux-ci/share/readerwriterqueue/copyright
+-- Performing post-build validation
+Elapsed time to handle readerwriterqueue:x64-linux-ci: 2 s
+Installing 52/67 zstd:x64-linux-ci@1.5.7...
+zstd:x64-linux-ci@1.5.7 package ABI: acd8942e755906b13273d0409e249fd1170ee283f388911da7405e63b58c722c
+Building zstd:x64-linux-ci@1.5.7...
+/home/user/workspace/repo/triplets/x64-linux-ci.cmake: info: loaded overlay triplet from here
+Downloading https://github.com/facebook/zstd/archive/v1.5.7.tar.gz -> facebook-zstd-v1.5.7.tar.gz
+Successfully downloaded facebook-zstd-v1.5.7.tar.gz
+-- Extracting source /opt/vcpkg/downloads/facebook-zstd-v1.5.7.tar.gz
+-- Applying patch no-static-suffix.patch
+-- Applying patch fix-emscripten-and-clang-cl.patch
+-- Applying patch fix-windows-rc-compile.patch
+-- Using source at /opt/vcpkg/buildtrees/zstd/src/v1.5.7-bb6cae2b2e.clean
+-- Configuring x64-linux-ci
+-- Building x64-linux-ci-rel
+-- Fixing pkgconfig file: /opt/vcpkg/packages/zstd_x64-linux-ci/lib/pkgconfig/libzstd.pc
+-- Installing: /opt/vcpkg/packages/zstd_x64-linux-ci/share/zstd/usage
+-- Adjusted RPATH of '/opt/vcpkg/packages/zstd_x64-linux-ci/lib/libzstd.so.1.5.7' (From '' -> To '$ORIGIN')
+-- Performing post-build validation
+Elapsed time to handle zstd:x64-linux-ci: 11 s
+Installing 53/67 vcpkg-get-python-packages:x64-linux-ci@2025-04-05...
+vcpkg-get-python-packages:x64-linux-ci@2025-04-05 package ABI: 48fecd474a61edfb114d5c550bda5a33ae42592e13e8e88888b19ac67ca259ef
+Building vcpkg-get-python-packages:x64-linux-ci@2025-04-05...
+/home/user/workspace/repo/triplets/x64-linux-ci.cmake: info: loaded overlay triplet from here
+-- Skipping post-build validation due to VCPKG_POLICY_EMPTY_PACKAGE
+Elapsed time to handle vcpkg-get-python-packages:x64-linux-ci: 158 ms
+Installing 54/67 lz4:x64-linux-ci@1.10.0...
+lz4:x64-linux-ci@1.10.0 package ABI: 3108ca153053fc249f6923676628b4b9254081e9f127bfae5c4feda525d77428
+Building lz4:x64-linux-ci@1.10.0...
+/home/user/workspace/repo/triplets/x64-linux-ci.cmake: info: loaded overlay triplet from here
+Downloading https://github.com/lz4/lz4/archive/v1.10.0.tar.gz -> lz4-lz4-v1.10.0.tar.gz
+Successfully downloaded lz4-lz4-v1.10.0.tar.gz
+-- Extracting source /opt/vcpkg/downloads/lz4-lz4-v1.10.0.tar.gz
+-- Applying patch target-lz4-lz4.diff
+-- Using source at /opt/vcpkg/buildtrees/lz4/src/v1.10.0-61bd08d80e.clean
+-- Configuring x64-linux-ci
+-- Building x64-linux-ci-rel
+-- Fixing pkgconfig file: /opt/vcpkg/packages/lz4_x64-linux-ci/lib/pkgconfig/liblz4.pc
+-- Installing: /opt/vcpkg/packages/lz4_x64-linux-ci/share/lz4/usage
+-- Installing: /opt/vcpkg/packages/lz4_x64-linux-ci/share/lz4/copyright
+-- Adjusted RPATH of '/opt/vcpkg/packages/lz4_x64-linux-ci/lib/liblz4.so.1.10.0' (From '' -> To '$ORIGIN')
+-- Performing post-build validation
+Elapsed time to handle lz4:x64-linux-ci: 5.2 s
+Installing 55/67 libxcrypt:x64-linux-ci@4.5.2...
+libxcrypt:x64-linux-ci@4.5.2 package ABI: fa1332aafc62e46d698d135904a9a3cb0bf04d6ab4ae3a9d4ec2b310f90dfe29
+Building libxcrypt:x64-linux-ci@4.5.2...
+/home/user/workspace/repo/triplets/x64-linux-ci.cmake: info: loaded overlay triplet from here
+Downloading https://github.com/besser82/libxcrypt/archive/v4.5.2.tar.gz -> besser82-libxcrypt-v4.5.2.tar.gz
+Successfully downloaded besser82-libxcrypt-v4.5.2.tar.gz
+-- Extracting source /opt/vcpkg/downloads/besser82-libxcrypt-v4.5.2.tar.gz
+-- Using source at /opt/vcpkg/buildtrees/libxcrypt/src/v4.5.2-7ca15a2a8e.clean
+-- Getting CMake variables for x64-linux-ci
+-- Loading CMake variables from /opt/vcpkg/buildtrees/libxcrypt/cmake-get-vars_C_CXX-x64-linux-ci.cmake.log
+-- Generating configure for x64-linux-ci
+-- Finished generating configure for x64-linux-ci
+-- Configuring x64-linux-ci-rel
+-- Building/Installing x64-linux-ci-rel
+-- Making target 'all' for x64-linux-ci-rel
+-- Making target 'install' for x64-linux-ci-rel
+-- Fixing pkgconfig file: /opt/vcpkg/packages/libxcrypt_x64-linux-ci/lib/pkgconfig/libcrypt.pc
+-- Fixing pkgconfig file: /opt/vcpkg/packages/libxcrypt_x64-linux-ci/lib/pkgconfig/libxcrypt.pc
+-- Adjusted RPATH of '/opt/vcpkg/packages/libxcrypt_x64-linux-ci/lib/libcrypt.so.1.1.0' (From '' -> To '$ORIGIN')
+-- Performing post-build validation
+Elapsed time to handle libxcrypt:x64-linux-ci: 18 s
+Installing 56/67 libmount:x64-linux-ci@2.41.3...
+libmount:x64-linux-ci@2.41.3 package ABI: f58bebbabff0901c88e2c13c4c26bd75a6819ab84f6bba71fb9d5416511af812
+Building libmount:x64-linux-ci@2.41.3...
+/home/user/workspace/repo/triplets/x64-linux-ci.cmake: info: loaded overlay triplet from here
+Downloading https://mirrors.edge.kernel.org/pub/linux/utils/util-linux/v2.41/util-linux-2.41.3.tar.xz -> util-linux-2.41.3.tar.xz
+Successfully downloaded util-linux-2.41.3.tar.xz
+-- Extracting source /opt/vcpkg/downloads/util-linux-2.41.3.tar.xz
+-- Applying patch hide-private-symbols.diff
+-- Using source at /opt/vcpkg/buildtrees/libmount/src/2.41.3-53757992c3.clean
+-- Getting CMake variables for x64-linux-ci-rel
+-- Generating configure for x64-linux-ci
+-- Finished generating configure for x64-linux-ci
+-- Configuring x64-linux-ci-rel
+-- Building x64-linux-ci-rel
+-- Installing x64-linux-ci-rel
+-- Fixing pkgconfig file: /opt/vcpkg/packages/libmount_x64-linux-ci/lib/pkgconfig/blkid.pc
+-- Fixing pkgconfig file: /opt/vcpkg/packages/libmount_x64-linux-ci/lib/pkgconfig/mount.pc
+-- Adjusted RPATH of '/opt/vcpkg/packages/libmount_x64-linux-ci/lib/libblkid.so.1.1.0' (From '' -> To '$ORIGIN')
+-- Adjusted RPATH of '/opt/vcpkg/packages/libmount_x64-linux-ci/lib/libmount.so.1.1.0' (From '/home/user/workspace/repo/ci-build/ubuntu24/vcpkg_installed/x64-linux-ci/lib' -> To '$ORIGIN')
+-- Performing post-build validation
+Elapsed time to handle libmount:x64-linux-ci: 39 s
+Installing 57/67 liblzma:x64-linux-ci@5.8.2#1...
+liblzma:x64-linux-ci@5.8.2#1 package ABI: 649961bb68c7f11f576622bb239cd796560041bb9fcbe635fb68e4d15d276bfe
+Building liblzma:x64-linux-ci@5.8.2#1...
+/home/user/workspace/repo/triplets/x64-linux-ci.cmake: info: loaded overlay triplet from here
+Downloading https://github.com/tukaani-project/xz/archive/v5.8.2.tar.gz -> tukaani-project-xz-v5.8.2.tar.gz
+Successfully downloaded tukaani-project-xz-v5.8.2.tar.gz
+-- Extracting source /opt/vcpkg/downloads/tukaani-project-xz-v5.8.2.tar.gz
+-- Applying patch build-tools.patch
+-- Using source at /opt/vcpkg/buildtrees/liblzma/src/v5.8.2-30365c07c3.clean
+-- Configuring x64-linux-ci
+CMake Warning at /home/user/workspace/repo/ci-build/ubuntu24/vcpkg_installed/x64-linux-ci/share/vcpkg-cmake/vcpkg_cmake_configure.cmake:344 (message):
+  The following variables are not used in CMakeLists.txt:
+
+      XZ_SANDBOX
+
+  Please recheck them and remove the unnecessary options from the
+  `vcpkg_cmake_configure` call.
+
+  If these options should still be passed for whatever reason, please use the
+  `MAYBE_UNUSED_VARIABLES` argument.
+Call Stack (most recent call first):
+  buildtrees/versioning_/versions/liblzma/d161ccfe43a06cdb2a32d7a9e9fcbf92d67eb7ab/portfile.cmake:26 (vcpkg_cmake_configure)
+  scripts/ports.cmake:206 (include)
+
+
+-- Building x64-linux-ci-rel
+-- Fixing pkgconfig file: /opt/vcpkg/packages/liblzma_x64-linux-ci/lib/pkgconfig/liblzma.pc
+-- Installing: /opt/vcpkg/packages/liblzma_x64-linux-ci/share/liblzma/copyright
+-- Adjusted RPATH of '/opt/vcpkg/packages/liblzma_x64-linux-ci/lib/liblzma.so.5.8.2' (From '' -> To '$ORIGIN')
+-- Performing post-build validation
+Elapsed time to handle liblzma:x64-linux-ci: 8.3 s
+Installing 58/67 libcap:x64-linux-ci@2.77...
+libcap:x64-linux-ci@2.77 package ABI: 42d8094440d031f2e79404e17e1e8d75e09ecb11295e42e8fd68f62d27477354
+Building libcap:x64-linux-ci@2.77...
+/home/user/workspace/repo/triplets/x64-linux-ci.cmake: info: loaded overlay triplet from here
+Downloading libcap-2.77.tar.xz, trying https://www.kernel.org/pub/linux/libs/security/linux-privs/libcap2/libcap-2.77.tar.xz
+Successfully downloaded libcap-2.77.tar.xz
+-- Extracting source /opt/vcpkg/downloads/libcap-2.77.tar.xz
+-- Using source at /opt/vcpkg/buildtrees/libcap/src/libcap-2-937150e254.clean
+-- Getting CMake variables for x64-linux-ci
+-- Loading CMake variables from /opt/vcpkg/buildtrees/libcap/cmake-get-vars_C_CXX-x64-linux-ci.cmake.log
+-- Configuring x64-linux-ci-rel
+-- Building/Installing x64-linux-ci-rel
+-- Making target 'all' for x64-linux-ci-rel
+-- Making target 'install' for x64-linux-ci-rel
+-- Fixing pkgconfig file: /opt/vcpkg/packages/libcap_x64-linux-ci/lib/pkgconfig/libcap.pc
+-- Fixing pkgconfig file: /opt/vcpkg/packages/libcap_x64-linux-ci/lib/pkgconfig/libpsx.pc
+-- Installing: /opt/vcpkg/packages/libcap_x64-linux-ci/share/libcap/copyright
+-- Adjusted RPATH of '/opt/vcpkg/packages/libcap_x64-linux-ci/lib/libcap.so.2.77' (From '' -> To '$ORIGIN')
+-- Adjusted RPATH of '/opt/vcpkg/packages/libcap_x64-linux-ci/lib/libpsx.so.2.77' (From '' -> To '$ORIGIN')
+-- Performing post-build validation
+Elapsed time to handle libcap:x64-linux-ci: 1.4 s
+Installing 59/67 libsystemd:x64-linux-ci@257.8#1...
+libsystemd:x64-linux-ci@257.8#1 package ABI: 4a50053a5fe5485dc91c5753cf948f220e1dcd6b67c10242c41f36bdfd16e891
+Building libsystemd:x64-linux-ci@257.8#1...
+/home/user/workspace/repo/triplets/x64-linux-ci.cmake: info: loaded overlay triplet from here
+-- Found Python version '3.12.3 at /opt/cmake/bin/python3'
+-- Using meson: /opt/vcpkg/downloads/tools/meson-1.9.0-d1fcc2/meson.py
+Downloading https://github.com/systemd/systemd/archive/v257.8.tar.gz -> systemd-systemd-v257.8.tar.gz
+Successfully downloaded systemd-systemd-v257.8.tar.gz
+-- Extracting source /opt/vcpkg/downloads/systemd-systemd-v257.8.tar.gz
+-- Applying patch disable-warning-nonnull.patch
+-- Applying patch only-libsystemd.patch
+-- Applying patch pkgconfig.patch
+-- Using source at /opt/vcpkg/buildtrees/libsystemd/src/v257.8-231b365f90.clean
+-- Setting up python virtual environment...
+-- Installing python packages: jinja2
+-- Setting up python virtual environment... finished.
+-- Configuring x64-linux-ci-rel
+-- Getting CMake variables for x64-linux-ci
+-- Loading CMake variables from /opt/vcpkg/buildtrees/libsystemd/cmake-get-vars_C_CXX-x64-linux-ci.cmake.log
+-- Configuring x64-linux-ci-rel done
+-- Package x64-linux-ci-rel
+-- Fixing pkgconfig file: /opt/vcpkg/packages/libsystemd_x64-linux-ci/lib/pkgconfig/libsystemd.pc
+-- Adjusted RPATH of '/opt/vcpkg/packages/libsystemd_x64-linux-ci/lib/libsystemd.so.0.40.0' (From '' -> To '$ORIGIN')
+-- Performing post-build validation
+Elapsed time to handle libsystemd:x64-linux-ci: 24 s
+Installing 60/67 dbus[core,systemd]:x64-linux-ci@1.16.2#2...
+dbus[core,systemd]:x64-linux-ci@1.16.2#2 package ABI: c618ea260f8f388f28a0ed6b227c5d8b7a61ce10d7699b06c9ec4227c8125850
+Building dbus[core,systemd]:x64-linux-ci@1.16.2#2...
+/home/user/workspace/repo/triplets/x64-linux-ci.cmake: info: loaded overlay triplet from here
+Downloading https://gitlab.freedesktop.org//dbus/dbus/-/archive/dbus-1.16.2/dbus-dbus-1.16.2.tar.gz -> dbus-dbus-dbus-1.16.2.tar.gz
+Successfully downloaded dbus-dbus-dbus-1.16.2.tar.gz
+-- Extracting source /opt/vcpkg/downloads/dbus-dbus-dbus-1.16.2.tar.gz
+-- Applying patch cmake.dep.patch
+-- Applying patch pkgconfig.patch
+-- Applying patch getpeereid.patch
+-- Applying patch libsystemd.patch
+-- Applying patch remove-path.patch
+-- Applying patch remove-var-lib-dbus-creation.patch
+-- Using source at /opt/vcpkg/buildtrees/dbus/src/bus-1.16.2-02a7b61930.clean
+-- Configuring x64-linux-ci
+-- Building x64-linux-ci-rel
+-- Fixing pkgconfig file: /opt/vcpkg/packages/dbus_x64-linux-ci/lib/pkgconfig/dbus-1.pc
+-- Installing: /opt/vcpkg/packages/dbus_x64-linux-ci/share/dbus/copyright
+-- Adjusted RPATH of '/opt/vcpkg/packages/dbus_x64-linux-ci/lib/libdbus-1.so.3.38.3' (From '' -> To '$ORIGIN')
+-- Adjusted RPATH of '/opt/vcpkg/packages/dbus_x64-linux-ci/libexec/dbus-daemon-launch-helper' (From '' -> To '$ORIGIN:$ORIGIN/../lib')
+-- Adjusted RPATH of '/opt/vcpkg/packages/dbus_x64-linux-ci/tools/dbus/dbus-cleanup-sockets' (From '' -> To '$ORIGIN:$ORIGIN/../../lib')
+-- Adjusted RPATH of '/opt/vcpkg/packages/dbus_x64-linux-ci/tools/dbus/dbus-daemon' (From '' -> To '$ORIGIN:$ORIGIN/../../lib')
+-- Adjusted RPATH of '/opt/vcpkg/packages/dbus_x64-linux-ci/tools/dbus/dbus-launch' (From '' -> To '$ORIGIN:$ORIGIN/../../lib')
+-- Adjusted RPATH of '/opt/vcpkg/packages/dbus_x64-linux-ci/tools/dbus/dbus-monitor' (From '' -> To '$ORIGIN:$ORIGIN/../../lib')
+-- Adjusted RPATH of '/opt/vcpkg/packages/dbus_x64-linux-ci/tools/dbus/dbus-run-session' (From '' -> To '$ORIGIN:$ORIGIN/../../lib')
+-- Adjusted RPATH of '/opt/vcpkg/packages/dbus_x64-linux-ci/tools/dbus/dbus-send' (From '' -> To '$ORIGIN:$ORIGIN/../../lib')
+-- Adjusted RPATH of '/opt/vcpkg/packages/dbus_x64-linux-ci/tools/dbus/dbus-test-tool' (From '' -> To '$ORIGIN:$ORIGIN/../../lib')
+-- Adjusted RPATH of '/opt/vcpkg/packages/dbus_x64-linux-ci/tools/dbus/dbus-update-activation-environment' (From '' -> To '$ORIGIN:$ORIGIN/../../lib')
+-- Adjusted RPATH of '/opt/vcpkg/packages/dbus_x64-linux-ci/tools/dbus/dbus-uuidgen' (From '' -> To '$ORIGIN:$ORIGIN/../../lib')
+-- Performing post-build validation
+Elapsed time to handle dbus:x64-linux-ci: 18 s
+Installing 61/67 sdl3[core,ibus,vulkan,wayland,x11]:x64-linux-ci@3.4.0...
+sdl3[core,ibus,vulkan,wayland,x11]:x64-linux-ci@3.4.0 package ABI: 9e5e527f54f535977234e930c0f22ee65ab243122a707e7307d01e907d5e3ccc
+Building sdl3[core,ibus,vulkan,wayland,x11]:x64-linux-ci@3.4.0...
+/home/user/workspace/repo/triplets/x64-linux-ci.cmake: info: loaded overlay triplet from here
+Downloading https://github.com/libsdl-org/SDL/archive/release-3.4.0.tar.gz -> libsdl-org-SDL-release-3.4.0.tar.gz
+Successfully downloaded libsdl-org-SDL-release-3.4.0.tar.gz
+-- Extracting source /opt/vcpkg/downloads/libsdl-org-SDL-release-3.4.0.tar.gz
+-- Applying patch fix-freebsd.patch
+-- Using source at /opt/vcpkg/buildtrees/sdl3/src/ease-3.4.0-5126657c3e.clean
+CMake Warning at buildtrees/versioning_/versions/sdl3/d2ee74ca7389a31ac2090e949f895da5c002434c/portfile.cmake:33 (message):
+  You will need to install Xorg dependencies to use feature x11:
+
+  sudo apt install libx11-dev libxft-dev libxext-dev
+
+Call Stack (most recent call first):
+  scripts/ports.cmake:206 (include)
+
+
+CMake Warning at buildtrees/versioning_/versions/sdl3/d2ee74ca7389a31ac2090e949f895da5c002434c/portfile.cmake:36 (message):
+  You will need to install Wayland dependencies to use feature wayland:
+
+  sudo apt install libwayland-dev libxkbcommon-dev libegl1-mesa-dev
+
+Call Stack (most recent call first):
+  scripts/ports.cmake:206 (include)
+
+
+CMake Warning at buildtrees/versioning_/versions/sdl3/d2ee74ca7389a31ac2090e949f895da5c002434c/portfile.cmake:39 (message):
+  You will need to install ibus dependencies to use feature ibus:
+
+  sudo apt install libibus-1.0-dev
+
+Call Stack (most recent call first):
+  scripts/ports.cmake:206 (include)
+
+
+-- Configuring x64-linux-ci
+CMake Warning at /home/user/workspace/repo/ci-build/ubuntu24/vcpkg_installed/x64-linux-ci/share/vcpkg-cmake/vcpkg_cmake_configure.cmake:344 (message):
+  The following variables are not used in CMakeLists.txt:
+
+      SDL_UNIX_CONSOLE_BUILD
+
+  Please recheck them and remove the unnecessary options from the
+  `vcpkg_cmake_configure` call.
+
+  If these options should still be passed for whatever reason, please use the
+  `MAYBE_UNUSED_VARIABLES` argument.
+Call Stack (most recent call first):
+  buildtrees/versioning_/versions/sdl3/d2ee74ca7389a31ac2090e949f895da5c002434c/portfile.cmake:47 (vcpkg_cmake_configure)
+  scripts/ports.cmake:206 (include)
+
+
+-- Building x64-linux-ci-rel
+-- Fixing pkgconfig file: /opt/vcpkg/packages/sdl3_x64-linux-ci/lib/pkgconfig/sdl3.pc
+-- Installing: /opt/vcpkg/packages/sdl3_x64-linux-ci/share/sdl3/usage
+-- Adjusted RPATH of '/opt/vcpkg/packages/sdl3_x64-linux-ci/lib/libSDL3.so.0.4.0' (From '' -> To '$ORIGIN')
+-- Performing post-build validation
+Elapsed time to handle sdl3:x64-linux-ci: 50 s
+Installing 62/67 toml11:x64-linux-ci@4.4.0...
+toml11:x64-linux-ci@4.4.0 package ABI: 601ce64f38afaaa5f96c72608b8e9400afd452f8d1776787c6f7ea5bc7fdce47
+Building toml11:x64-linux-ci@4.4.0...
+/home/user/workspace/repo/triplets/x64-linux-ci.cmake: info: loaded overlay triplet from here
+Downloading https://github.com/ToruNiina/toml11/archive/v4.4.0.tar.gz -> ToruNiina-toml11-v4.4.0.tar.gz
+Successfully downloaded ToruNiina-toml11-v4.4.0.tar.gz
+-- Extracting source /opt/vcpkg/downloads/ToruNiina-toml11-v4.4.0.tar.gz
+-- Using source at /opt/vcpkg/buildtrees/toml11/src/v4.4.0-e6c50d7814.clean
+-- Configuring x64-linux-ci
+-- Building x64-linux-ci-rel
+-- Installing: /opt/vcpkg/packages/toml11_x64-linux-ci/share/toml11/copyright
+-- Performing post-build validation
+Elapsed time to handle toml11:x64-linux-ci: 1.8 s
+Installing 63/67 unordered-dense:x64-linux-ci@4.8.1...
+unordered-dense:x64-linux-ci@4.8.1 package ABI: df010fb66d6ba4c3eb84d67af377120e13dd5a681975c38183036b2772d8120d
+Building unordered-dense:x64-linux-ci@4.8.1...
+/home/user/workspace/repo/triplets/x64-linux-ci.cmake: info: loaded overlay triplet from here
+Downloading https://github.com/martinus/unordered_dense/archive/v4.8.1.tar.gz -> martinus-unordered_dense-v4.8.1.tar.gz
+Successfully downloaded martinus-unordered_dense-v4.8.1.tar.gz
+-- Extracting source /opt/vcpkg/downloads/martinus-unordered_dense-v4.8.1.tar.gz
+-- Using source at /opt/vcpkg/buildtrees/unordered-dense/src/v4.8.1-089c133c96.clean
+-- Configuring x64-linux-ci
+-- Building x64-linux-ci-rel
+-- Installing: /opt/vcpkg/packages/unordered-dense_x64-linux-ci/share/unordered-dense/copyright
+-- Performing post-build validation
+Elapsed time to handle unordered-dense:x64-linux-ci: 885 ms
+Installing 64/67 utfcpp:x64-linux-ci@4.0.9...
+utfcpp:x64-linux-ci@4.0.9 package ABI: 8f371796c11ddc4179cc5bc3d9f860f6e720710cdcda23ac5182a72a3a64dfbe
+Building utfcpp:x64-linux-ci@4.0.9...
+/home/user/workspace/repo/triplets/x64-linux-ci.cmake: info: loaded overlay triplet from here
+Downloading https://github.com/nemtrif/utfcpp/archive/v4.0.9.tar.gz -> nemtrif-utfcpp-v4.0.9.tar.gz
+Successfully downloaded nemtrif-utfcpp-v4.0.9.tar.gz
+-- Extracting source /opt/vcpkg/downloads/nemtrif-utfcpp-v4.0.9.tar.gz
+-- Using source at /opt/vcpkg/buildtrees/utfcpp/src/v4.0.9-56302ed389.clean
+-- Configuring x64-linux-ci
+-- Building x64-linux-ci-rel
+-- Installing: /opt/vcpkg/packages/utfcpp_x64-linux-ci/share/utfcpp/copyright
+-- Performing post-build validation
+Elapsed time to handle utfcpp:x64-linux-ci: 930 ms
+Installing 65/67 vulkan-headers:x64-linux-ci@1.4.335.0#1...
+vulkan-headers:x64-linux-ci@1.4.335.0#1 package ABI: 22d4e06379eed82e7246da3e7c7eb4d1942e2bf5865d8fec746f6a716946889b
+Building vulkan-headers:x64-linux-ci@1.4.335.0#1...
+/home/user/workspace/repo/triplets/x64-linux-ci.cmake: info: loaded overlay triplet from here
+Downloading https://github.com/KhronosGroup/Vulkan-Headers/archive/vulkan-sdk-1.4.335.0.tar.gz -> KhronosGroup-Vulkan-Headers-vulkan-sdk-1.4.335.0.tar.gz
+Successfully downloaded KhronosGroup-Vulkan-Headers-vulkan-sdk-1.4.335.0.tar.gz
+-- Extracting source /opt/vcpkg/downloads/KhronosGroup-Vulkan-Headers-vulkan-sdk-1.4.335.0.tar.gz
+-- Applying patch fix-vulkan-video-module-name.patch
+-- Using source at /opt/vcpkg/buildtrees/vulkan-headers/src/-1.4.335.0-5b27c67b07.clean
+-- Configuring x64-linux-ci
+-- Building x64-linux-ci-rel
+-- Installing: /opt/vcpkg/packages/vulkan-headers_x64-linux-ci/share/vulkan-headers/copyright
+-- Installing: /opt/vcpkg/packages/vulkan-headers_x64-linux-ci/share/vulkan-headers/usage
+-- Performing post-build validation
+Elapsed time to handle vulkan-headers:x64-linux-ci: 1.9 s
+Installing 66/67 vulkan-loader:x64-linux-ci@1.4.335.0...
+vulkan-loader:x64-linux-ci@1.4.335.0 package ABI: ca1ddeeb6b30200cbfa77c2a4d789b1467d9dac9ebfe0b18507432b5b23f5cd7
+Building vulkan-loader:x64-linux-ci@1.4.335.0...
+/home/user/workspace/repo/triplets/x64-linux-ci.cmake: info: loaded overlay triplet from here
+Downloading https://github.com/KhronosGroup/Vulkan-Loader/archive/vulkan-sdk-1.4.335.0.tar.gz -> KhronosGroup-Vulkan-Loader-vulkan-sdk-1.4.335.0.tar.gz
+Successfully downloaded KhronosGroup-Vulkan-Loader-vulkan-sdk-1.4.335.0.tar.gz
+-- Extracting source /opt/vcpkg/downloads/KhronosGroup-Vulkan-Loader-vulkan-sdk-1.4.335.0.tar.gz
+-- Applying patch link-directfb.patch
+-- Using source at /opt/vcpkg/buildtrees/vulkan-loader/src/-1.4.335.0-00818a78b7.clean
+-- Configuring x64-linux-ci
+CMake Warning at /home/user/workspace/repo/ci-build/ubuntu24/vcpkg_installed/x64-linux-ci/share/vcpkg-cmake/vcpkg_cmake_configure.cmake:344 (message):
+  The following variables are not used in CMakeLists.txt:
+
+      Python3_EXECUTABLE
+
+  Please recheck them and remove the unnecessary options from the
+  `vcpkg_cmake_configure` call.
+
+  If these options should still be passed for whatever reason, please use the
+  `MAYBE_UNUSED_VARIABLES` argument.
+Call Stack (most recent call first):
+  buildtrees/versioning_/versions/vulkan-loader/16879c942d1d518eaabfe675375bbf5317e7ba57/portfile.cmake:26 (vcpkg_cmake_configure)
+  scripts/ports.cmake:206 (include)
+
+
+-- Building x64-linux-ci-rel
+-- Fixing pkgconfig file: /opt/vcpkg/packages/vulkan-loader_x64-linux-ci/lib/pkgconfig/vulkan.pc
+-- Installing: /opt/vcpkg/packages/vulkan-loader_x64-linux-ci/share/vulkan-loader/copyright
+-- Adjusted RPATH of '/opt/vcpkg/packages/vulkan-loader_x64-linux-ci/lib/libvulkan.so.1.4.335' (From '' -> To '$ORIGIN')
+-- Performing post-build validation
+Elapsed time to handle vulkan-loader:x64-linux-ci: 6.1 s
+Installing 67/67 vulkan:x64-linux-ci@2023-12-17...
+vulkan:x64-linux-ci@2023-12-17 package ABI: c1e3c8c7f8ec3851f39e9aadd99f0cec6304de03163ff817c6a2f4f6a73e7f6e
+Building vulkan:x64-linux-ci@2023-12-17...
+/home/user/workspace/repo/triplets/x64-linux-ci.cmake: info: loaded overlay triplet from here
+-- Configuring x64-linux-ci
+-- Found Vulkan 1.4.335 (/home/user/workspace/repo/ci-build/ubuntu24/vcpkg_installed/x64-linux-ci/lib/libvulkan.so)
+-- Installing: /opt/vcpkg/packages/vulkan_x64-linux-ci/share/vulkan/detect-vulkan/CMakeLists.txt
+-- Installing: /opt/vcpkg/packages/vulkan_x64-linux-ci/share/vulkan/detect-vulkan/vulkan-result.cmake.in
+-- Installing: /opt/vcpkg/packages/vulkan_x64-linux-ci/share/vulkan/usage
+-- Skipping post-build validation due to VCPKG_POLICY_EMPTY_PACKAGE
+Elapsed time to handle vulkan:x64-linux-ci: 460 ms
+Installed contents are licensed to you by owners. Microsoft is not responsible for, nor does it grant any licenses to, third-party packages.
+Some packages did not declare an SPDX license. Check the `copyright` file for each package for more information about their licensing.
+Packages installed in this vcpkg installation declare the following licenses:
+(AFL-2.1 OR GPL-2.0-or-later)
+(Apache-2.0 OR MIT)
+(BSD-2-Clause OR BSL-1.0)
+(BSD-3-Clause OR GPL-2.0-only)
+(FTL OR GPL-2.0-or-later)
+(LGPL-2.1-only OR BSD-3-Clause)
+Apache-2.0
+BSD-2-Clause
+BSD-3-Clause
+BSL-1.0
+GPL-3.0-or-later
+ISC
+LGPL-2.0-or-later
+LGPL-2.1-or-later
+MIT
+MIT-Modern-Variant
+Zlib
+bzip2-1.0.6
+libpng-2.0
+The package zlib is compatible with built-in CMake targets:
+
+    find_package(ZLIB REQUIRED)
+    target_link_libraries(main PRIVATE ZLIB::ZLIB)
+
+ffmpeg provides CMake integration:
+
+  find_package(FFMPEG REQUIRED)
+  target_include_directories(main PRIVATE ${FFMPEG_INCLUDE_DIRS})
+  target_link_directories(main PRIVATE ${FFMPEG_LIBRARY_DIRS})
+  target_link_libraries(main PRIVATE ${FFMPEG_LIBRARIES})
+
+ffmpeg provides pkg-config modules:
+
+  # FFmpeg codec library
+  libavcodec
+
+  # FFmpeg device handling library
+  libavdevice
+
+  # FFmpeg audio/video filtering library
+  libavfilter
+
+  # FFmpeg container format library
+  libavformat
+
+  # FFmpeg utility library
+  libavutil
+
+  # FFmpeg audio resampling library
+  libswresample
+
+  # FFmpeg image rescaling library
+  libswscale
+
+avcpp provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(avcpp CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE avcpp::avcpp avcpp::FFmpeg)
+
+avcpp provides pkg-config modules:
+
+  # FFmpeg libraries C++ interface
+  libavcpp
+
+The package boost-circular-buffer is compatible with built-in CMake targets of FindBoost.cmake:
+
+    find_package(Boost REQUIRED COMPONENTS circular_buffer)
+    target_link_libraries(main PRIVATE Boost::circular_buffer)
+
+or the generated cmake configs via:
+
+    find_package( REQUIRED CONFIG)
+    target_link_libraries(main PRIVATE Boost::circular_buffer)
+
+concurrentqueue provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(concurrentqueue CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE concurrentqueue::concurrentqueue)
+
+The package fmt provides CMake targets:
+
+    find_package(fmt CONFIG REQUIRED)
+    target_link_libraries(main PRIVATE fmt::fmt)
+
+    # Or use the header-only version
+    find_package(fmt CONFIG REQUIRED)
+    target_link_libraries(main PRIVATE fmt::fmt-header-only)
+
+freetype is compatible with built-in CMake targets:
+
+    find_package(Freetype REQUIRED)
+    target_link_libraries(main PRIVATE Freetype::Freetype) # since CMake 3.10
+
+The package glm provides CMake targets:
+
+    find_package(glm CONFIG REQUIRED)
+    target_link_libraries(main PRIVATE glm::glm)
+
+    # Or use the header-only version
+    find_package(glm CONFIG REQUIRED)
+    target_link_libraries(main PRIVATE glm::glm-header-only)
+
+harfbuzz provides CMake targets:
+
+  find_package(harfbuzz CONFIG REQUIRED)
+  # HarfBuzz font subsetter
+  target_link_libraries(main PRIVATE harfbuzz::harfbuzz-subset)
+  # HarfBuzz text shaping library
+  target_link_libraries(main PRIVATE harfbuzz::harfbuzz)
+
+harfbuzz provides pkg-config modules:
+
+  # HarfBuzz font subsetter
+  harfbuzz-subset
+
+  # HarfBuzz text shaping library
+  harfbuzz
+
+libass provides pkg-config modules:
+
+  # libass is an SSA/ASS subtitles rendering library
+  libass
+
+libogg provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(Ogg CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Ogg::ogg)
+
+libogg provides pkg-config modules:
+
+  # ogg is a library for manipulating ogg bitstreams
+  ogg
+
+The package libvorbis provides CMake targets:
+
+    # Vorbis reference encoder and decoder, low-level API
+    find_package(Vorbis CONFIG REQUIRED)
+    target_link_libraries(main PRIVATE Vorbis::vorbis)
+
+    # Audio stream decoding and basic manipulation, high-level API
+    find_package(Vorbis CONFIG REQUIRED)
+    target_link_libraries(main PRIVATE Vorbis::vorbisfile)
+
+    # Convenience API for setting up an encoding environment
+    find_package(Vorbis CONFIG REQUIRED)
+    target_link_libraries(main PRIVATE Vorbis::vorbisenc)
+
+libwebp provides CMake targets:
+
+    find_package(WebP CONFIG REQUIRED)
+    # basic usage
+    target_link_libraries(main PRIVATE WebP::webp WebP::webpdecoder WebP::webpdemux)
+    # for manipulating the WebP graphics format container (port feature libwebpmux)
+    target_link_libraries(main PRIVATE WebP::libwebpmux)
+    # for sharp RGB to YUV conversion
+    target_link_libraries(main PRIVATE WebP::sharpyuv)
+
+openal-soft provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(OpenAL CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE OpenAL::OpenAL)
+
+openal-soft provides pkg-config modules:
+
+  # OpenAL is a cross-platform 3D audio API
+  openal
+
+pugixml provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(pugixml CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE pugixml::shared pugixml::pugixml)
+
+pugixml provides pkg-config modules:
+
+  # Light-weight, simple and fast XML parser for C++ with XPath support.
+  pugixml
+
+readerwriterqueue provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(readerwriterqueue CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE readerwriterqueue::readerwriterqueue)
+
+sdl3 provides CMake targets:
+
+  find_package(SDL3 CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE SDL3::SDL3)
+
+toml11 provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(toml11 CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE toml11::toml11)
+
+unordered-dense provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(unordered_dense CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE unordered_dense::unordered_dense)
+
+utfcpp provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(utf8cpp CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE utf8::cpp utf8cpp::utf8cpp)
+
+vulkan is compatible with built-in CMake targets:
+
+    # https://cmake.org/cmake/help/latest/module/FindVulkan.html
+    find_package(Vulkan REQUIRED)
+    target_link_libraries(main PRIVATE Vulkan::Vulkan)
+
+All requested installations completed successfully in: 11 min
+-- Running vcpkg install - done
+-- The C compiler identification is GNU 13.3.0
+-- The CXX compiler identification is GNU 13.3.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /usr/bin/cc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/c++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Found PkgConfig: /home/user/workspace/repo/ci-build/ubuntu24/vcpkg_installed/x64-linux-ci/tools/pkgconf/pkgconf (found version "2.5.1")
+-- NOT enabling ASAN and UBSAN, consider enabling them when developing
+-- Found OpenGL: /usr/lib/x86_64-linux-gnu/libOpenGL.so  found components: OpenGL
+-- Found ZLIB: /home/user/workspace/repo/ci-build/ubuntu24/vcpkg_installed/x64-linux-ci/lib/libz.so (found version "1.3.1")
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Success
+-- Found Threads: TRUE
+CMake Warning (dev) at ci-build/ubuntu24/vcpkg_installed/x64-linux-ci/share/boost/vcpkg-cmake-wrapper.cmake:3 (_find_package):
+  Policy CMP0167 is not set: The FindBoost module is removed.  Run "cmake
+  --help-policy CMP0167" for policy details.  Use the cmake_policy command to
+  set the policy and suppress this warning.
+
+Call Stack (most recent call first):
+  /opt/vcpkg/scripts/buildsystems/vcpkg.cmake:862 (include)
+  CMakeLists.txt:1028 (find_package)
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+-- Found Boost: /home/user/workspace/repo/ci-build/ubuntu24/vcpkg_installed/x64-linux-ci/share/boost/BoostConfig.cmake (found version "1.90.0") found components: circular_buffer
+-- Checking for module 'libass'
+--   Found libass, version 0.17.4
+-- Found FFMPEG: /home/user/workspace/repo/ci-build/ubuntu24/vcpkg_installed/x64-linux-ci/lib/libavformat.so;/home/user/workspace/repo/ci-build/ubuntu24/vcpkg_installed/x64-linux-ci/lib/libavcodec.so;/home/user/workspace/repo/ci-build/ubuntu24/vcpkg_installed/x64-linux-ci/lib/libswresample.so;/home/user/workspace/repo/ci-build/ubuntu24/vcpkg_installed/x64-linux-ci/lib/libswscale.so;/home/user/workspace/repo/ci-build/ubuntu24/vcpkg_installed/x64-linux-ci/lib/libavutil.so
+-- Checking for module 'dav1d'
+--   Found dav1d, version 1.5.3
+-- Found Vulkan: /home/user/workspace/repo/ci-build/ubuntu24/vcpkg_installed/x64-linux-ci/lib/libvulkan.so (found version "1.4.335")  missing components: glslc glslangValidator
+-- Enabling warnings for GCC
+CMake Warning (dev) at CMakeLists.txt:1454 (install):
+  Policy CMP0177 is not set: install() DESTINATION paths are normalized.  Run
+  "cmake --help-policy CMP0177" for policy details.  Use the cmake_policy
+  command to set the policy and suppress this warning.
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+CMake Warning (dev) at CMakeLists.txt:1454 (install):
+  Policy CMP0177 is not set: install() DESTINATION paths are normalized.  Run
+  "cmake --help-policy CMP0177" for policy details.  Use the cmake_policy
+  command to set the policy and suppress this warning.
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+CMake Warning (dev) at CMakeLists.txt:1454 (install):
+  Target atrac9 has PUBLIC_HEADER files but no PUBLIC_HEADER DESTINATION.
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+-- Configuring done (704.7s)
+-- Generating done (0.1s)
+-- Build files have been written to: /home/user/workspace/repo/ci-build/ubuntu24

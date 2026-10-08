@@ -1,0 +1,96 @@
+CRITICAL: [2026-10-08 05:37:51][General] Invalid number of arguments
+PASS: missing CLI parameter rejected (exit 1)
+INFO: [2026-10-08 05:37:51][Profile] Loading path basepaths.lua.
+INFO: [2026-10-08 05:37:51][Profile] Loading path gamedefinitions.lua.
+INFO: [2026-10-08 05:37:51][Profile] Executing lua script basepaths.lua
+INFO: [2026-10-08 05:37:51][Profile] Lua profile execute success
+INFO: [2026-10-08 05:37:51][Profile] Executing lua script gamedefinitions.lua
+INFO: [2026-10-08 05:37:51][Profile] Lua profile execute success
+INFO: [2026-10-08 05:37:51][Profile] Configuration file "/tmp/impacto-smoke-3txat0lp/userconfig.toml" doesn't exist, creating now.
+DEBUG: [2026-10-08 05:37:51][Config] Opening config file "/tmp/impacto-smoke-3txat0lp/userconfig.toml"
+INFO: [2026-10-08 05:37:51][Config] Loading user config
+INFO: [2026-10-08 05:37:51][Config] Loaded user config
+INFO: [2026-10-08 05:37:51][Config] Saving user config
+DEBUG: [2026-10-08 05:37:51][Config] Reparsing config file
+DEBUG: [2026-10-08 05:37:51][Config] Opening config file "/tmp/impacto-smoke-3txat0lp/userconfig.toml"
+DEBUG: [2026-10-08 05:37:51][Config] Parsed user config from file
+DEBUG: [2026-10-08 05:37:51][Config] Serializing current configuration
+DEBUG: [2026-10-08 05:37:51][Config] Formatting TOML String
+DEBUG: [2026-10-08 05:37:51][Config] Writing user config to file
+DEBUG: [2026-10-08 05:37:51][Config] Opening config file "/tmp/impacto-smoke-3txat0lp/userconfig.toml"
+INFO: [2026-10-08 05:37:51][Config] Saved user config
+INFO: [2026-10-08 05:37:51][General] Creating window
+INFO: [2026-10-08 05:37:51][General] Trying to create desktop GL context
+DEBUG: [2026-10-08 05:37:51][General] Window size (screen coords): 1280 x 720
+DEBUG: [2026-10-08 05:37:51][Render] Submitting texture
+DEBUG: [2026-10-08 05:37:51][Render] Compiling shader "Sprite"
+DEBUG: [2026-10-08 05:37:51][Render] Loading shader object (type 35633) "./shaders/opengl/Sprite_vert.glsl"
+DEBUG: [2026-10-08 05:37:51][Render] Loading shader object (type 35632) "./shaders/opengl/Sprite_frag.glsl"
+DEBUG: [2026-10-08 05:37:51][Render] Compiling shader "SpriteInverted"
+DEBUG: [2026-10-08 05:37:51][Render] Loading shader object (type 35633) "./shaders/opengl/SpriteInverted_vert.glsl"
+DEBUG: [2026-10-08 05:37:51][Render] Loading shader object (type 35632) "./shaders/opengl/SpriteInverted_frag.glsl"
+DEBUG: [2026-10-08 05:37:51][Render] Compiling shader "MaskedSprite"
+DEBUG: [2026-10-08 05:37:51][Render] Loading shader object (type 35633) "./shaders/opengl/MaskedSprite_vert.glsl"
+DEBUG: [2026-10-08 05:37:51][Render] Loading shader object (type 35632) "./shaders/opengl/MaskedSprite_frag.glsl"
+DEBUG: [2026-10-08 05:37:51][Render] Compiling shader "MaskedSpriteBinary"
+DEBUG: [2026-10-08 05:37:51][Render] Loading shader object (type 35633) "./shaders/opengl/MaskedSpriteBinary_vert.glsl"
+DEBUG: [2026-10-08 05:37:51][Render] Loading shader object (type 35632) "./shaders/opengl/MaskedSpriteBinary_frag.glsl"
+DEBUG: [2026-10-08 05:37:51][Render] Compiling shader "MaskedSpriteNoAlpha"
+DEBUG: [2026-10-08 05:37:51][Render] Loading shader object (type 35633) "./shaders/opengl/MaskedSpriteNoAlpha_vert.glsl"
+DEBUG: [2026-10-08 05:37:51][Render] Loading shader object (type 35632) "./shaders/opengl/MaskedSpriteNoAlpha_frag.glsl"
+DEBUG: [2026-10-08 05:37:51][Render] Compiling shader "ColorMaskedSprite"
+DEBUG: [2026-10-08 05:37:51][Render] Loading shader object (type 35633) "./shaders/opengl/ColorMaskedSprite_vert.glsl"
+DEBUG: [2026-10-08 05:37:51][Render] Loading shader object (type 35632) "./shaders/opengl/ColorMaskedSprite_frag.glsl"
+DEBUG: [2026-10-08 05:37:51][Render] Compiling shader "AdditiveMaskedSprite"
+DEBUG: [2026-10-08 05:37:51][Render] Loading shader object (type 35633) "./shaders/opengl/AdditiveMaskedSprite_vert.glsl"
+DEBUG: [2026-10-08 05:37:51][Render] Loading shader object (type 35632) "./shaders/opengl/AdditiveMaskedSprite_frag.glsl"
+DEBUG: [2026-10-08 05:37:51][Render] Compiling shader "ColorBurnMaskedSprite"
+DEBUG: [2026-10-08 05:37:51][Render] Loading shader object (type 35633) "./shaders/opengl/ColorBurnMaskedSprite_vert.glsl"
+DEBUG: [2026-10-08 05:37:51][Render] Loading shader object (type 35632) "./shaders/opengl/ColorBurnMaskedSprite_frag.glsl"
+DEBUG: [2026-10-08 05:37:51][Render] Compiling shader "ColorDodgeMaskedSprite"
+DEBUG: [2026-10-08 05:37:51][Render] Loading shader object (type 35633) "./shaders/opengl/ColorDodgeMaskedSprite_vert.glsl"
+DEBUG: [2026-10-08 05:37:51][Render] Loading shader object (type 35632) "./shaders/opengl/ColorDodgeMaskedSprite_frag.glsl"
+DEBUG: [2026-10-08 05:37:51][Render] Compiling shader "HardLightMaskedSprite"
+DEBUG: [2026-10-08 05:37:51][Render] Loading shader object (type 35633) "./shaders/opengl/HardLightMaskedSprite_vert.glsl"
+DEBUG: [2026-10-08 05:37:51][Render] Loading shader object (type 35632) "./shaders/opengl/HardLightMaskedSprite_frag.glsl"
+DEBUG: [2026-10-08 05:37:51][Render] Compiling shader "LinearBurnMaskedSprite"
+DEBUG: [2026-10-08 05:37:51][Render] Loading shader object (type 35633) "./shaders/opengl/LinearBurnMaskedSprite_vert.glsl"
+DEBUG: [2026-10-08 05:37:51][Render] Loading shader object (type 35632) "./shaders/opengl/LinearBurnMaskedSprite_frag.glsl"
+DEBUG: [2026-10-08 05:37:51][Render] Compiling shader "OverlayMaskedSprite"
+DEBUG: [2026-10-08 05:37:51][Render] Loading shader object (type 35633) "./shaders/opengl/OverlayMaskedSprite_vert.glsl"
+DEBUG: [2026-10-08 05:37:51][Render] Loading shader object (type 35632) "./shaders/opengl/OverlayMaskedSprite_frag.glsl"
+DEBUG: [2026-10-08 05:37:51][Render] Compiling shader "ScreenMaskedSprite"
+DEBUG: [2026-10-08 05:37:51][Render] Loading shader object (type 35633) "./shaders/opengl/ScreenMaskedSprite_vert.glsl"
+DEBUG: [2026-10-08 05:37:51][Render] Loading shader object (type 35632) "./shaders/opengl/ScreenMaskedSprite_frag.glsl"
+DEBUG: [2026-10-08 05:37:51][Render] Compiling shader "SoftLightMaskedSprite"
+DEBUG: [2026-10-08 05:37:51][Render] Loading shader object (type 35633) "./shaders/opengl/SoftLightMaskedSprite_vert.glsl"
+DEBUG: [2026-10-08 05:37:51][Render] Loading shader object (type 35632) "./shaders/opengl/SoftLightMaskedSprite_frag.glsl"
+DEBUG: [2026-10-08 05:37:51][Render] Compiling shader "YUVFrame"
+DEBUG: [2026-10-08 05:37:51][Render] Loading shader object (type 35633) "./shaders/opengl/YUVFrame_vert.glsl"
+DEBUG: [2026-10-08 05:37:51][Render] Loading shader object (type 35632) "./shaders/opengl/YUVFrame_frag.glsl"
+DEBUG: [2026-10-08 05:37:51][Render] Compiling shader "CCMessageBoxSprite"
+DEBUG: [2026-10-08 05:37:51][Render] Loading shader object (type 35633) "./shaders/opengl/CCMessageBoxSprite_vert.glsl"
+DEBUG: [2026-10-08 05:37:51][Render] Loading shader object (type 35632) "./shaders/opengl/CCMessageBoxSprite_frag.glsl"
+DEBUG: [2026-10-08 05:37:51][Render] Compiling shader "CHLCCMenuBackground"
+DEBUG: [2026-10-08 05:37:51][Render] Loading shader object (type 35633) "./shaders/opengl/CHLCCMenuBackground_vert.glsl"
+DEBUG: [2026-10-08 05:37:51][Render] Loading shader object (type 35632) "./shaders/opengl/CHLCCMenuBackground_frag.glsl"
+DEBUG: [2026-10-08 05:37:51][Render] Compiling shader "GaussianBlur"
+DEBUG: [2026-10-08 05:37:51][Render] Loading shader object (type 35633) "./shaders/opengl/GaussianBlur_vert.glsl"
+DEBUG: [2026-10-08 05:37:51][Render] Loading shader object (type 35632) "./shaders/opengl/GaussianBlur_frag.glsl"
+DEBUG: [2026-10-08 05:37:51][Render] Compiling shader "Mosaic"
+DEBUG: [2026-10-08 05:37:51][Render] Loading shader object (type 35633) "./shaders/opengl/Mosaic_vert.glsl"
+DEBUG: [2026-10-08 05:37:51][Render] Loading shader object (type 35632) "./shaders/opengl/Mosaic_frag.glsl"
+DEBUG: [2026-10-08 05:37:51][Render] Compiling shader "SubtitleGlyph"
+DEBUG: [2026-10-08 05:37:51][Render] Loading shader object (type 35633) "./shaders/opengl/SubtitleGlyph_vert.glsl"
+DEBUG: [2026-10-08 05:37:51][Render] Loading shader object (type 35632) "./shaders/opengl/SubtitleGlyph_frag.glsl"
+DEBUG: [2026-10-08 05:37:51][Render] Compiling shader "NV12Frame"
+DEBUG: [2026-10-08 05:37:51][Render] Loading shader object (type 35633) "./shaders/opengl/NV12Frame_vert.glsl"
+DEBUG: [2026-10-08 05:37:51][Render] Loading shader object (type 35632) "./shaders/opengl/NV12Frame_frag.glsl"
+DEBUG: [2026-10-08 05:37:51][Render] Compiling shader "EdgeDetectedSingleSheetFont"
+DEBUG: [2026-10-08 05:37:51][Render] Loading shader object (type 35633) "./shaders/opengl/EdgeDetectedSingleSheetFont_vert.glsl"
+DEBUG: [2026-10-08 05:37:51][Render] Loading shader object (type 35632) "./shaders/opengl/EdgeDetectedSingleSheetFont_frag.glsl"
+DEBUG: [2026-10-08 05:37:51][Render] Submitting texture
+DEBUG: [2026-10-08 05:37:51][Render] Submitting texture
+DEBUG: [2026-10-08 05:37:51][General] Drawable size (pixels): 1280 x 720 (4x MSAA requested, render scale 1.000000)
+INFO: [2026-10-08 05:37:56][General] Bye!
+PASS: asset-free launcher stayed alive for 5s and quit cleanly (exit 0)

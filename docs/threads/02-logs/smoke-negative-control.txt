@@ -1,0 +1,12 @@
+CRITICAL: [2026-10-08 05:40:11][General] Invalid number of arguments
+PASS: missing CLI parameter rejected (exit 1)
+CRITICAL: [2026-10-08 05:40:11][Profile] Failed to find /root/.config/Committee of Zero/Impacto/basepaths.lua.
+CRITICAL: [2026-10-08 05:40:11][General] Fatal error occured: Failed to find basepaths.lua, exiting!
+Traceback (most recent call last):
+  File "/home/user/workspace/repo/.github/scripts/desktop-smoke.py", line 58, in <module>
+    main()
+  File "/home/user/workspace/repo/.github/scripts/desktop-smoke.py", line 39, in main
+    assert process.poll() is None, "Launcher exited before shutdown"
+           ^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Launcher exited before shutdown
+Harness exit with missing basepaths.lua: 1
