@@ -229,6 +229,10 @@ remain valid there.
 - **Difficulty:** Medium. **Verify:** render a known string, compare glyphs.
 
 ### M2 — Bink 2 movies
+- **Status (Thread 05):** confirmed Bink 2 (`KB2j`, 38 loose `.bk2` per
+  resolution). Decision: movies unmounted and skipped; undecodable movies no
+  longer crash or hang (`SghdMovieSkipProbe`). Transcode path left open; see
+  [sghd-steam-evidence.md](sghd-steam-evidence.md).
 - External: Steam movies are Bink 2 (`KB2`); ffmpeg decodes Bink 1 only;
   `src/video/ffmpegplayer.cpp` is the only player.
 - **Approach:** owner transcodes to a supported codec during asset
@@ -238,6 +242,8 @@ remain valid there.
   on the owner's files (README procedure) decides which.
 
 ### M3 — SE / voice argument layouts
+- **Status (Thread 05):** layouts match sc3ntist; BGM/SE/voice play Ogg
+  Vorbis from MPK (synthetic probe). Real codec and sync semantics: census.
 - `00 23` SEplay, `00 37` PlayVoice, `00 38` StopVoice (part of C4) — listed
   separately because their semantics (channel, volume, sync flags) matter
   for voice sync, not just for byte alignment.
@@ -267,6 +273,8 @@ remain valid there.
 - Warnings only; add `resources/sghd/icondata/*.png`.
 
 ### L4 — Audio-less environments crash
+- **Status (Thread 05):** fixed; a failed backend falls back to silent
+  channels for that run (`SghdOggAudioProbe.test_no_audio_device_continues_silently`).
 - Engine segfaults in `Audio::AudioUpdate` without an OpenAL device
   (runtime, gdb). Not SG-specific; CI uses `ALSOFT_DRIVERS=null`. Consider
   a guard upstream.

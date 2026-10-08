@@ -100,3 +100,16 @@ The generic `BacklogMenu` was constructed with capacity 0 for every
 `MaxEntryCount` is now read before the `None` early return. Candidate for
 upstreaming. Probes run one private `Xvfb` instead of `xvfb-run` per engine
 run (xvfb-run occasionally replaced the exit status with 5).
+
+## ADR-011 — Steam evidence handling, movies and silent audio (Thread 05)
+
+Private owner reports are never committed; the few constants the profile
+needs live in `tests/compat/fixtures/sghd_steam_evidence.json`, and tests pin
+the profile to them. Sheets are mapped to `system.mpk` entries by name only;
+sheets without a Steam counterpart become `ScriptHandled` rather than
+loading an unrelated texture. Movies (Bink 2) are unmounted and skipped; any
+movie FFmpeg cannot decode is refused by `FFmpegPlayer::Play` and skipped by
+`PlayMovie` (fixes a null-descriptor segfault, an empty-optional abort and an
+endless `SF_MOVIEPLAY` wait; generic, upstream candidates). A failed audio
+backend falls back to silent channels for the current run without changing
+the user's configured backend (`Audio::BackendUnavailable`).
