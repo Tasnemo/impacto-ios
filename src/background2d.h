@@ -113,6 +113,9 @@ class Background2D : public Loadable<Background2D, bool, uint32_t> {
 
   using BackgroundRenderProc = auto (Background2D::*)() -> void;
 
+  // Fade/render mode is script-controlled; invalid values must never index
+  // past BackgroundRenderTable (a fixed 40-entry function-pointer array).
+  void RenderUsingFadeType();
   void RenderRegular();
   void RenderMasked();
   void RenderCaptureMasked();
