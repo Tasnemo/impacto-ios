@@ -305,7 +305,10 @@ VmInstruction(InstPhoneSGHD) {
         bits |= (uint8_t)(1u << bit);
       else
         bits &= (uint8_t) ~(1u << bit);
-      ImpLog(LogLevel::Debug, LogChannel::VM,
+      // Bulk phone-item initialization can touch hundreds of entries at
+      // once; keep those per-item details available at Trace level without
+      // flooding ordinary Debug logs and obscuring subsequent crash context.
+      ImpLog(LogLevel::Trace, LogChannel::VM,
              "Phone: item {:d} bit {:d} {:s}\n", item, bit,
              type == 0x00 ? "set" : "cleared");
       return;
