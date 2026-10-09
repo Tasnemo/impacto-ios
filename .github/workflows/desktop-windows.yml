@@ -66,6 +66,15 @@ jobs:
       - name: Package
         run: |
           cp THIRDPARTY.md README.md LICENSE release/ci-release/
+          # Ship a PDB built alongside this exact optimized executable.
+          # The symbols allow WinDbg to resolve the crash instruction and
+          # stack frames rather than guessing from impacto.exe offsets.
+          pdb="$(find ci-build/ci-release -type f -iname 'impacto.pdb' -print -quit)"
+          if [ -z "$pdb" ]; then
+            echo "::error::Expected impacto.pdb from the Release build"
+            exit 1
+          fi
+          cp "$pdb" release/ci-release/
           ls release/ci-release
       - uses: actions/upload-artifact@v7
         with:
