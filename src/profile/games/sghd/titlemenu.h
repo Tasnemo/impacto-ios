@@ -22,6 +22,7 @@ struct Item {
 
 inline int MainMenuMode = 3;
 inline std::vector<Item> Items;
+inline std::optional<Sprite> PreviewBackgroundSprite;
 inline std::optional<Sprite> CursorSprite;
 inline glm::vec2 CursorOffset{0.0f};
 

@@ -720,8 +720,17 @@ void Render() {
       }
 
       for (auto const& menu : UI::Menus[DrawComponents[i]]) {
+        // SGHD draws the title as a final foreground overlay so script
+        // draw-order components cannot hide its input and fallback artwork.
+        if (Profile::Vm::GameInstructionSet == Vm::InstructionSet::SGHD &&
+            menu == UI::TitleMenuPtr)
+          continue;
         menu->Render();
       }
+    }
+    if (Profile::Vm::GameInstructionSet == Vm::InstructionSet::SGHD &&
+        UI::TitleMenuPtr) {
+      UI::TitleMenuPtr->Render();
     }
     if (+Profile::Game::GameFeatures & +GameFeature::Achievements) {
       AchievementNotification::Render();

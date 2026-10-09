@@ -8,6 +8,8 @@ name: Desktop Windows
 on:
   push:
     branches: [phase-03-sghd-implementation]
+  pull_request:
+    branches: [phase-03-sghd-implementation]
   workflow_dispatch:
 
 permissions:
