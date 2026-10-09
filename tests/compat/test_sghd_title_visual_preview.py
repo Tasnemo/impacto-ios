@@ -52,9 +52,14 @@ class SghdTitleVisualPreview(unittest.TestCase):
         self.assertIn('menu == UI::TitleMenuPtr', game)
         self.assertIn('UI::TitleMenuPtr->Render();', game)
         self.assertIn('if (State != Shown) return;', renderer)
-        self.assertIn('PRESS ENTER OR CLICK TO START', renderer)
+        self.assertIn('DrawFallbackText("Press Enter"', renderer)
         self.assertIn('START", "LOAD", "EXTRA", "CONFIG", "HELP', renderer)
         self.assertIn('if (sprite)', renderer)
+        self.assertIn('item.SelectedSprite ? item.SelectedSprite : item.NormalSprite', renderer)
+        self.assertIn('RectF(bounds.X + 4.0f, bounds.Y + 4.0f, 8.0f, 46.0f)', renderer)
+        self.assertNotIn('WINDOWS COMPATIBILITY PREVIEW', renderer)
+        self.assertNotIn('PRESS ENTER OR CLICK TO START', renderer)
+        self.assertNotIn('DrawFallbackText(labels[i],\n                         {bounds.X - 130.0f', renderer)
 
 
 if __name__ == "__main__":
