@@ -533,7 +533,7 @@ void Background2D::RenderUsingFadeType() {
     if (warnedModes.insert(RenderType).second) {
       ImpLog(LogLevel::Warning, LogChannel::Render,
              "Unknown background fade/render mode {} (supported 0..{}); "
-             "using regular sprite fallback instead of invalid dispatch\\n",
+             "using regular sprite fallback instead of invalid dispatch\n",
              RenderType, BackgroundRenderTable.size() - 1);
     }
     RenderRegular();
