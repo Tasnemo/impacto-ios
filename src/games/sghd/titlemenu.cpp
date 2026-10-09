@@ -8,11 +8,10 @@
 #include "../../profile/fonts.h"
 #include "../../renderer/renderer.h"
 #include "../../text/text.h"
+#include "../../vm/interface/input.h"
 
-#include <algorithm>
 #include <array>
 #include <cstdint>
-#include "../../vm/interface/input.h"
 
 namespace Impacto {
 namespace UI {
@@ -118,67 +117,76 @@ static void DrawFallbackText(const char* text, glm::vec2 center,
 void TitleMenu::Render() {
   if (State != Shown) return;
 
-  bool const hasMenuArtwork =
-      !Items.empty() &&
-      std::all_of(Items.begin(), Items.end(),
-                  [](Item const& item) { return item.NormalSprite.has_value(); });
+  float const w = Profile::Game::DesignWidth;
+  float const h = Profile::Game::DesignHeight;
 
-  if (!hasMenuArtwork) {
-    float const w = Profile::Game::DesignWidth;
-    float const h = Profile::Game::DesignHeight;
-    Renderer->DrawQuad(RectF(0.0f, 0.0f, w, h),
+  // The local Steam sheet has a full-screen opaque region; its exact role
+  // has not yet been confirmed. Draw it behind a readable UI for the
+  // compatibility preview, and retain the fallback if the region is unset.
+  if (PreviewBackgroundSprite) {
+    Renderer->DrawSprite(*PreviewBackgroundSprite, RectF(0, 0, w, h));
+  } else {
+    Renderer->DrawQuad(RectF(0, 0, w, h),
                        glm::vec4(0.025f, 0.04f, 0.075f, 1.0f));
-    Renderer->DrawQuad(RectF(0.0f, h * 0.22f, w, 3.0f),
+    Renderer->DrawQuad(RectF(0, h * 0.22f, w, 3),
                        glm::vec4(0.78f, 0.36f, 0.16f, 1.0f));
-    Renderer->DrawQuad(RectF(w * 0.08f, h * 0.32f, 6.0f, h * 0.34f),
-                       glm::vec4(0.78f, 0.36f, 0.16f, 1.0f));
-
     DrawFallbackText("STEINS;GATE", {w * 0.5f, h * 0.31f},
                      82.0f, 0xF5F5EF);
-    DrawFallbackText("COMPATIBILITY PREVIEW", {w * 0.5f, h * 0.42f},
-                     29.0f, 0xBFC9D8);
+  }
 
-    if (!InMainMenu) {
-      Renderer->DrawQuad(RectF(w * 0.27f, h * 0.7f, w * 0.46f, 80.0f),
-                         glm::vec4(0.3f, 0.16f, 0.1f, 0.92f));
-      DrawFallbackText("PRESS ENTER OR CLICK TO START",
-                       {w * 0.5f, h * 0.71f}, 31.0f, 0xFFFFFF);
-    } else {
-      constexpr std::array<const char*, 5> labels{
-          "START", "LOAD", "EXTRA", "CONFIG", "HELP"};
-      for (size_t i = 0; i < Items.size(); ++i) {
-        Item const& item = Items[i];
-        bool const selected = (int)i == Cursor && item.Enabled;
-        RectF const& bounds = item.Bounds;
+  if (!InMainMenu) {
+    Renderer->DrawQuad(RectF(w * 0.25f, h * 0.7f, w * 0.5f, 84),
+                       glm::vec4(0.08f, 0.11f, 0.18f, 0.94f));
+    DrawFallbackText("PRESS ENTER OR CLICK TO START",
+                     {w * 0.5f, h * 0.72f}, 31.0f, 0xFFFFFF);
+  } else {
+    // These labels remain authoritative even when the tentative atlas
+    // regions are enabled: the positions and selected-state mapping must
+    // be visually verified against the original Steam menu.
+    constexpr std::array<const char*, 5> labels{
+        "START", "LOAD", "EXTRA", "CONFIG", "HELP"};
+
+    for (size_t i = 0; i < Items.size(); ++i) {
+      Item const& item = Items[i];
+      bool const selected = (int)i == Cursor && item.Enabled;
+      RectF const& bounds = item.Bounds;
+
+      std::optional<Sprite> const& sprite =
+          selected && item.SelectedSprite ? item.SelectedSprite
+                                          : item.NormalSprite;
+
+      if (selected) {
         Renderer->DrawQuad(
-            RectF(bounds.X - 20.0f, bounds.Y - 10.0f,
-                  bounds.Width + 40.0f, bounds.Height + 20.0f),
-            selected ? glm::vec4(0.78f, 0.36f, 0.16f, 0.95f)
-                     : glm::vec4(0.12f, 0.17f, 0.24f, 0.85f));
-        if (i < labels.size()) {
-          DrawFallbackText(labels[i],
-                           {bounds.X + bounds.Width * 0.5f, bounds.Y + 1.0f},
-                           35.0f,
-                           !item.Enabled ? 0x8290A0
-                                         : selected ? 0xFFFFFF : 0xE8ECF1);
-        }
+            RectF(bounds.X - 6, bounds.Y - 5,
+                  bounds.Width + 12, bounds.Height + 10),
+            glm::vec4(0.95f, 0.42f, 0.12f, 0.94f));
       }
-      DrawFallbackText("ENTER OR CLICK TO SELECT",
-                       {w * 0.5f, h * 0.9f}, 26.0f, 0xBFC9D8);
+
+      if (sprite) {
+        Renderer->DrawSprite(*sprite, bounds.GetPos());
+      } else {
+        Renderer->DrawQuad(
+            bounds, item.Enabled ? glm::vec4(0.15f, 0.21f, 0.29f, 0.95f)
+                                 : glm::vec4(0.12f, 0.14f, 0.19f, 0.86f));
+      }
+
+      // A separate text key for each row makes the preview navigable even
+      // if a candidate atlas crop does not contain the expected word.
+      if (i < labels.size()) {
+        DrawFallbackText(labels[i],
+                         {bounds.X - 130.0f, bounds.Y + 7.0f},
+                         30.0f, item.Enabled ? 0xFFFFFF : 0xA0AEC0);
+      }
+
+      if (selected && CursorSprite)
+        Renderer->DrawSprite(*CursorSprite, bounds.GetPos() + CursorOffset);
     }
-    return;
   }
 
-  if (!InMainMenu) return;
-  for (int i = 0; i < (int)Items.size(); i++) {
-    Item const& item = Items[i];
-    std::optional<Sprite> const& sprite = i == Cursor && item.SelectedSprite
-                                              ? item.SelectedSprite
-                                              : item.NormalSprite;
-    if (sprite) Renderer->DrawSprite(*sprite, item.Bounds.GetPos());
-    if (i == Cursor && CursorSprite)
-      Renderer->DrawSprite(*CursorSprite, item.Bounds.GetPos() + CursorOffset);
-  }
+  Renderer->DrawQuad(RectF(0, h - 42, w, 42),
+                     glm::vec4(0.035f, 0.055f, 0.08f, 0.93f));
+  DrawFallbackText("WINDOWS COMPATIBILITY PREVIEW",
+                   {w * 0.5f, h - 37.0f}, 21.0f, 0xC8D2E0);
 }
 
 }  // namespace SGHD
