@@ -1311,6 +1311,14 @@ set_property(TARGET impacto PROPERTY COMPILE_WARNING_AS_ERROR ON)
 
 if(MSVC)
     set_property(TARGET impacto PROPERTY WIN32_EXECUTABLE TRUE)
+
+    # The Windows Steam compatibility build runs optimized Release binaries
+    # outside CI. Retain their exact matching symbols for WinDbg crash dumps
+    # without changing the optimizer or enabling the slower Debug build.
+    if(CMAKE_BUILD_TYPE STREQUAL "Release")
+        target_compile_options(impacto PRIVATE /Zi)
+        target_link_options(impacto PRIVATE /DEBUG:FULL /OPT:REF /OPT:ICF)
+    endif()
 endIf()
 
 list(APPEND Impacto_Libs ${Impacto_Lib_Targets})
