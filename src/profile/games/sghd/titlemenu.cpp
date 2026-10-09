@@ -41,6 +41,7 @@ void Configure() {
     if (!selected.empty()) item.SelectedSprite = selected[i];
     Items.push_back(item);
   }
+  PreviewBackgroundSprite = TryGetMember<Sprite>("PreviewBackgroundSprite");
   CursorSprite = TryGetMember<Sprite>("CursorSprite");
   CursorOffset =
       TryGetMember<glm::vec2>("CursorOffset").value_or(glm::vec2(0.0f));
