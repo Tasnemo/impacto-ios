@@ -9,7 +9,9 @@
 #include "../../renderer/renderer.h"
 #include "../../text/text.h"
 
+#include <algorithm>
 #include <array>
+#include <cstdint>
 #include "../../vm/interface/input.h"
 
 namespace Impacto {
