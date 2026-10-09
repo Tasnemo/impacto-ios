@@ -100,9 +100,9 @@ std::optional<int> TitleMenu::ReadInput(bool mainMenuMode) {
   return std::nullopt;
 }
 
-// The original Steam title is assembled from TITLE_CHIP.DDS regions and a
-// Bink 2 movie. Until those assets are mapped, render an honest, navigable
-// fallback instead of making the functioning title protocol invisible.
+// The original Steam title is assembled from TITLE_CHIP.DDS and a Bink 2
+// animated movie. The owner's reference screenshots confirm the atlas
+// backdrop and menu chip locations; the movie is not yet supported.
 static void DrawFallbackText(const char* text, glm::vec2 center,
                              float fontSize, uint32_t color) {
   auto const fontIt = Profile::Fonts.find("Default");
@@ -120,73 +120,67 @@ void TitleMenu::Render() {
   float const w = Profile::Game::DesignWidth;
   float const h = Profile::Game::DesignHeight;
 
-  // The local Steam sheet has a full-screen opaque region; its exact role
-  // has not yet been confirmed. Draw it behind a readable UI for the
-  // compatibility preview, and retain the fallback if the region is unset.
+  // TITLE_CHIP.DDS region 0,0,1920,1080 is the real Steam backdrop:
+  // grid, logo, ornamental gears and copyright are already embedded.
   if (PreviewBackgroundSprite) {
     Renderer->DrawSprite(*PreviewBackgroundSprite, RectF(0, 0, w, h));
   } else {
+    // Visible only when the Steam texture isn't present.
     Renderer->DrawQuad(RectF(0, 0, w, h),
                        glm::vec4(0.025f, 0.04f, 0.075f, 1.0f));
-    Renderer->DrawQuad(RectF(0, h * 0.22f, w, 3),
-                       glm::vec4(0.78f, 0.36f, 0.16f, 1.0f));
-    DrawFallbackText("STEINS;GATE", {w * 0.5f, h * 0.31f},
+    DrawFallbackText("STEINS;GATE", {w * 0.5f, h * 0.3f},
                      82.0f, 0xF5F5EF);
   }
 
   if (!InMainMenu) {
-    Renderer->DrawQuad(RectF(w * 0.25f, h * 0.7f, w * 0.5f, 84),
-                       glm::vec4(0.08f, 0.11f, 0.18f, 0.94f));
-    DrawFallbackText("PRESS ENTER OR CLICK TO START",
-                     {w * 0.5f, h * 0.72f}, 31.0f, 0xFFFFFF);
-  } else {
-    // These labels remain authoritative even when the tentative atlas
-    // regions are enabled: the positions and selected-state mapping must
-    // be visually verified against the original Steam menu.
-    constexpr std::array<const char*, 5> labels{
-        "START", "LOAD", "EXTRA", "CONFIG", "HELP"};
-
-    for (size_t i = 0; i < Items.size(); ++i) {
-      Item const& item = Items[i];
-      bool const selected = (int)i == Cursor && item.Enabled;
-      RectF const& bounds = item.Bounds;
-
-      std::optional<Sprite> const& sprite =
-          selected && item.SelectedSprite ? item.SelectedSprite
-                                          : item.NormalSprite;
-
-      if (selected) {
-        Renderer->DrawQuad(
-            RectF(bounds.X - 6, bounds.Y - 5,
-                  bounds.Width + 12, bounds.Height + 10),
-            glm::vec4(0.95f, 0.42f, 0.12f, 0.94f));
-      }
-
-      if (sprite) {
-        Renderer->DrawSprite(*sprite, bounds.GetPos());
-      } else {
-        Renderer->DrawQuad(
-            bounds, item.Enabled ? glm::vec4(0.15f, 0.21f, 0.29f, 0.95f)
-                                 : glm::vec4(0.12f, 0.14f, 0.19f, 0.86f));
-      }
-
-      // A separate text key for each row makes the preview navigable even
-      // if a candidate atlas crop does not contain the expected word.
-      if (i < labels.size()) {
-        DrawFallbackText(labels[i],
-                         {bounds.X - 130.0f, bounds.Y + 7.0f},
-                         30.0f, item.Enabled ? 0xFFFFFF : 0xA0AEC0);
-      }
-
-      if (selected && CursorSprite)
-        Renderer->DrawSprite(*CursorSprite, bounds.GetPos() + CursorOffset);
-    }
+    // Reference Steam screenshot: a small, muted prompt above the logo,
+    // not a full-width dialog or a compatibility-preview banner.
+    DrawFallbackText("Press Enter", {w * 0.508f, h * 0.586f},
+                     35.0f, 0xB8A7A0);
+    return;
   }
 
-  Renderer->DrawQuad(RectF(0, h - 42, w, 42),
-                     glm::vec4(0.035f, 0.055f, 0.08f, 0.93f));
-  DrawFallbackText("WINDOWS COMPATIBILITY PREVIEW",
-                   {w * 0.5f, h - 37.0f}, 21.0f, 0xC8D2E0);
+  constexpr std::array<const char*, 5> labels{
+      "START", "LOAD", "EXTRA", "CONFIG", "HELP"};
+
+  for (size_t i = 0; i < Items.size(); ++i) {
+    Item const& item = Items[i];
+    RectF const& bounds = item.Bounds;
+    bool const selected = (int)i == Cursor && item.Enabled;
+
+    // The reference Steam screenshot has a thin orange stripe beside every
+    // menu chip, not a thick border around the selected item's rectangle.
+    Renderer->DrawQuad(
+        RectF(bounds.X + 4.0f, bounds.Y + 4.0f, 8.0f, 46.0f),
+        selected ? glm::vec4(1.0f, 0.43f, 0.06f, 1.0f)
+                 : glm::vec4(0.96f, 0.39f, 0.05f, 0.97f));
+
+    // The owner's side-by-side screenshots established that the right-hand
+    // column of atlas crops contains dark text on pale chips, matching the
+    // Steam title. The left column appeared white on gold in Round 8.
+    std::optional<Sprite> const& sprite =
+        item.SelectedSprite ? item.SelectedSprite : item.NormalSprite;
+    if (sprite) {
+      // Keep hitboxes at their measured positions; offset only the art so
+      // its left edge follows the orange stripe, like the Steam version.
+      Renderer->DrawSprite(
+          *sprite, bounds.GetPos() + glm::vec2(20.0f, 0.0f));
+    } else if (i < labels.size()) {
+      // No duplicate text when the native Steam chips are available.
+      DrawFallbackText(labels[i],
+                       {bounds.X + bounds.Width * 0.5f, bounds.Y},
+                       34.0f, item.Enabled ? 0xFFFFFF : 0xB9C2CF);
+    }
+
+    if (selected && CursorSprite)
+      Renderer->DrawSprite(*CursorSprite,
+                           bounds.GetPos() + CursorOffset);
+  }
+
+  // Reference Steam menu shows a compact key legend at lower left.
+  // (Its original tiny controller icons are not yet mapped.)
+  DrawFallbackText("SELECT    ENTER    BACK",
+                   {w * 0.165f, h - 67.0f}, 20.0f, 0xFFFFFF);
 }
 
 }  // namespace SGHD
