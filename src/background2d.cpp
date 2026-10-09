@@ -2,6 +2,9 @@
 
 #include <ranges>
 #include <numeric>
+#include <unordered_set>
+
+#include "log.h"
 #include <glm/ext/quaternion_exponential.hpp>
 
 #include "mask2d.h"
@@ -515,6 +518,31 @@ void Background2D::UpdateState(const int bgId) {
   }
 }
 
+// The script writes SW_BG1FADETYPE/SW_CAP1FADETYPE directly into RenderType.
+// Steam SGHD asks for render mode 40 immediately after START, but this table
+// only defines modes 0..39. The original unchecked call dispatched into data
+// following the table ("bgeffect"), producing a 0xC0000005 access violation.
+// Unknown modes need proper game-specific implementations eventually; render
+// the background normally until they have been reverse engineered.
+void Background2D::RenderUsingFadeType() {
+  if (RenderType < 0 ||
+      static_cast<size_t>(RenderType) >= BackgroundRenderTable.size()) {
+    // Rendering happens every frame. Log each unsupported mode just once so
+    // genuine new issues remain visible without flooding the debug log.
+    static std::unordered_set<int> warnedModes;
+    if (warnedModes.insert(RenderType).second) {
+      ImpLog(LogLevel::Warning, LogChannel::Render,
+             "Unknown background fade/render mode {} (supported 0..{}); "
+             "using regular sprite fallback instead of invalid dispatch\\n",
+             RenderType, BackgroundRenderTable.size() - 1);
+    }
+    RenderRegular();
+    return;
+  }
+
+  std::invoke(BackgroundRenderTable[static_cast<size_t>(RenderType)], this);
+}
+
 void Background2D::Render(const int layer) {
   if (!Show || !OnLayer(layer) ||
       (Status != LoadStatus::Loaded &&
@@ -550,7 +578,7 @@ void Background2D::Render(const int layer) {
     LastRenderedBackground = renderBgEffs ? this : nullptr;
   }
 
-  std::invoke(BackgroundRenderTable[RenderType], this);
+  RenderUsingFadeType();
 }
 
 void Background2D::RenderBgEff(const int layer) {
@@ -649,7 +677,7 @@ void Capture2D::Render(const int layer) {
     return;
   }
 
-  std::invoke(BackgroundRenderTable[RenderType], this);
+  RenderUsingFadeType();
 }
 
 Background2D::BgTransformState
@@ -777,7 +805,7 @@ void BackgroundEffect2D::Render(const int layer) {
 
   Renderer->SetStencilMode(StencilBufferMode::Test);
 
-  std::invoke(BackgroundRenderTable[RenderType], this);
+  RenderUsingFadeType();
 
   Renderer->SetStencilMode(StencilBufferMode::Off);
 }
