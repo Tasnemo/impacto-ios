@@ -4,7 +4,7 @@ on:
   push:
     branches: [master, main, phase-01-desktop-baseline, phase-02-steins-compatibility, phase-03-sghd-implementation]
   pull_request:
-    branches: [master, main]
+    branches: [master, main, phase-03-sghd-implementation]
   workflow_dispatch:
 
 permissions:
