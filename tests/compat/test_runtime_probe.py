@@ -112,11 +112,15 @@ def bink2_movie(frames: int = 1) -> bytes:
     return bytes(out)
 
 
-def movie_script(status: int) -> bytes:
-    """PlayMovie (01 22: playMode 0, playView 0, playNo 0, cancel 0), then
-    MovieMain type 0 (waits while SF_MOVIEPLAY is set), then exit status."""
+def movie_script(status: int, stale_play_flag: bool = False) -> bytes:
+    """PlayMovie, then MovieMain. Optionally pre-seed a stale playing flag.
+
+    SF_MOVIEPLAY is FlagWork 1823 in the shared Steam script-variable table.
+    A nonexistent or unsupported movie must clear it rather than hang.
+    """
     b = fx.ScxBuilder()
-    b.add_label(fx.ins(0x01, 0x22, fx.u8(0), fx.u8(0), fx.expr(0), fx.expr(0))
+    b.add_label((fx.sghd_set_flag(1823) if stale_play_flag else b"")
+                + fx.ins(0x01, 0x22, fx.u8(0), fx.u8(0), fx.expr(0), fx.expr(0))
                 + fx.ins(0x01, 0x23, fx.u8(0))
                 + fx.sghd_assign_scrwork(HARNESS_EXIT_CODE_SCRWORK, status)
                 + fx.sghd_end_of_script())
@@ -668,10 +672,32 @@ class SghdMovieSkipProbe(unittest.TestCase):
                                   seconds=30.0)
         cls.bink2 = run_probe(game="sghd-harness-media", script=movie_script(32),
                               seconds=30.0)
+        cls.missing_stale = run_probe(game="sghd-harness",
+                                     script=movie_script(35, stale_play_flag=True),
+                                     seconds=30.0)
+        cls.bink_stale = run_probe(game="sghd-harness-media",
+                                  script=movie_script(36, stale_play_flag=True),
+                                  seconds=30.0)
 
     def test_unmounted_movie_is_skipped(self):
         self.assertEqual(self.unmounted.returncode, 31, self.unmounted.log[-2000:])
         self.assertIn("Failed to open movie for playback", self.unmounted.log)
+
+    def test_missing_movie_clears_previous_playback_flag(self):
+        self.assertEqual(self.missing_stale.returncode, 35,
+                         self.missing_stale.stdout[-1000:] +
+                         self.missing_stale.log[-2200:])
+        self.assertEqual([op for _, op in self.missing_stale.vm_trace()],
+                         ["00:12", "01:22", "01:23", "00:00"])
+
+    def test_undecodable_movie_clears_previous_playback_flag(self):
+        self.assertEqual(self.bink_stale.returncode, 36,
+                         self.bink_stale.stdout[-1000:] +
+                         self.bink_stale.log[-2200:])
+        self.assertIn("Movie 0 could not be played; skipping it",
+                      self.bink_stale.log)
+        self.assertEqual([op for _, op in self.bink_stale.vm_trace()],
+                         ["00:12", "01:22", "01:23", "00:00"])
 
     def test_bink2_movie_is_skipped_without_crash(self):
         self.assertEqual(self.bink2.returncode, 32,
