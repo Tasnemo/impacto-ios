@@ -1,15 +1,3 @@
--- Windows Round 11 experiment (not yet validated on real Steam assets):
--- The original SGHD profile inherited PS3 background ScrWork overrides
--- (BG base W2400, offset base W1200, surface W1800, link W2580).
--- The Steam script may instead use the newer shared layout already in
--- profiles/common/scriptvars.lua: BG W4500 (mode W4511), offsets W2500,
--- surfaces W3400, and links W4490. Round 10 returned increasing "fade types"
--- W2411=40..180 immediately after START, suggesting W2411 is being
--- interpreted as an effect type when it is actually unrelated script data.
--- Retain the common background values for this controlled A/B test; do
--- not change other PS3-derived banks (characters/phone) without evidence.
--- All files remain local to the owner's legal Steam installation.
-
 -- Thread 07c: the Steam scripts use the common (profiles/common/
 -- scriptvars.lua) title/system-menu variables, not the PS3 values this file
 -- inherited from sgps3: _STARTUP_WIN counts SW_TITLEDISPCT in W2119, sets
@@ -75,10 +63,36 @@ sv.SW_CHA1EX = 2613;
 sv.SW_CHA1FADECT = 2614;
 sv.SW_CHA1FADETYPE = 2615;
 sv.SW_CHA1SURF = 1850;
+sv.SW_BG1POSX = 2400;
+sv.SW_BG1POSY = 2401;
+sv.SW_BG1SX = 2402;
+sv.SW_BG1SY = 2403;
+sv.SW_BG1SIZE = 2404;
+sv.SW_BG1LX = 2405;
+sv.SW_BG1LY = 2406;
+sv.SW_BG1NO = 2407;
+sv.SW_BG1PRI = 2408;
+sv.SW_BG1DISPMODE = 2409;
+sv.SW_BG1FADECT = 2410;
+sv.SW_BG1FADETYPE = 2411;
+sv.SW_BG1ALPHA = 2413;
+sv.SW_BG1MASKNO = 2414;
+sv.SW_BG1MASKFADERANGE = 2415;
+sv.SW_BG1POSX_OFS = 1200;
+sv.SW_BG1POSY_OFS = 1201;
+sv.SW_BG1SX_OFS = 1202;
+sv.SW_BG1SY_OFS = 1203;
+sv.SW_BG1SIZE_OFS = 1204;
+sv.SW_BG1LX_OFS = 1205;
+sv.SW_BG1LY_OFS = 1206;
+sv.SW_BG1ALPHA_OFS = 1208;
 sv.SW_CHA1POSY_OFS = 1301;
 sv.SW_CHA1ALPHA_OFS = 1307;
+sv.SW_BG1SURF = 1800;
 sv.SW_SAVEFILESTATUS = 2122;
 sv.SW_SAVEFILENO = 2123;
+sv.SW_BGLINK = 2580;
+sv.SW_BGLINK2 = 2581;
 sv.SW_EFF_CAP_PRI = 3268;
 sv.SW_EFF_CAP_BUF = 3269;
 sv.SW_EFF_CAP_PRI2 = 3270;
