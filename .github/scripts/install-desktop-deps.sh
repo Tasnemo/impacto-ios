@@ -3,7 +3,7 @@
 set -euo pipefail
 apt-get update
 apt-get install -y --no-install-recommends \
-  ca-certificates git python3 python3-venv ninja-build build-essential \
+  ca-certificates git python3 python3-venv ninja-build build-essential ffmpeg \
   nasm curl zip unzip pkg-config autoconf autoconf-archive automake libtool \
   libx11-dev libxft-dev libxext-dev libwayland-dev libxkbcommon-dev \
   libegl1-mesa-dev libibus-1.0-dev libxrandr-dev libltdl-dev libdrm-dev \
