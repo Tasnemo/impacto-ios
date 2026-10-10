@@ -67,6 +67,18 @@ jobs:
         env:
           IMPACTO_BIN: ${{ github.workspace }}/release/ci-release/impacto
         run: python3 -m unittest tests.compat.test_runtime_probe -v 2>&1 | tee ci-build/logs/runtime-probe.log
+      # Only build outputs and open-source resources are packaged here.
+      # The owner's Steam MPKs / BK2s are never part of GitHub CI or artifacts.
+      # This artifact lets the developer execute the exact same Linux build
+      # locally with privately supplied assets under Xvfb for gameplay tests.
+      - name: Upload Linux runtime (source-only, no commercial game data)
+        if: success()
+        uses: actions/upload-artifact@v7
+        with:
+          name: impacto-linux-x64-${{ github.sha }}
+          path: release/ci-release/
+          retention-days: 7
+          if-no-files-found: error
       - name: Upload diagnostics
         if: always()
         uses: actions/upload-artifact@v7
