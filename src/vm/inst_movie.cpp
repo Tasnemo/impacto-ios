@@ -3,6 +3,9 @@
 #include "inst_macros.inc"
 
 #include <math.h>
+#include <array>
+#include <string>
+#include <string_view>
 
 #include "expression.h"
 #include "../game.h"
@@ -19,6 +22,77 @@ namespace Impacto {
 namespace Vm {
 
 using namespace Impacto::Profile::ScriptVars;
+
+// Original English Steam Game.exe indexes movies in this order. These are
+// filename stems only, not movie data. Derived from its 38-entry name table.
+// Never place original BK2s or locally converted video in this repository.
+static constexpr std::array<std::string_view, 38> SghdMovieStems = {
+    "ar",  // 0
+    "ending_c",  // 1
+    "ending_f",  // 2
+    "ending_m",  // 3
+    "ending_r",  // 4
+    "ending_s",  // 5
+    "imv001",  // 6
+    "imv002",  // 7
+    "imv003",  // 8
+    "imv004",  // 9
+    "imv005",  // 10
+    "imv006",  // 11
+    "imv007",  // 12
+    "imv008",  // 13
+    "imv009",  // 14
+    "imv010",  // 15
+    "imv018",  // 16
+    "imv023",  // 17
+    "imv027",  // 18
+    "imv034",  // 19
+    "imv034b",  // 20
+    "imv036",  // 21
+    "imv037",  // 22
+    "imv038",  // 23
+    "imv039",  // 24
+    "imv041",  // 25
+    "imv042",  // 26
+    "imv043",  // 27
+    "imv047",  // 28
+    "imv049",  // 29
+    "imv050",  // 30
+    "imv051",  // 31
+    "op",  // 32
+    "op2",  // 33
+    "prologue01",  // 34
+    "prologue02",  // 35
+    "timeleapbg",  // 36
+    "title",  // 37
+};
+
+// Converted videos remain entirely on the owner's local machine, in
+// gamedata/sghd/movie-converted/*.mp4. Use NAME lookups instead of folder
+// ordinal IDs (FSFolderArchive sorts files, so missing conversions otherwise
+// shift script movie IDs). Legacy SGHD harness tests may mount a Bink 2
+// .bk2 by name; FFmpeg will safely reject it as unsupported.
+static IoError OpenMovieStream(int movieId, Io::Stream** stream) {
+  if (GameInstructionSet != InstructionSet::SGHD)
+    return Io::VfsOpen("movie", movieId, stream);
+
+  if (movieId < 0 ||
+      static_cast<size_t>(movieId) >= SghdMovieStems.size()) {
+    ImpLog(LogLevel::Error, LogChannel::Video,
+           "Unknown SGHD movie ID {:d}; skipping movie\n", movieId);
+    return IoError_NotFound;
+  }
+  std::string stem(SghdMovieStems[movieId]);
+  IoError err = Io::VfsOpen("movie", stem + ".mp4", stream);
+  if (err != IoError_OK)
+    err = Io::VfsOpen("movie", stem + ".bk2", stream);
+  if (err != IoError_OK)
+    ImpLog(LogLevel::Warning, LogChannel::Video,
+           "SGHD movie ID {:d} ({:s}) has no local converted MP4; "
+           "skipping movie\n", movieId, stem);
+  return err;
+}
+
 
 VmInstruction(InstPlayMovie) {
   StartInstruction;
@@ -39,7 +113,7 @@ VmInstruction(InstPlayMovie) {
 
   if (+Profile::Game::GameFeatures & +GameFeature::Video) {
     Io::Stream* stream;
-    auto err = Io::VfsOpen("movie", playNo, &stream);
+    auto err = OpenMovieStream(playNo, &stream);
     if (err != IoError_OK) {
       ImpLog(LogLevel::Error, LogChannel::Video,
              "Failed to open movie for playback: IO error {}\n", err);
@@ -126,7 +200,7 @@ static void PlayMovieOldCommon(Sc3VmThread* thread, uint8_t instType) {
 
   if (+Profile::Game::GameFeatures & +GameFeature::Video) {
     Io::Stream* stream;
-    auto err = Io::VfsOpen("movie", playNo, &stream);
+    auto err = OpenMovieStream(playNo, &stream);
     if (err != IoError_OK) {
       ImpLog(LogLevel::Error, LogChannel::Video,
              "Failed to open movie for playback: IO error {}\n", err);
