@@ -25,8 +25,8 @@ class SteamBackgroundBankExperiment(unittest.TestCase):
         common = COMMON.read_text(encoding="utf-8")
         sghd = SGHD.read_text(encoding="utf-8")
         for name in BG_NAMES:
-            self.assertRegex(common, rf"\\b{name}\\s*=\\s*\\d+")
-            self.assertNotRegex(sghd, rf"(?m)^sv\\.{name}\\s*=")
+            self.assertRegex(common, rf"\b{name}\s*=\s*\d+")
+            self.assertNotRegex(sghd, rf"(?m)^sv\.{name}\s*=")
         self.assertRegex(common, r"SW_BG1FADETYPE=4511")
         self.assertRegex(common, r"SW_BG1SURF=3400")
         self.assertRegex(common, r"SW_BG1POSX_OFS=2500")
