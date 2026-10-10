@@ -185,7 +185,8 @@ def wavtable(count_le: int = 2) -> bytes:
 def write_gamedata(root: Path, game: str = "sgps3",
                    script: bytes | None = None,
                    wavtable_data: bytes | None = None,
-                   extra_scripts: dict[int, bytes] | None = None) -> None:
+                   extra_scripts: dict[int, bytes] | None = None,
+                   decodable_movie: bool = False) -> None:
     gd = root / "gamedata" / GAMEDATA_DIR.get(game, game)
     gd.mkdir(parents=True)
     png = tiny_png()
@@ -209,7 +210,20 @@ def write_gamedata(root: Path, game: str = "sgps3",
         (gd / name).write_bytes(fx.build_mpk(files))
     if game == "sghd-harness-media":
         (gd / "movie").mkdir()
-        (gd / "movie" / "op.bk2").write_bytes(bink2_movie())
+        if decodable_movie:
+            # Entirely synthetic, 0.5-second MPEG-4 Part 2 clip. The harness
+            # mounts this directory as video ID 0, exercising the real player
+            # instead of merely checking the failed-to-decode fallback.
+            movie_file = gd / "movie" / "synthetic.mp4"
+            subprocess.run([
+                "ffmpeg", "-hide_banner", "-loglevel", "error", "-y",
+                "-f", "lavfi", "-i", "color=c=red:s=128x72:r=8:d=0.5",
+                "-an", "-c:v", "mpeg4", "-q:v", "2",
+                "-pix_fmt", "yuv420p", "-movflags", "+faststart",
+                str(movie_file)], check=True, timeout=30)
+            assert movie_file.stat().st_size > 1000
+        else:
+            (gd / "movie" / "op.bk2").write_bytes(bink2_movie())
 
 
 def write_profiles(root: Path, use_return_ids: bool) -> None:
@@ -351,13 +365,14 @@ def run_probe(use_return_ids: bool = False, seconds: float = 4.0,
               env_extra: dict | None = None,
               wavtable_data: bytes | None = None,
               extra_scripts: dict[int, bytes] | None = None,
-              input_actions=None) -> ProbeResult:
+              input_actions=None, decodable_movie: bool = False) -> ProbeResult:
     """input_actions: optional callable(display) run in a thread while the
     engine runs (synthetic X input, see XTestInput)."""
     binary = Path(os.environ["IMPACTO_BIN"]).resolve()
     root = Path(tempfile.mkdtemp(prefix="impacto-probe-"))
     try:
-        write_gamedata(root, game, script, wavtable_data, extra_scripts)
+        write_gamedata(root, game, script, wavtable_data, extra_scripts,
+                       decodable_movie=decodable_movie)
         if game == "sgps3":
             write_profiles(root, use_return_ids)
         write_config(root, game, saves)
@@ -682,6 +697,44 @@ class SghdMovieSkipProbe(unittest.TestCase):
         self.assertIn("Movie 0 could not be played; skipping it", self.bink2.log)
         self.assertEqual([op for _, op in self.bink2.vm_trace()],
                          ["01:22", "01:23", "00:00"])
+
+
+@unittest.skipUnless(os.environ.get("IMPACTO_BIN"),
+                     "set IMPACTO_BIN=/path/to/impacto to run runtime probes")
+@unittest.skipUnless(shutil.which("ffmpeg"),
+                     "ffmpeg CLI is required to generate a synthetic test movie")
+class SghdDecodableMovieProbe(unittest.TestCase):
+    """Positive movie pipeline test: synthetic playable MP4 -> real Impacto VM.
+
+    The existing Bink regression only tests safe failure. This independently
+    validates demux, codec startup, frame decoding and MovieMain completion.
+    No original game content or original movie bytes are involved.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        cls.probe = run_probe(game="sghd-harness-media",
+                              script=movie_script(33),
+                              decodable_movie=True, seconds=30.0)
+
+    def test_movie_file_reaches_ffmpeg_decoder(self):
+        self.assertIn("synthetic.mp4", self.probe.log)
+        self.assertIn("Opening file:", self.probe.log)
+        self.assertNotIn("Unsupported codec", self.probe.log)
+        self.assertNotIn("No decodable video stream", self.probe.log)
+        self.assertNotIn("Movie 0 could not be played; skipping it",
+                         self.probe.log)
+
+    def test_movie_finishes_and_vm_resumes(self):
+        self.assertEqual(self.probe.returncode, 33,
+                         self.probe.stdout[-1200:] + self.probe.log[-2500:])
+        opcodes = [op for _, op in self.probe.vm_trace()]
+        self.assertEqual(opcodes[0], "01:22", opcodes)
+        self.assertEqual(opcodes[-1], "00:00", opcodes[-10:])
+        # MovieMain repeats the same instruction while waiting for the
+        # decoder. Successful playback can legitimately execute it more
+        # than once, so do not require a single 01:23 event.
+        self.assertGreaterEqual(opcodes.count("01:23"), 1, opcodes)
 
 
 @unittest.skipUnless(os.environ.get("IMPACTO_BIN"),
