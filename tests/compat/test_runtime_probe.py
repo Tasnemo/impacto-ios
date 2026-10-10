@@ -209,7 +209,10 @@ def write_gamedata(root: Path, game: str = "sgps3",
         (gd / name).write_bytes(fx.build_mpk(files))
     if game == "sghd-harness-media":
         (gd / "movie").mkdir()
-        (gd / "movie" / "op.bk2").write_bytes(bink2_movie())
+        # Movie ID 0 is ar.bk2 in the original Steam Game.exe table.
+        movie_file = gd / "movie" / "ar.bk2"
+        movie_file.write_bytes(bink2_movie())
+        assert movie_file.read_bytes()[:4] == b"KB2j"
 
 
 def write_profiles(root: Path, use_return_ids: bool) -> None:
