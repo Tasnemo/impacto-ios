@@ -73,7 +73,7 @@ static constexpr std::array<std::string_view, 38> SghdMovieStems = {
 // shift script movie IDs). Legacy SGHD harness tests may mount a Bink 2
 // .bk2 by name; FFmpeg will safely reject it as unsupported.
 static IoError OpenMovieStream(int movieId, Io::Stream** stream) {
-  if (GameInstructionSet != InstructionSet::SGHD)
+  if (Profile::Vm::GameInstructionSet != InstructionSet::SGHD)
     return Io::VfsOpen("movie", movieId, stream);
 
   if (movieId < 0 ||
