@@ -32,15 +32,21 @@ class SghdSteamEvidence(unittest.TestCase):
     def test_vfs_mounts_existing_steam_archives(self):
         text = (SGHD / "vfs.lua").read_text()
         mounts = dict(re.findall(r'\["(\w+)"\] = \{root\.BasePaths\.RootGamedataDir \.\. "/sghd/([^"]+)"\}', text))
-        self.assertEqual(set(mounts), {"script", "system", "bgm", "se", "voice", "bg", "chara", "mask"})
+        self.assertEqual(set(mounts), {"script", "system", "bgm", "se", "voice", "bg", "chara", "mask", "movie"})
+        self.assertEqual(mounts["movie"], "movie-converted")
         for mount, archive in mounts.items():
+            if mount == "movie":
+                continue
             self.assertEqual(archive, f"{mount}.mpk")
             self.assertIn(archive, EVIDENCE["archives"], archive)
         self.assertEqual(EVIDENCE["mpk_version"], [2, 0])  # the only version MpkArchive reads
 
-    def test_movies_not_mounted_because_bink2(self):
-        self.assertEqual(EVIDENCE["movies"]["signature"], "4b42326a")  # 'KB2j'
-        self.assertNotIn('["movie"]', (SGHD / "vfs.lua").read_text())
+    def test_only_privately_converted_movies_are_mounted(self):
+        self.assertEqual(EVIDENCE["movies"]["signature"], "4b42326a")  # KB2j
+        movie_vfs = (SGHD / "vfs.lua").read_text()
+        self.assertIn('["movie"]', movie_vfs)
+        self.assertIn('"/sghd/movie-converted"', movie_vfs)
+        self.assertNotIn('"/sghd/movie/1920x1080"', movie_vfs)
 
     def test_start_script_is_startup_win(self):
         start = int(re.search(r"StartScript = (\d+)", (SGHD / "vm.lua").read_text()).group(1))
