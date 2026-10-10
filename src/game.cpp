@@ -432,6 +432,28 @@ void Update(float dt) {
 
 static void RenderMain() {
   Background2D::LastRenderedBackground = nullptr;
+  // Temporary Steam SGHD A/B diagnostics: the legacy PS3 background word
+  // bank (2400) is still populated by other Steam script data, and the old
+  // fade-type field W2411 counted upward past the 40-entry dispatch table.
+  // Sample once every 2 seconds (not each layer) so the owner's local debug
+  // log can distinguish the old and proposed shared/PC bank without copying
+  // any script text or game assets.
+  if (Profile::Vm::GameInstructionSet == Vm::InstructionSet::SGHD) {
+    static uint64_t nextBgBankLogMs = 0;
+    const uint64_t nowMs = SDL_GetTicks();
+    if (nowMs >= nextBgBankLogMs) {
+      nextBgBankLogMs = nowMs + 2000;
+      ImpLog(LogLevel::Debug, LogChannel::Render,
+             "SGHD BG bank sample: old W2407(id)={} W2408(pri)={} "
+             "W2411(mode)={} W1800(surface)={}; "
+             "shared W4507(id)={} W4508(pri)={} W4511(mode)={} "
+             "W4513(alpha)={} W3400(surface)={}; F2400(show)={}\n",
+             ScrWork[2407], ScrWork[2408], ScrWork[2411],
+             ScrWork[1800], ScrWork[4507], ScrWork[4508],
+             ScrWork[4511], ScrWork[4513], ScrWork[3400],
+             GetFlag(SF_BG1DISP));
+    }
+  }
   UI::GameSpecific::RenderEarlyMain();
   for (uint32_t layer = 0; layer <= Profile::Game::LayerCount; layer++) {
     if (Profile::Vm::GameInstructionSet == Vm::InstructionSet::CC) {
