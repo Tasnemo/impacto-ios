@@ -16,18 +16,18 @@ the corresponding local **`.mp4` filename**, rather than relying on
 alphabetical directory position. The folder may contain only some of the
 38 converted files; missing movies continue to skip as before.
 
-## Minimal visual test: convert the title movie
+## Minimal visual test: convert the first opening movie
 
 1. Use the official RAD Video Tools for Windows:
    https://www.radgametools.com/bnkdown.htm
-2. Open the original `USRDIR/movie/1920x1080/title.bk2` using RAD.
+2. Open the original `USRDIR/movie/1920x1080/prologue01.bk2` using RAD.
    Select **Convert a file**, choose **MP4** as output type, and output a
-   file called `title.mp4`. The RAD Video Tools offer MP4 output through
+   file called `prologue01.mp4`. The RAD Video Tools offer MP4 output through
    Windows Media Foundation, but verify that this specific Steam file
    actually converts and that audio is intact.
 3. Place the converted file in your local Impacto test installation:
 
-   `t8/gamedata/sghd/movie-converted/title.mp4`
+   `t8/gamedata/sghd/movie-converted/prologue01.mp4`
 
    Create the `movie-converted` directory if necessary. Use the filename
    in lowercase; on Linux, file lookups are case-sensitive.
@@ -40,14 +40,16 @@ alphabetical directory position. The folder may contain only some of the
 
    A config can be prepared by copying a prior config into
    `round13-config.toml`. Do not override existing local saves by
-   accident. Test the title movie and then START. Close the process before
+   accident. Press Enter through START and verify the prologue movie appears instead of being skipped. Close the process before
    sharing its log.
-5. If RAD cannot decode or export this title BK2, **stop at that step** and
+5. If RAD cannot decode or export this prologue BK2, **stop at that step** and
    report the error; this is a conversion-path blocker, not an Impacto bug.
 
+The real `SG00_01.SCX` opening calls **movie ID 34** (`prologue01`) and **ID 35** (`prologue02`) near its start. Once one movie plays correctly, convert `prologue02.bk2` too to restore both initial clips. The script also uses `op` (ID 32) earlier in the startup/title sequence, and `title` (ID 37) is a separate movie.
+
 The `movie-converted` folder should contain **MP4s only** named using the
-*original BK2's stem*, e.g. `title.mp4`, `op.mp4`,
-`prologue01.mp4`. No archive packing, numeric prefix, placeholder files,
+*original BK2's stem*, e.g. `prologue01.mp4`, `prologue02.mp4`,
+`title.mp4`. No archive packing, numeric prefix, placeholder files,
 or bulk conversion is required.
 
 ## Testing and safety
