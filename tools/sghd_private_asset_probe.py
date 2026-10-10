@@ -29,7 +29,7 @@ from sghd_census import MOVIE, mpk_entries, mpk_read, walk_script
 def movie_table(exe: Path):
     """Movie filenames in original Game.exe table order. Return names only."""
     data = exe.read_bytes()
-    found = re.findall(rb"(?<![A-Za-z0-9_])([A-Za-z0-9_]+\\.bk2)\\x00",
+    found = re.findall(rb"(?<![A-Za-z0-9_])([A-Za-z0-9_]+\.bk2)\x00",
                        data, flags=re.IGNORECASE)
     # Table entries are unique in the original Steam executable.
     return [name.decode("ascii").lower() for name in found]
