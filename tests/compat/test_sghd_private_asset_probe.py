@@ -21,7 +21,7 @@ class PrivateAssetProbeTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             path = Path(tmp) / "Game.exe"
             paths = [b"ar.bk2", b"op.bk2", b"title.bk2"]
-            path.write_bytes(b"header" + b"\x00".join(paths) + b"\x00")
+            path.write_bytes(b"header\x00" + b"\x00".join(paths) + b"\x00")
             self.assertEqual(probe.movie_table(path), ["ar.bk2", "op.bk2", "title.bk2"])
 
     def test_bink2_header_dimensions(self):
