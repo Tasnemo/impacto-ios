@@ -1,3 +1,13 @@
+-- Round 11: original Steam SCX confirms its background control bank is W4500.
+-- In SG00_01.SCX a 10:01 LoadBackground(1,59) is immediately followed
+-- by W4508 = 11 (priority); the same scene writes W4511 = 1 and = 15
+-- (render modes), and W4500/W4501/W4504 for position/scale.
+-- The old inherited SGPS3 overrides redirected those fields to W2400
+-- and caused the renderer to treat an increasing W2411 counter as mode
+-- 40..180. Inherit the shared/Steam W4500 and W2500 offset bank here.
+-- Surface/link address inheritance (W3400/W4490) is still a hypothesis
+-- under live validation, not proven solely by those SCX assignments.
+-- Original background textures remain local, never in the repository.
 -- Thread 07c: the Steam scripts use the common (profiles/common/
 -- scriptvars.lua) title/system-menu variables, not the PS3 values this file
 -- inherited from sgps3: _STARTUP_WIN counts SW_TITLEDISPCT in W2119, sets
@@ -63,36 +73,10 @@ sv.SW_CHA1EX = 2613;
 sv.SW_CHA1FADECT = 2614;
 sv.SW_CHA1FADETYPE = 2615;
 sv.SW_CHA1SURF = 1850;
-sv.SW_BG1POSX = 2400;
-sv.SW_BG1POSY = 2401;
-sv.SW_BG1SX = 2402;
-sv.SW_BG1SY = 2403;
-sv.SW_BG1SIZE = 2404;
-sv.SW_BG1LX = 2405;
-sv.SW_BG1LY = 2406;
-sv.SW_BG1NO = 2407;
-sv.SW_BG1PRI = 2408;
-sv.SW_BG1DISPMODE = 2409;
-sv.SW_BG1FADECT = 2410;
-sv.SW_BG1FADETYPE = 2411;
-sv.SW_BG1ALPHA = 2413;
-sv.SW_BG1MASKNO = 2414;
-sv.SW_BG1MASKFADERANGE = 2415;
-sv.SW_BG1POSX_OFS = 1200;
-sv.SW_BG1POSY_OFS = 1201;
-sv.SW_BG1SX_OFS = 1202;
-sv.SW_BG1SY_OFS = 1203;
-sv.SW_BG1SIZE_OFS = 1204;
-sv.SW_BG1LX_OFS = 1205;
-sv.SW_BG1LY_OFS = 1206;
-sv.SW_BG1ALPHA_OFS = 1208;
 sv.SW_CHA1POSY_OFS = 1301;
 sv.SW_CHA1ALPHA_OFS = 1307;
-sv.SW_BG1SURF = 1800;
 sv.SW_SAVEFILESTATUS = 2122;
 sv.SW_SAVEFILENO = 2123;
-sv.SW_BGLINK = 2580;
-sv.SW_BGLINK2 = 2581;
 sv.SW_EFF_CAP_PRI = 3268;
 sv.SW_EFF_CAP_BUF = 3269;
 sv.SW_EFF_CAP_PRI2 = 3270;
