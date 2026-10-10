@@ -5,6 +5,8 @@ Game.exe, BK2s, converted footage or extracted frames.
 """
 import re
 import unittest
+import tempfile
+import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -44,6 +46,18 @@ class SghdMovieMappingTests(unittest.TestCase):
         self.assertIn('"/sghd/movie-converted"', self.vfs)
         self.assertNotIn('"/sghd/movie/1920x1080"', self.vfs)
         self.assertIn('ar.bk2', RUNTIME.read_text(encoding="utf-8"))
+
+    def test_runtime_synthetic_bink_movie_is_actually_created(self):
+        # Runtime probe must exercise an undecodable Bink movie, not an absent
+        # file; otherwise its 'safe skip' test can produce misleading results.
+        sys.path.insert(0, str(ROOT / "tests" / "compat"))
+        from test_runtime_probe import write_gamedata
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d)
+            write_gamedata(root, game="sghd-harness-media")
+            movie = root / "gamedata" / "sghd" / "movie" / "ar.bk2"
+            self.assertTrue(movie.is_file())
+            self.assertEqual(movie.read_bytes()[:4], b"KB2j")
 
 if __name__ == "__main__":
     unittest.main()
