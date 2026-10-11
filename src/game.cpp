@@ -464,9 +464,16 @@ static void RenderMain() {
     }
 
     for (int bgId = 0; bgId < std::ssize(Backgrounds); bgId++) {
-      int bufId = ScrWork[SW_BG1SURF + bgId];
-      Backgrounds2D[bufId]->UpdateState(bgId);
-      Backgrounds2D[bufId]->Render(layer);
+      const int bufId = ScrWork[SW_BG1SURF + bgId];
+      // VM-controlled surface indices are not guaranteed to exist in the
+      // surface map. operator[] would INSERT a null pointer on a bad index
+      // and the following dereference would crash every subsequent frame.
+      // find() never inserts and handles negative/corrupt values safely.
+      const auto surfaceIt = Backgrounds2D.find(bufId);
+      if (surfaceIt == Backgrounds2D.end() || surfaceIt->second == nullptr)
+        continue;
+      surfaceIt->second->UpdateState(bgId);
+      surfaceIt->second->Render(layer);
     }
 
     // Games with <= 2 don't render their captures separately
