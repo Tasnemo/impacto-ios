@@ -210,9 +210,12 @@ static void PlayMovieOldCommon(Sc3VmThread* thread, uint8_t instType) {
   PopExpression(movCancelFlag);
 
   if (+Profile::Game::GameFeatures & +GameFeature::Video) {
+    const uint8_t channel = (playMode / 20) == 0 ? 0 : 1;
     Io::Stream* stream;
     auto err = OpenMovieStream(playNo, &stream);
     if (err != IoError_OK) {
+      if (Profile::Vm::GameInstructionSet == InstructionSet::SGHD)
+        ResetFailedMovieState(channel);
       ImpLog(LogLevel::Error, LogChannel::Video,
              "Failed to open movie for playback: IO error {}\n", err);
       return;
@@ -228,6 +231,13 @@ static void PlayMovieOldCommon(Sc3VmThread* thread, uint8_t instType) {
 
     if (Video::Players[channel]->IsPlaying) Video::Players[channel]->Stop();
     Video::Players[channel]->Play(stream, playMode == 5, playMode == 5);
+    if (!Video::Players[channel]->IsPlaying) {
+      ImpLog(LogLevel::Error, LogChannel::Video,
+             "Movie {:d} could not be played; skipping it\n", playNo);
+      if (Profile::Vm::GameInstructionSet == InstructionSet::SGHD)
+        ResetFailedMovieState(channel);
+      return;
+    }
 
     SetFlag(SF_MOVIE_DRAWWAIT + channel, true);
     SetFlag(SF_MOVIEPLAY + channel, true);
