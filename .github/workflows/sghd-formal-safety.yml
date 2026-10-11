@@ -1,0 +1,22 @@
+name: SGHD Formal BG Safety
+
+on:
+  pull_request:
+    branches: [phase-03-sghd-implementation, master]
+  push:
+    branches: [phase-03-sghd-implementation, master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  prove-bg-surface-guard:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6
+      - name: Install Z3 SMT solver
+        run: sudo apt-get update -qq && sudo apt-get install -y z3
+      - name: Prove background map guard safety (bit-vector SMT)
+        run: python3 tools/verify_bg_surface_guard.py
