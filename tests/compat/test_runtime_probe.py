@@ -259,7 +259,8 @@ root.SysMesBoxDisplay.LoadingStarsFadeDuration = 0.533;
 
 
 def write_config(root: Path, game: str = "sgps3",
-                 saves: Path | None = None) -> None:
+                 saves: Path | None = None,
+                 exit_when_threads_end: bool = False) -> None:
     """basepaths + game definitions.
 
     sgps3 is not registered upstream, so the probe writes its own definition
@@ -280,6 +281,19 @@ def write_config(root: Path, game: str = "sgps3",
 """)
     if game in UNPATCHED:
         shutil.copy(REPO / "gamedefinitions.lua", root / "gamedefs.lua")
+        if game == "sghd" and exit_when_threads_end:
+            # Exercise the REAL sghd renderer and profile, but let synthetic
+            # scripts return a CI exit code. Normal gameplay deliberately
+            # keeps the window open after its scripts finish.
+            overlay = root / "sghd-render-probe.lua"
+            overlay.write_text(
+                'include(root.BasePaths.RootProfilesDir .. "/sghd/game.lua");\n'
+                "root.Vm.ExitWhenThreadsEnd = true;\n"
+                "root.Vm.ExitCodeScrWork = 4000;\n")
+            with (root / "gamedefs.lua").open("a") as defs:
+                defs.write(
+                    f'\nroot.GameDefinitions["sghd"].GameProfile = '
+                    f'"{overlay.as_posix()}";\n')
         if game == "sghd-harness-media":
             (root / "harness-movie.lua").write_text(
                 "include(root.BasePaths.RootProfilesDir .. '/sghd-harness/game.lua');\n"
@@ -365,7 +379,8 @@ def run_probe(use_return_ids: bool = False, seconds: float = 4.0,
               env_extra: dict | None = None,
               wavtable_data: bytes | None = None,
               extra_scripts: dict[int, bytes] | None = None,
-              input_actions=None) -> ProbeResult:
+              input_actions=None,
+              exit_when_threads_end: bool = False) -> ProbeResult:
     """input_actions: optional callable(display) run in a thread while the
     engine runs (synthetic X input, see XTestInput)."""
     binary = Path(os.environ["IMPACTO_BIN"]).resolve()
@@ -374,7 +389,8 @@ def run_probe(use_return_ids: bool = False, seconds: float = 4.0,
         write_gamedata(root, game, script, wavtable_data, extra_scripts)
         if game == "sgps3":
             write_profiles(root, use_return_ids)
-        write_config(root, game, saves)
+        write_config(root, game, saves,
+                     exit_when_threads_end=exit_when_threads_end)
         log = root / "impacto.log"
         cmd = [str(binary), "-g", game,
                "-bp", str(root / "basepaths.lua"),
@@ -675,16 +691,20 @@ class SghdInvalidBackgroundSurfaceProbe(unittest.TestCase):
     def test_negative_surface_does_not_crash(self):
         probe = run_probe(game="sghd",
                           script=invalid_bg_surface_script(-1, 71),
-                          seconds=20.0)
+                          exit_when_threads_end=True, seconds=20.0)
         self.assertEqual(probe.returncode, 71,
                          probe.stdout[-1000:] + probe.log[-1500:])
+        self.assertIn("All script threads ended; exiting with status 71",
+                      probe.log)
 
     def test_max_int_surface_does_not_crash(self):
         probe = run_probe(game="sghd",
                           script=invalid_bg_surface_script(2147483647, 72),
-                          seconds=20.0)
+                          exit_when_threads_end=True, seconds=20.0)
         self.assertEqual(probe.returncode, 72,
                          probe.stdout[-1000:] + probe.log[-1500:])
+        self.assertIn("All script threads ended; exiting with status 72",
+                      probe.log)
 
 
 @unittest.skipUnless(os.environ.get("IMPACTO_BIN"),
