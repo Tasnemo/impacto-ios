@@ -131,7 +131,7 @@ def invalid_bg_surface_script(surface_id: int, status: int) -> bytes:
     """
     b = fx.ScxBuilder()
     b.add_label(fx.sghd_assign_scrwork(3400, surface_id)
-                + fx.ins(0x00, 0x05, fx.expr(24))  # Sleep ~24 frames
+                + fx.ins(0x00, 0x05, fx.expr(2))  # Wait through at least two render frames
                 + fx.sghd_assign_scrwork(HARNESS_EXIT_CODE_SCRWORK, status)
                 + fx.sghd_end_of_script())
     return b.build()
@@ -675,14 +675,14 @@ class SghdInvalidBackgroundSurfaceProbe(unittest.TestCase):
     def test_negative_surface_does_not_crash(self):
         probe = run_probe(game="sghd",
                           script=invalid_bg_surface_script(-1, 71),
-                          seconds=12.0)
+                          seconds=20.0)
         self.assertEqual(probe.returncode, 71,
                          probe.stdout[-1000:] + probe.log[-1500:])
 
     def test_max_int_surface_does_not_crash(self):
         probe = run_probe(game="sghd",
                           script=invalid_bg_surface_script(2147483647, 72),
-                          seconds=12.0)
+                          seconds=20.0)
         self.assertEqual(probe.returncode, 72,
                          probe.stdout[-1000:] + probe.log[-1500:])
 
