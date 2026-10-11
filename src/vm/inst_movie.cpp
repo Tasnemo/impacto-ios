@@ -94,6 +94,16 @@ static IoError OpenMovieStream(int movieId, Io::Stream** stream) {
 }
 
 
+// Missing or undecodable movies must not inherit another movie's wait flags.
+static void ResetFailedMovieState(uint8_t channel) {
+  SetFlag(SF_MOVIEPLAY + channel, false);
+  SetFlag(SF_MOVIE_DRAWWAIT + channel, false);
+  SetFlag(SF_MOVIELOADPLAYFL + channel, false);
+  SetFlag(SF_MOVIECANCEL + channel, false);
+  ScrWork[SW_MOVIE_PLAYNO + 20 * channel] = 0xffff;
+  ScrWork[SW_MOVIE_LOADNO + 20 * channel] = 0xffff;
+}
+
 VmInstruction(InstPlayMovie) {
   StartInstruction;
   PopUint8(playMode);
@@ -112,15 +122,16 @@ VmInstruction(InstPlayMovie) {
   PopExpression(movCancelFlag);
 
   if (+Profile::Game::GameFeatures & +GameFeature::Video) {
+    const uint8_t channel = (playMode / 20) == 0 ? 0 : 1;
     Io::Stream* stream;
     auto err = OpenMovieStream(playNo, &stream);
     if (err != IoError_OK) {
+      ResetFailedMovieState(channel);
       ImpLog(LogLevel::Error, LogChannel::Video,
              "Failed to open movie for playback: IO error {}\n", err);
       return;
     }
 
-    const uint8_t channel = (playMode / 20) == 0 ? 0 : 1;
     Video::Players[channel]->CancelFlag = movCancelFlag;
     Video::Players[channel]->CancelWaitTime = 0;
     SetFlag(SF_MOVIEFL + channel, movCancelFlag);
@@ -165,7 +176,7 @@ VmInstruction(InstPlayMovie) {
       // failed open does.
       ImpLog(LogLevel::Error, LogChannel::Video,
              "Movie {:d} could not be played; skipping it\n", playNo);
-      ScrWork[SW_MOVIE_PLAYNO + 20 * channel] = 0xffff;
+      ResetFailedMovieState(channel);
       return;
     }
 
@@ -207,7 +218,6 @@ static void PlayMovieOldCommon(Sc3VmThread* thread, uint8_t instType) {
       return;
     }
 
-    const uint8_t channel = (playMode / 20) == 0 ? 0 : 1;
     Video::Players[channel]->CancelFlag = movCancelFlag;
     Video::Players[channel]->CancelWaitTime = 0;
     SetFlag(SF_MOVIEFL + channel, movCancelFlag);
