@@ -112,12 +112,30 @@ def bink2_movie(frames: int = 1) -> bytes:
     return bytes(out)
 
 
-def movie_script(status: int) -> bytes:
-    """PlayMovie (01 22: playMode 0, playView 0, playNo 0, cancel 0), then
-    MovieMain type 0 (waits while SF_MOVIEPLAY is set), then exit status."""
+def movie_script(status: int, stale_play_flag: bool = False) -> bytes:
+    """PlayMovie, then MovieMain. Optionally pre-seed a stale playing flag.
+
+    SF_MOVIEPLAY is FlagWork 1823 in the shared Steam script-variable table.
+    A nonexistent or unsupported movie must clear it rather than hang.
+    """
     b = fx.ScxBuilder()
-    b.add_label(fx.ins(0x01, 0x22, fx.u8(0), fx.u8(0), fx.expr(0), fx.expr(0))
+    b.add_label((fx.sghd_set_flag(1823) if stale_play_flag else b"")
+                + fx.ins(0x01, 0x22, fx.u8(0), fx.u8(0), fx.expr(0), fx.expr(0))
                 + fx.ins(0x01, 0x23, fx.u8(0))
+                + fx.sghd_assign_scrwork(HARNESS_EXIT_CODE_SCRWORK, status)
+                + fx.sghd_end_of_script())
+    return b.build()
+
+
+def invalid_bg_surface_script(surface_id: int, status: int) -> bytes:
+    """Set a corrupt/negative BG surface value, wait for frames, then exit.
+
+    Exercises RenderMain's real background iteration with a hostile ScrWork
+    value. This is synthetic SCX, not an extracted Steam script.
+    """
+    b = fx.ScxBuilder()
+    b.add_label(fx.sghd_assign_scrwork(3400, surface_id)
+                + fx.ins(0x00, 0x05, fx.expr(2))  # Wait through at least two render frames
                 + fx.sghd_assign_scrwork(HARNESS_EXIT_CODE_SCRWORK, status)
                 + fx.sghd_end_of_script())
     return b.build()
@@ -185,7 +203,8 @@ def wavtable(count_le: int = 2) -> bytes:
 def write_gamedata(root: Path, game: str = "sgps3",
                    script: bytes | None = None,
                    wavtable_data: bytes | None = None,
-                   extra_scripts: dict[int, bytes] | None = None) -> None:
+                   extra_scripts: dict[int, bytes] | None = None,
+                   decodable_movie: bool = False) -> None:
     gd = root / "gamedata" / GAMEDATA_DIR.get(game, game)
     gd.mkdir(parents=True)
     png = tiny_png()
@@ -209,10 +228,21 @@ def write_gamedata(root: Path, game: str = "sgps3",
         (gd / name).write_bytes(fx.build_mpk(files))
     if game == "sghd-harness-media":
         (gd / "movie").mkdir()
-        # Movie ID 0 is ar.bk2 in the original Steam Game.exe table.
-        movie_file = gd / "movie" / "ar.bk2"
-        movie_file.write_bytes(bink2_movie())
-        assert movie_file.read_bytes()[:4] == b"KB2j"
+        if decodable_movie:
+            # Synthetic MP4, named ar.mp4 for correct SGHD ID zero.
+            movie_file = gd / "movie" / "ar.mp4"
+            subprocess.run([
+                "ffmpeg", "-hide_banner", "-loglevel", "error", "-y",
+                "-f", "lavfi", "-i", "color=c=red:s=128x72:r=8:d=0.5",
+                "-an", "-c:v", "mpeg4", "-q:v", "2",
+                "-pix_fmt", "yuv420p", "-movflags", "+faststart",
+                str(movie_file)], check=True, timeout=30)
+            assert movie_file.stat().st_size > 1000
+        else:
+            # Movie ID 0 is ar.bk2 in the original Steam Game.exe table.
+            movie_file = gd / "movie" / "ar.bk2"
+            movie_file.write_bytes(bink2_movie())
+            assert movie_file.read_bytes()[:4] == b"KB2j"
 
 
 def write_profiles(root: Path, use_return_ids: bool) -> None:
@@ -354,13 +384,14 @@ def run_probe(use_return_ids: bool = False, seconds: float = 4.0,
               env_extra: dict | None = None,
               wavtable_data: bytes | None = None,
               extra_scripts: dict[int, bytes] | None = None,
-              input_actions=None) -> ProbeResult:
+              input_actions=None, decodable_movie: bool = False) -> ProbeResult:
     """input_actions: optional callable(display) run in a thread while the
     engine runs (synthetic X input, see XTestInput)."""
     binary = Path(os.environ["IMPACTO_BIN"]).resolve()
     root = Path(tempfile.mkdtemp(prefix="impacto-probe-"))
     try:
-        write_gamedata(root, game, script, wavtable_data, extra_scripts)
+        write_gamedata(root, game, script, wavtable_data, extra_scripts,
+                       decodable_movie=decodable_movie)
         if game == "sgps3":
             write_profiles(root, use_return_ids)
         write_config(root, game, saves)
@@ -658,6 +689,26 @@ class SghdHarnessRuntimeProbe(unittest.TestCase):
 
 @unittest.skipUnless(os.environ.get("IMPACTO_BIN"),
                      "set IMPACTO_BIN=/path/to/impacto to run runtime probes")
+class SghdInvalidBackgroundSurfaceProbe(unittest.TestCase):
+    """Renderer must survive corrupt/missing Steam BG surface mappings."""
+
+    def test_negative_surface_does_not_crash(self):
+        probe = run_probe(game="sghd",
+                          script=invalid_bg_surface_script(-1, 71),
+                          seconds=20.0)
+        self.assertEqual(probe.returncode, 71,
+                         probe.stdout[-1000:] + probe.log[-1500:])
+
+    def test_max_int_surface_does_not_crash(self):
+        probe = run_probe(game="sghd",
+                          script=invalid_bg_surface_script(2147483647, 72),
+                          seconds=20.0)
+        self.assertEqual(probe.returncode, 72,
+                         probe.stdout[-1000:] + probe.log[-1500:])
+
+
+@unittest.skipUnless(os.environ.get("IMPACTO_BIN"),
+                     "set IMPACTO_BIN=/path/to/impacto to run runtime probes")
 class SghdMovieSkipProbe(unittest.TestCase):
     """Thread 05 (Task 8, M2): the Steam movies are Bink 2, which FFmpeg
     cannot decode. A movie that cannot be opened or decoded must be skipped:
@@ -672,9 +723,32 @@ class SghdMovieSkipProbe(unittest.TestCase):
         cls.bink2 = run_probe(game="sghd-harness-media", script=movie_script(32),
                               seconds=30.0)
 
+        cls.missing_stale = run_probe(game="sghd-harness",
+                                     script=movie_script(35, stale_play_flag=True),
+                                     seconds=30.0)
+        cls.bink_stale = run_probe(game="sghd-harness-media",
+                                  script=movie_script(36, stale_play_flag=True),
+                                  seconds=30.0)
+
     def test_unmounted_movie_is_skipped(self):
         self.assertEqual(self.unmounted.returncode, 31, self.unmounted.log[-2000:])
         self.assertIn("Failed to open movie for playback", self.unmounted.log)
+
+    def test_missing_movie_clears_previous_playback_flag(self):
+        self.assertEqual(self.missing_stale.returncode, 35,
+                         self.missing_stale.stdout[-1000:] +
+                         self.missing_stale.log[-2200:])
+        self.assertEqual([op for _, op in self.missing_stale.vm_trace()],
+                         ["00:12", "01:22", "01:23", "00:00"])
+
+    def test_undecodable_movie_clears_previous_playback_flag(self):
+        self.assertEqual(self.bink_stale.returncode, 36,
+                         self.bink_stale.stdout[-1000:] +
+                         self.bink_stale.log[-2200:])
+        self.assertIn("Movie 0 could not be played; skipping it",
+                      self.bink_stale.log)
+        self.assertEqual([op for _, op in self.bink_stale.vm_trace()],
+                         ["00:12", "01:22", "01:23", "00:00"])
 
     def test_bink2_movie_is_skipped_without_crash(self):
         self.assertEqual(self.bink2.returncode, 32,
@@ -685,6 +759,44 @@ class SghdMovieSkipProbe(unittest.TestCase):
         self.assertIn("Movie 0 could not be played; skipping it", self.bink2.log)
         self.assertEqual([op for _, op in self.bink2.vm_trace()],
                          ["01:22", "01:23", "00:00"])
+
+
+@unittest.skipUnless(os.environ.get("IMPACTO_BIN"),
+                     "set IMPACTO_BIN=/path/to/impacto to run runtime probes")
+@unittest.skipUnless(shutil.which("ffmpeg"),
+                     "ffmpeg CLI is required to generate a synthetic test movie")
+class SghdDecodableMovieProbe(unittest.TestCase):
+    """Positive movie pipeline test: synthetic playable MP4 -> real Impacto VM.
+
+    The existing Bink regression only tests safe failure. This independently
+    validates demux, codec startup, frame decoding and MovieMain completion.
+    No original game content or original movie bytes are involved.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        cls.probe = run_probe(game="sghd-harness-media",
+                              script=movie_script(33),
+                              decodable_movie=True, seconds=30.0)
+
+    def test_movie_file_reaches_ffmpeg_decoder(self):
+        self.assertIn("ar.mp4", self.probe.log)
+        self.assertIn("Opening file:", self.probe.log)
+        self.assertNotIn("Unsupported codec", self.probe.log)
+        self.assertNotIn("No decodable video stream", self.probe.log)
+        self.assertNotIn("Movie 0 could not be played; skipping it",
+                         self.probe.log)
+
+    def test_movie_finishes_and_vm_resumes(self):
+        self.assertEqual(self.probe.returncode, 33,
+                         self.probe.stdout[-1200:] + self.probe.log[-2500:])
+        opcodes = [op for _, op in self.probe.vm_trace()]
+        self.assertEqual(opcodes[0], "01:22", opcodes)
+        self.assertEqual(opcodes[-1], "00:00", opcodes[-10:])
+        # MovieMain repeats the same instruction while waiting for the
+        # decoder. Successful playback can legitimately execute it more
+        # than once, so do not require a single 01:23 event.
+        self.assertGreaterEqual(opcodes.count("01:23"), 1, opcodes)
 
 
 @unittest.skipUnless(os.environ.get("IMPACTO_BIN"),
