@@ -229,6 +229,14 @@ class IosCMakeWiring(unittest.TestCase):
                       CMAKE)
         self.assertIn("if (NOT ANDROID AND NOT IMPACTO_IOS)", CMAKE)
 
+    def test_disabled_libass_does_not_include_libass_headers(self):
+        # The guard used IMPACTO_DISABLE_ASS, which CMake never defines, so
+        # IMPACTO_DISABLE_LIBASS alone still pulled <ass/ass.h> in.
+        system = (REPO / "src/subtitle/subtitlesystem.cpp").read_text()
+        self.assertNotIn("IMPACTO_DISABLE_ASS", system)
+        include = system.index('#include "ass/subtitlerenderer.h"')
+        self.assertIn("#ifndef IMPACTO_DISABLE_LIBASS", system[:include])
+
     def test_disabled_ffmpeg_does_not_leak_avcpp_headers(self):
         # src/subtitle/subtitlesystem.h includes subtitlerenderer.h, so an
         # unconditional avcpp/libavcodec include there breaks every

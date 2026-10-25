@@ -1,7 +1,7 @@
 #include <fmt/format.h>
 #include "subtitlesystem.h"
 
-#ifndef IMPACTO_DISABLE_ASS
+#ifndef IMPACTO_DISABLE_LIBASS
 #include "ass/subtitlerenderer.h"
 #endif
 
