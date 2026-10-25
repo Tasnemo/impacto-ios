@@ -68,24 +68,21 @@ jobs:
       # Job logs need admin rights, check annotations do not: surface the first
       # real errors on the run page so a failing build can be diagnosed without
       # the owner downloading the diagnostics artifact.
-      - name: Report failure lines as check annotations
+      - name: Report build failure as check annotations
         if: failure()
         run: |
+          # GitHub accepts 10 annotations per step, so these must be the
+          # interesting lines and not a log dump.
           set +e
-          report() {
-            local log="$1"
-            [ -f "$log" ] || return 0
-            local hits
-            hits=$(grep -E "error:|CMake Error|FAILED:|ninja: error" "$log" | head -n 12)
-            [ -n "$hits" ] || hits=$(tail -n 12 "$log")
-            while IFS= read -r line; do
-              line=${line//::/:}
-              line=${line//%/%25}
-              echo "::error title=${log##*/}::${line:0:900}"
-            done <<< "$hits"
-          }
-          report ci-build/logs/configure.log
-          report ci-build/logs/build.log
+          log=ci-build/logs/build.log
+          [ -f "$log" ] || log=ci-build/logs/configure.log
+          hits=$(grep -aE "error:|CMake Error|ninja: error" "$log" | head -n 10)
+          [ -n "$hits" ] || hits=$(tail -n 10 "$log")
+          while IFS= read -r line; do
+            line=${line//::/:}
+            line=${line//%/%25}
+            echo "::error title=${log##*/}::${line:0:900}"
+          done <<< "$hits"
       - uses: actions/cache/save@v4
         if: always()
         with:
