@@ -91,7 +91,12 @@ void GLWindow::TryCreateGL(GraphicsApi api) {
       ImpLog(LogLevel::Info, LogChannel::General,
              "Trying to create native GLES context\n");
 
-#ifndef EMSCRIPTEN
+#ifdef IMPACTO_IOS
+      // Apple's OpenGL ES driver stops at 3.0 (deprecated since iOS 12) and
+      // SDL fails the context for anything newer, so do not ask for 3.2.
+      SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+      SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+#elif !defined(EMSCRIPTEN)
       // Emscripten's EGL implementation fails when you ask it for GLES 3.2,
       // though that is what it gives you when building for WebGL 2...
       SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
@@ -132,6 +137,10 @@ void GLWindow::Init() {
 
 #ifdef __ANDROID__
   SDL_SetHint(SDL_HINT_ORIENTATIONS, "LandscapeLeft LandscapeRight");
+#endif
+#ifdef IMPACTO_IOS
+  // There is no desktop GL behind SDL on iOS; go straight to native GLES.
+  GraphicsApiHint = GfxApi_ForceNativeGLES;
 #endif
   if (!SDL_Init(SDL_INIT_VIDEO | SDL_INIT_GAMEPAD)) {
     ImpLog(LogLevel::Fatal, LogChannel::General,

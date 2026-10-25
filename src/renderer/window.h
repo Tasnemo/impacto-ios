@@ -21,6 +21,9 @@ constexpr DisplayMode GetDefaultDispMode() {
   return DisplayMode::Borderless;
 #elif defined(__SWITCH__)
   return DisplayMode::Fullscreen;
+#elif defined(IMPACTO_IOS)
+  // A UIKit window is always full screen; there is nothing to size.
+  return DisplayMode::Borderless;
 #endif
   return DisplayMode::Windowed;
 }

@@ -352,7 +352,7 @@ bool BaseWindow::CreateSDLWindow(SDL_WindowFlags flags) {
     return false;
   }
   SDL_GetWindowSizeInPixels(SDLWindow, &WindowWidth, &WindowHeight);
-#ifdef __ANDROID__
+#if defined(__ANDROID__) || defined(IMPACTO_IOS)
   SDL_SetWindowFullscreen(SDLWindow, true);
 #else
   SetWindowedSizing();

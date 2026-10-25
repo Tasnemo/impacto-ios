@@ -1,0 +1,31 @@
+{
+  "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg-tool/main/docs/vcpkg.schema.json",
+  "builtin-baseline": "62159a45e18f3a9ac0548628dcaf74fcb60c6ff9",
+  "dependencies": [
+    {
+      "name": "sdl3",
+      "default-features": true
+    },
+    "libogg",
+    "libvorbis",
+    "zlib",
+    "libwebp",
+    "fmt",
+    "glm",
+    "pugixml",
+    "utfcpp",
+    "concurrentqueue",
+    "readerwriterqueue",
+    "unordered-dense",
+    "boost-circular-buffer",
+    "toml11",
+    "freetype",
+    "harfbuzz"
+  ],
+  "overrides": [
+    {
+      "name": "sdl3",
+      "version": "3.4.0"
+    }
+  ]
+}

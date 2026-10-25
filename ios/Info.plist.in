@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>en</string>
+	<key>CFBundleExecutable</key>
+	<string>Impacto</string>
+	<key>CFBundleIdentifier</key>
+	<string>@IMPACTO_IOS_BUNDLE_IDENTIFIER@</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>Impacto</string>
+	<key>CFBundleDisplayName</key>
+	<string>Impacto</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>@IMPACTO_IOS_VERSION@</string>
+	<key>CFBundleVersion</key>
+	<string>@IMPACTO_IOS_BUILD_VERSION@</string>
+	<key>CFBundleSupportedPlatforms</key>
+	<array>
+		<string>@IMPACTO_IOS_SUPPORTED_PLATFORM@</string>
+	</array>
+	<key>LSRequiresIPhoneOS</key>
+	<true/>
+	<!-- SDL_GetBasePath() must return the .app directory: the engine changes
+	     its working directory there to find profiles/, shaders/, resources/. -->
+	<key>SDL_FILESYSTEM_BASE_DIR_TYPE</key>
+	<string>bundle</string>
+	<key>MinimumOSVersion</key>
+	<string>@IMPACTO_IOS_DEPLOYMENT_TARGET@</string>
+	<key>UILaunchScreen</key>
+	<dict/>
+	<key>UIRequiresFullScreen</key>
+	<true/>
+	<key>UIStatusBarHidden</key>
+	<true/>
+	<key>UIViewControllerBasedStatusBarAppearance</key>
+	<false/>
+	<key>UISupportedInterfaceOrientations</key>
+	<array>
+		<string>UIInterfaceOrientationLandscapeLeft</string>
+		<string>UIInterfaceOrientationLandscapeRight</string>
+	</array>
+	<key>UIFileSharingEnabled</key>
+	<true/>
+	<key>LSSupportsOpeningDocumentsInPlace</key>
+	<true/>
+</dict>
+</plist>

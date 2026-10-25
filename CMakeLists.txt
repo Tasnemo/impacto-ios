@@ -8,7 +8,14 @@ if (POLICY CMP0174)
   cmake_policy(SET CMP0174 NEW)
 endif()
 
-if(APPLE)
+# iOS is an Apple platform but not a macOS one: the app is a UIKit bundle
+# built for the iphoneos sysroot, its resources live at the bundle root and
+# only OpenGL ES is available (Thread 08).
+if(CMAKE_SYSTEM_NAME STREQUAL "iOS")
+    set(IMPACTO_IOS ON)
+endif()
+
+if(APPLE AND NOT CMAKE_OSX_DEPLOYMENT_TARGET)
     set(CMAKE_OSX_DEPLOYMENT_TARGET "11.0")
 endif()
 
@@ -820,6 +827,19 @@ if (NX OR EMSCRIPTEN)
     set(BUILD_SHARED_LIBS OFF)
 endif ()
 
+if (IMPACTO_IOS)
+    # Everything links statically and iOS has no Vulkan (MoltenVK is a later
+    # decision), no DX9, and no Metal-free movie/subtitle stacks in this first
+    # build: movies are skipped for SG anyway. Audio and video are re-enabled
+    # by the iOS integration threads.
+    set(IMPACTO_DISABLE_VULKAN ON)
+    set(IMPACTO_DISABLE_DX9 ON)
+    set(IMPACTO_DISABLE_FFMPEG ON)
+    set(IMPACTO_DISABLE_OPENAL ON)
+    set(IMPACTO_DISABLE_LIBASS ON)
+    set(BUILD_SHARED_LIBS OFF)
+endif ()
+
 if (UNIX AND NOT CYGWIN)
     set(IMPACTO_DISABLE_DX9 ON)
 endif ()
@@ -912,7 +932,12 @@ list(APPEND Impacto_Include_Dirs ${CMAKE_CURRENT_SOURCE_DIR}/vendor/include)
 if (NOT DEFINED IMPACTO_DISABLE_OPENGL)
     list(APPEND Impacto_Include_Dirs ${CMAKE_CURRENT_SOURCE_DIR}/vendor/glad/include)
 
-    if (ANDROID OR NX)
+    if (IMPACTO_IOS)
+        # FindOpenGL does not resolve the SDK's OpenGL ES frameworks for an
+        # iOS target; link the deprecated-but-present framework directly.
+        find_library(OPENGLES_FRAMEWORK OpenGLES REQUIRED)
+        set(OpenGL_Libs ${OPENGLES_FRAMEWORK})
+    elseif (ANDROID OR NX)
         set(OpenGL_Libs
             OpenGL::GLES3
             OpenGL::EGL
@@ -929,7 +954,9 @@ if (NOT DEFINED IMPACTO_DISABLE_OPENGL)
             OpenGL
         )
     endif ()
-    find_package(OpenGL COMPONENTS ${OpenGL_Components})
+    if (NOT IMPACTO_IOS)
+        find_package(OpenGL COMPONENTS ${OpenGL_Components})
+    endif ()
     list(APPEND Impacto_Libs
         ${OpenGL_Libs}
     )
@@ -1285,7 +1312,7 @@ else()
     add_executable(impacto ${Impacto_Src} ${Impacto_Header})
 endif()
 
-if (APPLE)
+if (APPLE AND NOT IMPACTO_IOS)
     set(MACOSX_BUNDLE_ICON_FILE icon.icns)
     set(APP_ICON_MACOS "${CMAKE_SOURCE_DIR}/resources/common/icons/icon.icns")
     set_source_files_properties(${APP_ICON_MACOS} PROPERTIES
@@ -1307,6 +1334,71 @@ if (APPLE)
     )
 endif()
 
+if (IMPACTO_IOS)
+    # A UIKit app bundle is flat: executable, Info.plist and resources all sit
+    # at the .app root. src/main.cpp changes the working directory to
+    # SDL_GetBasePath(), i.e. this directory, so the engine finds profiles/,
+    # shaders/ and resources/ exactly as on desktop.
+    set(IMPACTO_IOS_BUNDLE_IDENTIFIER "com.committeeofzero.impacto"
+            CACHE STRING "Bundle identifier of the iOS app")
+    if (NOT CMAKE_OSX_DEPLOYMENT_TARGET)
+        set(CMAKE_OSX_DEPLOYMENT_TARGET "15.0")
+    endif ()
+    if (CMAKE_OSX_SYSROOT MATCHES "simulator")
+        set(IMPACTO_IOS_SUPPORTED_PLATFORM "iPhoneSimulator")
+    else ()
+        set(IMPACTO_IOS_SUPPORTED_PLATFORM "iPhoneOS")
+    endif ()
+    set(IMPACTO_IOS_VERSION "${PROJECT_VERSION}")
+    set(IMPACTO_IOS_BUILD_VERSION "${PROJECT_VERSION}")
+    set(IMPACTO_IOS_DEPLOYMENT_TARGET "${CMAKE_OSX_DEPLOYMENT_TARGET}")
+
+    configure_file(
+        "${CMAKE_CURRENT_SOURCE_DIR}/ios/Info.plist.in"
+        "${PROJECT_BINARY_DIR}/ios/Info.plist"
+        @ONLY
+    )
+
+    if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/basepaths.lua)
+        set(IMPACTO_BASEPATHS_FILE ${CMAKE_CURRENT_SOURCE_DIR}/basepaths.lua)
+    else ()
+        set(IMPACTO_BASEPATHS_FILE ${CMAKE_CURRENT_SOURCE_DIR}/basepaths.lua.sample)
+    endif ()
+
+    set(IMPACTO_IOS_BUNDLE_DIR "$<TARGET_FILE_DIR:impacto>")
+    add_custom_command(TARGET impacto POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+                "${CMAKE_CURRENT_SOURCE_DIR}/profiles" "${IMPACTO_IOS_BUNDLE_DIR}/profiles"
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+                "${CMAKE_CURRENT_SOURCE_DIR}/src/shaders" "${IMPACTO_IOS_BUNDLE_DIR}/shaders"
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+                "${CMAKE_CURRENT_SOURCE_DIR}/resources" "${IMPACTO_IOS_BUNDLE_DIR}/resources"
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                "${CMAKE_CURRENT_SOURCE_DIR}/gamedefinitions.lua" "${IMPACTO_IOS_BUNDLE_DIR}/gamedefinitions.lua"
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                "${IMPACTO_BASEPATHS_FILE}" "${IMPACTO_IOS_BUNDLE_DIR}/basepaths.lua"
+        COMMENT "Assembling the iOS app bundle"
+        VERBATIM
+    )
+
+    set_target_properties(
+        impacto
+        PROPERTIES
+        OUTPUT_NAME "Impacto"
+        MACOSX_BUNDLE_BUNDLE_NAME "Impacto"
+        MACOSX_BUNDLE_BUNDLE_VERSION "${PROJECT_VERSION}"
+        MACOSX_BUNDLE_SHORT_VERSION_STRING "${PROJECT_VERSION}"
+        MACOSX_BUNDLE_GUI_IDENTIFIER "${IMPACTO_IOS_BUNDLE_IDENTIFIER}"
+        MACOSX_BUNDLE_INFO_PLIST "${PROJECT_BINARY_DIR}/ios/Info.plist"
+        # CI produces an unsigned artifact; signing happens on the owner's Mac
+        # (docs/ios-build.md). Only the Xcode generator uses these.
+        XCODE_ATTRIBUTE_CODE_SIGNING_ALLOWED "NO"
+        XCODE_ATTRIBUTE_CODE_SIGN_IDENTITY ""
+    )
+
+    target_compile_definitions(impacto PRIVATE IMPACTO_IOS=1)
+endif()
+
 set_property(TARGET impacto PROPERTY COMPILE_WARNING_AS_ERROR ON)
 
 if(MSVC)
@@ -1323,6 +1415,28 @@ endIf()
 
 list(APPEND Impacto_Libs ${Impacto_Lib_Targets})
 target_link_libraries(impacto PRIVATE ${Impacto_Libs})
+
+if (IMPACTO_IOS)
+    # SDL's static CMake package does not carry every UIKit-framework dependency
+    # of its iOS backend, and the engine links OpenGL ES directly. Extra
+    # frameworks cost nothing at link time.
+    target_link_libraries(impacto PRIVATE
+        "-framework Foundation"
+        "-framework UIKit"
+        "-framework CoreGraphics"
+        "-framework CoreAudio"
+        "-framework CoreMedia"
+        "-framework CoreVideo"
+        "-framework CoreHaptics"
+        "-framework CoreMotion"
+        "-framework QuartzCore"
+        "-framework AVFoundation"
+        "-framework AudioToolbox"
+        "-framework GameController"
+        "-framework Metal"
+        "-framework OpenGLES"
+    )
+endif()
 
 target_compile_options(impacto PRIVATE "$<$<C_COMPILER_ID:MSVC>:/utf-8>")
 target_compile_options(impacto PRIVATE "$<$<CXX_COMPILER_ID:MSVC>:/utf-8>")
@@ -1441,6 +1555,25 @@ elseif (WIN32)
     install(TARGETS impacto RUNTIME DESTINATION .)
     install(FILES $<TARGET_RUNTIME_DLLS:impacto> DESTINATION .)
     x_vcpkg_install_local_dependencies(TARGETS impacto DESTINATION .)
+elseif(IMPACTO_IOS)
+    install(TARGETS impacto BUNDLE DESTINATION .)
+    install(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/src/shaders"
+        DESTINATION "Impacto.app"
+    )
+    install(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/resources"
+        DESTINATION "Impacto.app"
+        PATTERN "*/gamedata/*" EXCLUDE
+    )
+    install(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/profiles"
+        DESTINATION "Impacto.app"
+    )
+    install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/gamedefinitions.lua"
+        DESTINATION "Impacto.app"
+    )
+    install(FILES "${IMPACTO_BASEPATHS_FILE}"
+        DESTINATION "Impacto.app"
+        RENAME basepaths.lua
+    )
 elseif(APPLE)
     install(TARGETS impacto
             BUNDLE  DESTINATION .
@@ -1478,7 +1611,7 @@ endif ()
 
 # asset install
 
-if (NOT ANDROID)
+if (NOT ANDROID AND NOT IMPACTO_IOS)
     if(NOT APPLE)
         install(DIRECTORY src/shaders DESTINATION .)
         install(DIRECTORY resources DESTINATION .)
