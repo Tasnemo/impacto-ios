@@ -251,6 +251,10 @@ class IosWorkflow(unittest.TestCase):
         self.assertIn("impacto-ios-arm64-unsigned-", WORKFLOW)
         self.assertIn("actions/upload-artifact@v7", WORKFLOW)
 
+    def test_surfaces_failure_lines_as_check_annotations(self):
+        # GitHub job logs require admin rights; annotations are readable.
+        self.assertIn("::error title=", WORKFLOW)
+
     def test_uses_no_repository_secrets(self):
         self.assertNotIn("secrets.", WORKFLOW)
 
