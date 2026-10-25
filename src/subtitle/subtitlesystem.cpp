@@ -55,6 +55,9 @@ SubtitlePlayer::SubtitlePlayer(float width, float height) {
 #endif
     case SubtitleAssBackendType::None:
       break;
+    default:
+      // LibAss is not compiled into this build (IMPACTO_DISABLE_LIBASS).
+      break;
   }
   switch (UserConfig::AdvancedSettings.SubtitleTextBackend) {
     case SubtitleTextBackendType::None:
