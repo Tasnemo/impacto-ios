@@ -2,7 +2,7 @@ name: Desktop Linux
 
 on:
   push:
-    branches: [master, main, phase-01-desktop-baseline, phase-02-steins-compatibility, phase-03-sghd-implementation]
+    branches: [master, main, phase-01-desktop-baseline, phase-02-steins-compatibility, phase-03-sghd-implementation, phase-04-ios-build]
   pull_request:
     branches: [master, main, phase-03-sghd-implementation]
   workflow_dispatch:
