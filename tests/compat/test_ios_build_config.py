@@ -198,6 +198,13 @@ class IosCMakeWiring(unittest.TestCase):
         # An unconditional 11.0 would override the iOS preset's 15.0.
         self.assertIn("if(APPLE AND NOT CMAKE_OSX_DEPLOYMENT_TARGET)", CMAKE)
 
+    def test_builds_lua_in_its_ios_mode(self):
+        # vendor/minilua gates system() behind LUA_USE_IOS; without it the iOS
+        # SDK rejects the call at compile time.
+        self.assertIn("LUA_USE_IOS=1", CMAKE)
+        self.assertIn("#if defined(LUA_USE_IOS)",
+                      (REPO / "vendor/minilua/minilua.h").read_text())
+
     def test_links_the_opengl_es_framework_instead_of_find_opengl(self):
         self.assertIn("find_library(OPENGLES_FRAMEWORK OpenGLES REQUIRED)", CMAKE)
         self.assertIn("if (NOT IMPACTO_IOS)\n        find_package(OpenGL", CMAKE)

@@ -796,6 +796,12 @@ target_include_directories(clHCA PUBLIC vendor/clHCA)
 
 add_library(minilua STATIC vendor/minilua/minilua_impl.c)
 target_include_directories(minilua PUBLIC vendor)
+if (IMPACTO_IOS)
+    # Lua 5.4's iOS mode: no system() (the compiler rejects it outright) but
+    # POSIX file/process primitives are available. Must be set before the
+    # header picks the default platform.
+    target_compile_definitions(minilua PRIVATE LUA_USE_IOS=1)
+endif ()
 
 add_library(pcg STATIC vendor/pcg/src/pcg_basic.c)
 target_include_directories(pcg PUBLIC vendor/pcg/include)
