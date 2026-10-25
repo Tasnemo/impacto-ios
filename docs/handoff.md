@@ -1,132 +1,125 @@
 # Project Handoff
 
 ## Current Milestone
-Thread 07c — STEINS;GATE title menu (Medium), branch
-`phase-03-sghd-implementation`. Windows round 5 (Thread 07b artifact, real
-Steam data) reached `TitleMenu(type: 0/1)` but no title and no `MAIN00.SCX`.
-The title protocol was reconstructed from `sghd-context.txt`; the engine
-side (decisions through SF_TITLEEND/SW_TITLECUR, keyboard + mouse) is
-implemented and tested synthetically. **Not yet verified on real data; no
-title artwork yet** (TITLE_CHIP regions unnamed). Report:
-[threads/07c-title-menu.md](threads/07c-title-menu.md). Thread 07b report:
-[threads/07b-first-real-boot.md](threads/07b-first-real-boot.md).
-Next major milestone unchanged: **Thread 08 — native iOS ARM64 build (Medium)**.
+Thread 08 — native iOS ARM64 build and minimal app shell (Medium), branch
+`phase-04-ios-build`. The existing C++ engine now has an iOS build path:
+static `arm64-ios` vcpkg triplet, iOS-only dependency manifest,
+`ci-release-ios` CMake preset, UIKit bundle packaging and a `macos-15`
+workflow that builds, bundle-checks and uploads the unsigned `Impacto.app`.
+Audio, video, subtitles, Vulkan and touch mapping stay off for this build.
+Report: [threads/08-ios-build.md](threads/08-ios-build.md). Build, artifact
+and signing details: [ios-build.md](ios-build.md).
+Previous milestone: Thread 07c title menu
+([threads/07c-title-menu.md](threads/07c-title-menu.md)).
+Next major milestone: **Thread 09 — iOS rendering (Medium)**.
 
 ## Repository State
-- `Tasnemo/impacto-ios`; `master` = Thread 07b head (`4eabb721`, shipped);
-  Thread 07c on `phase-03-sghd-implementation`.
-- No commercial assets, script dumps, private reports, logs, screenshots or
-  secrets are committed. Evidence constants only:
-  `tests/compat/fixtures/sghd_steam_evidence.json` (Thread 07c adds
-  `title_protocol`: variable indices, title types, choice ids).
+- `Tasnemo/impacto-ios`; `master` = Thread 07b head (`4eabb721`); Threads
+  04–08 on `phase-04-ios-build`, branched from `phase-03-sghd-implementation`
+  (`dd20ec31`, includes the merged Thread 07c title menu and the Steam
+  background-control fix). Thread 07c/08 are **not merged into `master`**.
+- New in Thread 08: `triplets/arm64-ios.cmake`, `ios/vcpkg.json`,
+  `ios/Info.plist.in`, `.github/workflows/desktop-ios.yml`,
+  `tests/compat/test_ios_build_config.py`, `docs/ios-build.md`.
+- No commercial assets, script dumps, private reports, logs, screenshots,
+  certificates or secrets are committed.
 
-## Windows round 5 (owner, done)
-`menu-retry.log`: fresh config OK, real archives and the eight startup
-scripts load, `TitleMenu(type: 0)` and `(type: 1)` reached, title movie 37
-missing (Bink 2, skipped), title thread polling, `MAIN00.SCX` not reached,
-exit 0 on close. Earlier launches segfaulted intermittently (no log yet).
-`sghd-context.txt`: every `10 34`/`00 44` use with context.
-
-## Completed Work (Thread 07c)
-- Protocol: `10 34` types 0/1/2/3; both title loops (press start, main
-  menu) wait for SF_TITLEEND (1241); main-menu choice in SW_TITLECUR (2139):
-  0, 10, 11, 20-24, 30, 40; SW_TITLEMODE (2115) 3 = main menu. The scripts
-  use impacto's common variable layout; the PS3 overrides of
-  SW_TITLEDISPCT/SW_SYSMENUCT/SW_TITLE were removed.
-- `UselessJump` with identical labels is now taken (the press-start loop
-  could never advance otherwise).
-- `TitleMenuType.SGHD` (`UI::SGHD::TitleMenu`): Enter/Space/click for press
-  start; Up/Down, hover and click on START…HELP boxes (measured from the
-  owner's screenshot); only START enabled. No sprites until named.
-- Not implemented: title artwork, LOAD/EXTRA/CONFIG/HELP, idle attract
-  mode, `10 34 3` semantics, title movie.
+## Completed Work (Thread 08)
+- Toolchain/dependencies: device triplet (static, `iphoneos`, iOS 15.0) and
+  a manifest without ffmpeg/avcpp/libass/OpenAL/Vulkan (vcpkg installs every
+  manifest entry regardless of CMake options, so a separate manifest was
+  needed).
+- CMake: `IMPACTO_IOS` detection before `project()`; the macOS deployment
+  default no longer overrides an explicitly set target; `OpenGLES` framework
+  instead of `FindOpenGL`; `IMPACTO_DISABLE_{FFMPEG,OPENAL,LIBASS,VULKAN}`;
+  flat bundle with generated `ios/Info.plist`, assets copied to the `.app`
+  root on build and installed inside the bundle only.
+- Engine: no new Objective-C++. `src/main.cpp`'s existing
+  `SDL_GetBasePath()` working-directory change is correct for a flat bundle;
+  the iOS-specific code is full-screen handling, `Borderless` default display
+  mode, native-GLES-only context creation and a GLES 3.0 request (Apple's
+  driver rejects 3.2).
+- CI: `desktop-ios.yml` (macos-15) — unit tests, configure/build/install,
+  bundle checks (`lipo`, `vtool -show-build` platform IOS, `plutil -lint`),
+  unsigned zip artifact + SHA-256, diagnostics on failure.
+- Signing/sideloading documented; no repository secrets, no certificates.
 
 ## Verification
-- Orb, `impacto-desktop:ubuntu24`, binary rebuilt from this branch:
-  `python3 -m unittest discover -s tests/compat` with `IMPACTO_BIN` →
-  **133/133 OK** (96 unit + 37 probes; the 5 new `SghdTitleMenuProbe` cases use
-  real X keyboard/mouse events, repeated 4× without a failure).
-- clang-format clean on new/changed C++ (pre-existing phone line excepted).
-- GitHub Actions: see CI section.
+- `python3 -m unittest discover -s tests/compat` → 178 tests OK
+  (37 runtime probes skipped: no engine binary built in this orb).
+  30 of them are the new asset-free iOS build-configuration tests.
+- `cmake --list-presets` (CMake 3.31.10) lists `ci-release-ios` for
+  configure and build; `.github/workflows/desktop-ios.yml` parses as YAML.
+- `clang-format --dry-run --Werror` clean on
+  `src/renderer/opengl/window.cpp`, `src/renderer/window.cpp`,
+  `src/renderer/window.h`.
+- CI: see "CI" below.
 
 ## Status split
-- **Synthetic-verified:** title protocol (press start → menu → START →
-  next script), keyboard/mouse input, disabled-item skipping, UselessJump,
-  title scriptvars, plus everything from 07b.
-- **Verified on real Steam data:** boot through the startup scripts to the
-  title instructions without crash/desync (round 5).
-- **Needs the owner's machine:** START on the real title reaching
-  `MAIN00.SCX` and the first dialogue; title artwork once named.
-- **Missing:** title artwork, other title items, phone UI, movies (Bink 2),
-  backlog/system/save menus, selection/system-message sprites, save import.
+- **CI-verified:** the iOS build configuration and the unsigned arm64 device
+  app bundle (see "CI").
+- **Not verified:** app launch (simulator or device), signing, installation,
+  rendering, audio, input, game data. Those are Threads 09–11 and the
+  owner's side-loading step.
+- **Missing on purpose (this build):** audio (needs FFmpeg or a split
+  `ffmpegaudioplayer`), video, ASS subtitles, Vulkan/Metal, touch mapping,
+  game-data import, app icon/launch artwork.
 
-## Blocker — owner action: Windows round 6 (short)
-1. In Git Bash, download artifact `impacto-windows-x64-<sha>` of the latest
-   green `Desktop Windows` run for this branch, unzip, `cd` into it:
-   ```bash
-   G="/c/Program Files (x86)/Steam/steamapps/common/STEINS;GATE"
-   mkdir -p gamedata/sghd
-   for a in script system bgm se voice bg chara mask; do cp "$G/USRDIR/$a.mpk" gamedata/sghd/; done
-   ./impacto.exe -g sghd -uc ./title-config.toml -ll Info -lf sghd-title.log
-   ```
-   When the title music starts, wait 3 s, press **Enter** (press start),
-   wait 3 s, press **Enter** again (START is preselected; nothing is drawn
-   for the menu yet). Wait 20 s, press Enter a few times if a text box
-   appears, close. Expected in `sghd-title.log`:
-   `TitleMenu: press start (SW_TITLECUR = 0)`, then
-   `TitleMenu: main menu choice (SW_TITLECUR = 0)`, then
-   `Loading script "..."` lines after the title (ideally `MAIN00.SCX`); any
-   `has not advanced for 5 s` line shows the next wait. Share the log and
-   one line on what was visible/audible. If it crashes, share the log
-   anyway (last lines matter).
-2. Title artwork: from a checkout of this branch,
-   `python tools/sghd_inspect.py regions "$G" regions`, open
-   `regions/index.html` locally, and reply with lines like
-   `START normal: TITLE_CHIP x y w h` for: START/LOAD/EXTRA/CONFIG/HELP
-   chips (normal and selected), orange cursor bar, background panel,
-   satellite, logo, gears, copyright, key hints. Names and numbers only;
-   never share the PNGs.
+## Blocker — owner action: install and first launch (optional, short)
+On a Mac with Xcode 16+ (see [ios-build.md](ios-build.md)):
+1. Download the `impacto-ios-arm64-<sha>` artifact of the latest green
+   "iOS ARM64" run, unzip, and sign/install it (Sideloadly/AltStore or
+   `codesign` + `xcrun devicectl device install app`). Bundle identifier:
+   `com.committeeofzero.impacto` unless overridden at configure time.
+2. Launch it once on the iPhone. Expected: the asset-free launcher (empty
+   game list) and no crash. Report one line on what is visible.
+3. Retrieve `Application Support/Committee of Zero/Impacto/Impacto_Log.txt`
+   from the app container (Xcode → Devices → Download Container) and share
+   the last ~40 lines privately if it did not start.
+No game data is needed for this step; importing STEINS;GATE is Thread 10C/11A.
 
 ## Architectural Decisions
 ADR-007…010 unchanged. Thread 07: desktop is test infrastructure; inherited
-UI from other titles is removed rather than scaled; the font uses the
-executable's own table (32-unit em scaled to the 48 px cell). Thread 07b:
-an SGHD instruction whose engine UI does not exist yet must never wait for
-that UI (consume, log, yield); the census layout table is the reference for
-byte consumption. Thread 07c: SGHD script variables follow the common
-(RNE-era) layout where the scripts prove it; engine menus report decisions
-through the scripts' own flags/variables, never by jumping in the script.
+UI from other titles is removed rather than scaled. Thread 07b: an SGHD
+instruction whose engine UI does not exist yet must never wait for it.
+Thread 07c: SGHD script variables follow the common layout where the scripts
+prove it; engine menus report decisions through the scripts' own flags.
+Thread 08: the iOS port reuses the C++ engine, SDL3's UIKit shell and the
+existing GLES-capable OpenGL renderer; the first iOS build disables what it
+cannot link instead of porting it, and each disabled subsystem returns in its
+own thread. Flat iOS bundle, assets at the `.app` root, `IMPACTO_IOS` guards
+only where a platform difference actually exists.
 
 ## Next Thread
-Thread 08 — native iOS ARM64 build and minimal app shell. **Mode: Medium.**
-Scope and dependency list: [ios-transition.md](ios-transition.md). Apply
-the round-6 log and the TITLE_CHIP region names in a short follow-up
-(sprites = Low, mechanical; the path after START = Medium).
-Phone UI stays a separate High task.
+Thread 09 — iOS rendering (Medium; High only if GLES proves unusable on
+device). Gate: the existing GLES3 renderer draws a synthetic scene on device
+(or the fallback is decided). Start from `phase-04-ios-build`. Inputs:
+[ios-transition.md](ios-transition.md), [ios-build.md](ios-build.md).
+Also open, in parallel: applying Windows round 6 (title pass, TITLE_CHIP
+region names) — [threads/07c-title-menu.md](threads/07c-title-menu.md);
+phone UI stays a separate High task.
 
 ### Continuation prompt
-> Read `workme.md` (sections 4, 15), `docs/handoff.md`, `docs/roadmap.md`
-> and `docs/ios-transition.md`. Start from `phase-03-sghd-implementation`
-> (create a new branch for iOS work and record it in the handoff). Goal:
-> GitHub Actions `macos-15` builds impacto for arm64 iOS with vcpkg
-> (`triplets/arm64-ios.cmake`, static), SDL3 app shell, bundle with
-> profiles/shaders/resources; disable ffmpeg/libass/imgui/dx9 if they block;
-> upload an unsigned app artifact; document signing/sideloading. Keep the
-> Linux/Windows workflows green and `tests/compat` passing. No Metal rewrite,
-> no game data in CI. Commit, push, update handoff.
+> Read `workme.md` (sections 4, 16), `docs/handoff.md`,
+> `docs/roadmap.md`, `docs/ios-build.md` and
+> `docs/threads/08-ios-build.md`. Start from `phase-04-ios-build` (create a
+> new branch and record it in the handoff). Goal: get the existing GLES3
+> renderer to draw an asset-free synthetic scene in the iOS build (simulator
+> if possible on the macOS runner, otherwise the device path plus CPU-side
+> checks), measure the DXT5→RGBA CPU decode path, and document what a Metal
+> fallback would cost. Keep Linux/Windows CI and `tests/compat` green. No
+> Metal rewrite without a demonstrated blocker. Commit, push, update handoff.
 
 ## Orb state is disposable
-This orb had Docker image `impacto-desktop:ubuntu24`, vcpkg at
-`~/.local/share/impacto-tools/vcpkg`, binary cache `~/.cache/impacto-vcpkg`,
-build `ci-build/ubuntu24`, install `release/ubuntu24`, helpers
-`~/bin/impacto-{setup-build,build,test}.sh`. Not committed; rebuild per
-`docs/desktop-build.md` (cold build ≈ 30 min incl. Docker daemon start).
+This orb had no Docker access and no engine build; only Python and a pip
+CMake/Ninja/clang-format install in `/tmp/cmaketools`. Nothing committed.
+Build per [desktop-build.md](desktop-build.md) (Linux) or
+[ios-build.md](ios-build.md) (iOS).
 
 ## CI
-Code commit `a860ed3c`, pushed with docs commit `15e8de78`:
-- Desktop Linux [run 37850634940](https://github.com/Tasnemo/impacto-ios/actions/runs/37850634940):
-  **success** — 133 unit tests (96 + 37 skipped), build, launcher smoke 2/2,
-  37 runtime probes OK incl. the 5 X-input `SghdTitleMenuProbe` cases.
-- Desktop Windows [run 37850635115](https://github.com/Tasnemo/impacto-ios/actions/runs/37850635115):
-  **success** — unit tests, build, artifact
-  `impacto-windows-x64-15e8de787aa285644f7a4eefcccf8376ec3213be` (expires 2026-11-07). Built only; the owner runs it (round 6).
+Thread 08 commit `41717895` on `phase-04-ios-build`:
+- iOS ARM64 [run 40218497731](https://github.com/Tasnemo/impacto-ios/actions/runs/40218497731)
+  — see the run for the result (result is recorded in the thread report once
+  known).
+- Desktop Linux/Windows are not triggered by this branch; they still run on
+  `phase-03-sghd-implementation` and pull requests.

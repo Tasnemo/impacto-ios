@@ -17,7 +17,7 @@ from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[2]
 TRIPLET = (REPO / "triplets/arm64-ios.cmake").read_text()
-MANIFEST = json.loads((REPO / "vcpkg-ios.json").read_text())
+MANIFEST = json.loads((REPO / "ios/vcpkg.json").read_text())
 VCPKG_MANIFEST = json.loads((REPO / "vcpkg.json").read_text())
 PRESETS = json.loads((REPO / "CMakePresets.json").read_text())
 CMAKE = (REPO / "CMakeLists.txt").read_text()
@@ -131,9 +131,13 @@ class IosPreset(unittest.TestCase):
         self.assertEqual(variables["CMAKE_OSX_DEPLOYMENT_TARGET"], IOS_DEPLOYMENT_TARGET)
 
     def test_uses_the_ios_triplet_and_manifest(self):
+        # vcpkg at the pinned baseline only knows VCPKG_MANIFEST_DIR, not
+        # VCPKG_MANIFEST_FILE: pointing it at the file silently installed the
+        # desktop manifest (ffmpeg/avcpp/libass/vulkan) for arm64-ios.
         variables = self.configure["cacheVariables"]
         self.assertEqual(variables["VCPKG_TARGET_TRIPLET"], "arm64-ios")
-        self.assertEqual(variables["VCPKG_MANIFEST_FILE"], "${sourceDir}/vcpkg-ios.json")
+        self.assertEqual(variables["VCPKG_MANIFEST_DIR"], "${sourceDir}/ios")
+        self.assertTrue((REPO / "ios/vcpkg.json").is_file())
         # the triplet overlay is inherited from ci-release
         self.assertIn("ci-release", self.configure["inherits"])
         self.assertIn("triplets", preset("ci-release", "configurePresets")
@@ -224,6 +228,16 @@ class IosCMakeWiring(unittest.TestCase):
         self.assertIn("elseif(IMPACTO_IOS)\n    install(TARGETS impacto BUNDLE DESTINATION .)",
                       CMAKE)
         self.assertIn("if (NOT ANDROID AND NOT IMPACTO_IOS)", CMAKE)
+
+    def test_disabled_ffmpeg_does_not_leak_avcpp_headers(self):
+        # src/subtitle/subtitlesystem.h includes subtitlerenderer.h, so an
+        # unconditional avcpp/libavcodec include there breaks every
+        # IMPACTO_DISABLE_FFMPEG build.
+        base = (REPO / "src/subtitle/subtitlerenderer.h").read_text()
+        self.assertNotIn("<avcpp/", base)
+        self.assertNotIn("<libavcodec/", base)
+        self.assertIn("subtitlerenderer.h",
+                      (REPO / "src/subtitle/subtitlesystem.h").read_text())
 
     def test_ios_builds_without_audio_video_and_subtitles(self):
         block = CMAKE[CMAKE.index("if (IMPACTO_IOS)\n    # Everything links"):]

@@ -54,8 +54,8 @@ jobs:
       - uses: actions/cache/restore@v4
         with:
           path: .cache/vcpkg
-          key: ios-arm64-${{ env.VCPKG_COMMIT }}-${{ hashFiles('vcpkg-ios.json', 'triplets/arm64-ios.cmake') }}-${{ github.run_id }}
-          restore-keys: ios-arm64-${{ env.VCPKG_COMMIT }}-${{ hashFiles('vcpkg-ios.json', 'triplets/arm64-ios.cmake') }}-
+          key: ios-arm64-${{ env.VCPKG_COMMIT }}-${{ hashFiles('ios/vcpkg.json', 'triplets/arm64-ios.cmake') }}-${{ github.run_id }}
+          restore-keys: ios-arm64-${{ env.VCPKG_COMMIT }}-${{ hashFiles('ios/vcpkg.json', 'triplets/arm64-ios.cmake') }}-
       - name: Record toolchain
         run: |
           { sw_vers; xcodebuild -version; xcrun --sdk iphoneos --show-sdk-version;
@@ -87,7 +87,7 @@ jobs:
         if: always()
         with:
           path: .cache/vcpkg
-          key: ios-arm64-${{ env.VCPKG_COMMIT }}-${{ hashFiles('vcpkg-ios.json', 'triplets/arm64-ios.cmake') }}-${{ github.run_id }}
+          key: ios-arm64-${{ env.VCPKG_COMMIT }}-${{ hashFiles('ios/vcpkg.json', 'triplets/arm64-ios.cmake') }}-${{ github.run_id }}
       - name: Verify the app bundle
         run: |
           set -euo pipefail

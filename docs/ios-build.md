@@ -14,8 +14,8 @@ validation are later threads ([ios-transition.md](ios-transition.md)).
 | Piece | Purpose |
 |---|---|
 | `triplets/arm64-ios.cmake` | vcpkg device triplet: `arm64`, static libraries, `iphoneos` sysroot, iOS 15.0 minimum. |
-| `vcpkg-ios.json` | iOS dependency manifest: SDL3 (no Vulkan feature), Ogg/Vorbis, zlib, WebP, fmt, glm, pugixml, utfcpp, concurrentqueue, readerwriterqueue, unordered-dense, boost-circular-buffer, toml11, freetype, harfbuzz. No ffmpeg/avcpp/libass/openal/vulkan. |
-| `CMakePresets.json` → `ci-release-ios` | Configure/build preset: `CMAKE_SYSTEM_NAME=iOS`, `arm64`, `iphoneos`, deployment target 15.0, triplet `arm64-ios`, manifest `vcpkg-ios.json`, `IMPACTO_DISABLE_{FFMPEG,OPENAL,LIBASS,VULKAN}=ON`, `install` target. |
+| `ios/vcpkg.json` | iOS dependency manifest (`VCPKG_MANIFEST_DIR=ios`; vcpkg at the pinned baseline has no `VCPKG_MANIFEST_FILE`, so the manifest lives in its own directory): SDL3 (no Vulkan feature), Ogg/Vorbis, zlib, WebP, fmt, glm, pugixml, utfcpp, concurrentqueue, readerwriterqueue, unordered-dense, boost-circular-buffer, toml11, freetype, harfbuzz. No ffmpeg/avcpp/libass/openal/vulkan. |
+| `CMakePresets.json` → `ci-release-ios` | Configure/build preset: `CMAKE_SYSTEM_NAME=iOS`, `arm64`, `iphoneos`, deployment target 15.0, triplet `arm64-ios`, manifest directory `ios/`, `IMPACTO_DISABLE_{FFMPEG,OPENAL,LIBASS,VULKAN}=ON`, `install` target. |
 | `ios/Info.plist.in` | Bundle identity, `UILaunchScreen`, landscape-only orientations, full screen, Files visibility, `SDL_FILESYSTEM_BASE_DIR_TYPE=bundle`. |
 | `CMakeLists.txt` (`if (IMPACTO_IOS)`) | OpenGL ES framework instead of `FindOpenGL`, UIKit bundle properties, asset copy into the `.app`, install rules. |
 | `src/renderer/opengl/window.cpp` | On iOS: native GLES only, context version 3.0 (Apple's driver stops there). |
